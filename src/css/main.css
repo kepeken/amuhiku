@@ -1,0 +1,425 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Noto Sans Japanese", "ヒラギノ角ゴ ProN W3", Meiryo, sans-serif;
+  word-wrap: break-word;
+  -webkit-overflow-scrolling: touch;
+  background-color: #ededed;
+  padding-top: 44px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+#header,
+#opener,
+#saver,
+#searcher,
+#editor {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+#content {
+  max-width: 768px;
+  margin: auto;
+}
+
+#info {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: #eee;
+  padding: 4px;
+  border-top-left-radius: 4px;
+}
+
+#header {
+  display: inline-block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 44px;
+  border: solid 1px #ccc;
+}
+
+#header>div {
+  float: left;
+  width: 25%;
+  line-height: 40px;
+  text-align: center;
+  border: solid 1px #ccc;
+  background-color: #eee;
+}
+
+#opener,
+#saver,
+#searcher,
+#editor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  -webkit-transition: -webkit-transform .4s;
+  transition: transform .4s;
+  background-color: #eee;
+  -webkit-transform: translateY(-100%);
+  transform: translateY(-100%);
+}
+
+#opener,
+#saver,
+#editor {
+  height: 100%;
+}
+
+#searcher {
+  height: 44px;
+}
+
+#opener.show,
+#saver.show,
+#searcher.show,
+#editor.show {
+  -webkit-transform: translateY(0);
+  transform: translateY(0);
+}
+
+.page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: 44px;
+  background-color: #eee;
+  -webkit-transition: -webkit-transform .4s;
+  transition: transform .4s;
+  -webkit-transform: translateX(0);
+  transform: translateX(0);
+}
+
+.page-left {
+  -webkit-transform: translateX(-25%);
+  transform: translateX(-25%);
+}
+
+.page-right {
+  -webkit-transform: translateX(100%);
+  transform: translateX(100%);
+}
+
+.header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 4px 48px;
+  width: 100%;
+  height: 44px;
+  background-color: #ccc;
+  text-align: center;
+  font-weight: bold;
+  line-height: 36px;
+}
+
+.close,
+.header-left,
+.header-right {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+}
+
+.close,
+.header-left {
+  left: 0;
+}
+
+.header-right {
+  right: 0;
+}
+
+.list {
+  padding: 1px 1px 0 0;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.item {
+  margin: 0 0 1px 1px;
+  line-height: 28px;
+  padding: 7px 14px;
+  background-color: #fff;
+}
+
+input.item,
+select.item {
+  width: calc(50% - 1px);
+  text-align: center;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  font-size: 1em;
+  border-radius: 0;
+  border: none;
+}
+
+input.item:disabled,
+select.item:disabled {}
+
+.item>i {
+  position: relative;
+  left: -8px;
+  width: 36px;
+  text-align: center;
+}
+
+#searcher-field {
+  display: inline-block;
+  border: solid 1px #999;
+  border-radius: 4px;
+  outline: 0;
+  padding: 2px 10px;
+  width: 100%;
+  height: 100%;
+  font-size: 1em;
+  vertical-align: top;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+#searcher-field:focus {
+  border-color: #4286f4;
+}
+
+.otm {
+  background-color: #ddd;
+  overflow: hidden;
+}
+
+.otm-search {
+  margin: 5px;
+}
+
+.otm-search input[type=text],
+.otm-search select,
+.otm-search label {
+  display: inline-block;
+  box-sizing: border-box;
+  margin: 5px;
+  border: solid 1px #ccc;
+  border-radius: 5px;
+  padding: .4em .6em;
+  height: 2.4em;
+  font-size: 1em;
+  line-height: 1.6em;
+  vertical-align: middle;
+}
+
+.otm-search-field {
+  width: 300px;
+}
+
+.otm-search select {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#otm-search-option {
+  display: none;
+}
+
+.otm-search label {
+  background-color: #fff;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#otm-search-option:checked+label {
+  border: solid 1px #347fbe;
+  background-color: #3d8fd5;
+}
+
+.otm-word {
+  background-color: #fcfcfc;
+  border-radius: 5px;
+  margin: 5px;
+  padding: 14px;
+  font-size: .85em;
+  line-height: 1.6;
+  border: solid 1px #cecece;
+}
+
+.edit {
+  float: right;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  margin-top: -10px;
+  margin-right: -10px;
+  color: #777;
+}
+
+.otm-entry-form {
+  margin: 0px;
+}
+
+.otm-tag,
+.otm-translation-title {
+  border: solid 1px #888;
+  border-radius: 2px;
+  font-size: .85em;
+  padding: .1em .3em;
+  margin: .1em .3em;
+}
+
+.otm-tag {
+  background-color: #dbe9ff;
+}
+
+.otm-translation-form+.otm-translation-form::before {
+  content: ", ";
+}
+
+.otm-content-title {
+  display: inline-block;
+  font-size: .85em;
+  padding-left: 4px;
+  border-left: solid 2px #ccc;
+}
+
+.otm-content-text {
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: pre-wrap;
+}
+
+.otm-variation-title,
+.otm-relation-title {
+  font-size: .85em;
+}
+
+.otm-variation-title::before {
+  content: "→＜";
+}
+
+.otm-variation-title::after {
+  content: "＞";
+}
+
+.otm-relation-title::before {
+  content: "cf:＜";
+}
+
+.otm-relation-title::after {
+  content: "＞";
+}
+
+#editor .list {
+  padding: 15px;
+}
+
+#editor input,
+#editor textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: inline-block;
+  border-radius: 2px;
+  margin: 0;
+  border: 0;
+  width: 40%;
+  height: 40px;
+  font-size: 1em;
+}
+
+#editor textarea {
+  height: 80px;
+}
+
+#editor input+input,
+#editor input+textarea {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.delete-item {
+  float: right;
+  width: 40px;
+  vertical-align: middle;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ff7a66;
+  color: #fff;
+  border-radius: 2px;
+}
+
+.exchange-item,
+.add-item {
+  text-align: center;
+  line-height: 28px;
+  color: #777;
+}
+
+div:first-child>.exchange-item {
+  display: none;
+}
+
+#editor .ed-entry input {
+  width: 80%;
+}
+
+.ed-entry span {
+  font-size: .9em;
+  color: #999;
+  float: right;
+}
+
+#editor hr {
+  border: 0;
+  border-top: solid 1px #999;
+}
+
+#editor h4 {
+  margin: 15px;
+}
+
+.delete-word {
+  margin-top: 100px;
+  text-align: center;
+  line-height: 40px;
+  background-color: #ff7a66;
+  color: #fff;
+  border-radius: 2px;
+}
+
+.delete-word i {
+  width: 32px;
+}
+
+#loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#loading .fas {
+  font-size: 2em;
+  color: #fff;
+}

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<title>amuhiku</title>
+<script>
+  var match = location.hash.match(/access_token\=([^&]+)/);
+  history.replaceState(null, null, "/");
+  if (match && window.opener) {
+    window.opener.dropbox.setAccessToken(match[1]);
+  }
+  window.close();
+</script>
