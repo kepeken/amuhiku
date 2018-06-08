@@ -1,4 +1,6 @@
-var a, m, u
+import * as u from "./util";
+
+var a, m;
 
 a = {}
 
@@ -11,34 +13,6 @@ a.execCopy = function (text) {
   document.body.removeChild($e)
   alert(res ? "コピーしました" : "コピーに失敗しました")
 }
-
-
-u = {}
-
-u.swap = function (obj, x, y) {
-  var temp = obj[x]
-  obj[x] = obj[y]
-  obj[y] = temp
-}
-
-u.repeat = function (str, count) {
-  return Array(+count + 1).join(str);
-}
-
-u.escapeHTML = function (str) {
-  return str.replace(/[&'`"<>]/g, function (match) {
-    return { '&': '&amp;', "'": '&#x27;', '`': '&#x60;', '"': '&quot;', '<': '&lt;', '>': '&gt;' }[match];
-  });
-}
-
-u.autoLink = function (str) {
-  return u.escapeHTML(str).replace(/https?\:\/\/\S+/g, '<a href="$&" target="_blank">$&</a>');
-}
-
-u.escapeRegExp = function (string) {
-  return string.replace(/[.*+?^=!:${}()|[\]\/\\]/g, "\\$&");
-}
-
 
 m = function (tag, attrs, children) {
   var e = typeof tag === "string" ? document.createElement(tag) : tag;
@@ -217,9 +191,7 @@ var dropbox = (function () {
 
   dropbox.logIn = () => {
     if (confirm("Dropbox にログインします。")) {
-      var red = location.host === "amuhiku.netlify.com"
-        ? "https://amuhiku.netlify.com/dropbox.html"
-        : "http://localhost:8000/dic/dropbox.html";
+      var red = location.origin + "/dropbox.html";
       window.open(dropbox.client.getAuthenticationUrl(red), null, "width=640,height=480");
     }
   };
@@ -299,7 +271,9 @@ var github = {
         callback(res.map((gist) => {
           var name = Object.keys(gist.files)[0];
           return {
-            isFolder: false, name: name, path: "/gists/" + gist.id + "/" + name
+            isFolder: false,
+            name: name,
+            path: `/gists/${gist.id}/${name}`
           };
         }));
       })
@@ -387,7 +361,7 @@ var dictionary = {
       }
     })();
     if (name) {
-      if (confirm(name + "\n" + dictionary.currentPath + "\nに現在のデータを上書きします")) {
+      if (confirm(`${name}\n${dictionary.currentPath}\nに現在のデータを上書きします`)) {
         dictionary.currentStorage.write(
           dictionary.currentPath, dictionary.compose(), () => {
             alert("上書きしました");
@@ -582,7 +556,7 @@ function saverList(path, sto) {
         } else {
           item.icon = "far fa-file";
           item.onclick = function () {
-            if (confirm(entry.path + "\nに上書きしますか？")) {
+            if (confirm(`${entry.path}\nに上書きしますか？`)) {
               sto.write(entry.path, dictionary.compose(), () => {
                 alert("上書き保存しました。");
                 dictionary.changed = false;
