@@ -1,4 +1,5 @@
 import * as u from "./util";
+import readAsText from "./util/read-as-text";
 
 var a, m;
 
@@ -112,10 +113,7 @@ var localFile = (function () {
     accept: ".json",
     style: { display: "none" },
     onchange: function () {
-      var reader = new FileReader();
-      reader.onload = function () { _callback(event.target.result); };
-      reader.onerror = function (err) { alert(err); };
-      reader.readAsText(this.files[0]);
+      readAsText(this.files[0]).then(_callback).catch((err) => alert(err));
     }
   });
   document.body.appendChild($e);
@@ -221,10 +219,7 @@ var dropbox = (function () {
     dropbox.client.filesDownload({ path: path })
       .then((res) => {
         loader.end();
-        var reader = new FileReader();
-        reader.onload = function () { callback(reader.result); };
-        reader.onerror = function (err) { alert(err); };
-        reader.readAsText(res.fileBlob);
+        readAsText(res.fileBlob).then(callback).catch((err) => alert(err));
       })
       .catch((err) => { loader.end(); alert(JSON.stringify(err)); });
   };
