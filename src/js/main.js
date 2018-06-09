@@ -192,7 +192,14 @@ var dropbox = (function () {
   dropbox.logIn = () => {
     if (confirm("Dropbox にログインします。")) {
       var red = location.origin + "/dropbox.html";
-      window.open(dropbox.client.getAuthenticationUrl(red), null, "width=640,height=480");
+      const callback = (event) => {
+        if (event.source !== authWindow) return;
+        var match = event.data.match(/access_token\=([^&]+)/);
+        if (match) dropbox.setAccessToken(match[1]);
+        window.removeEventListener("message", callback, false);
+      };
+      window.addEventListener("message", callback, false);
+      const authWindow = window.open(dropbox.client.getAuthenticationUrl(red), null, "width=640,height=480");
     }
   };
 
