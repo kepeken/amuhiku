@@ -1,15 +1,16 @@
+import { Dropbox } from "dropbox";
 import readAsText from "../util/readAsText";
 
 class DropboxResourceHandler {
 
   constructor() {
     this.loggedIn = false;
-    this.client = new Dropbox.Dropbox({ clientId: "rtid7yv8kjr94tc" });
+    this.client = new Dropbox({ clientId: "rtid7yv8kjr94tc" });
   }
 
   setAccessToken(accessToken) {
     this.loggedIn = true;
-    this.client = new Dropbox.Dropbox({ accessToken });
+    this.client = new Dropbox({ accessToken });
   };
 
   logIn() {
