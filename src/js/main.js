@@ -664,6 +664,23 @@ $("#open-github").on("click", function () {
   })
 });
 
+$("#open-online").on("click", function () {
+  const url = prompt(`JSON ファイルの URL を指定してください。\n・プロトコルは http: か https: であること\n・CORS に対応していること`);
+  const ok = url && /^https?:\/\//.test(url);
+  if (url) {
+    if (ok) {
+      if (confirm(`${url} をインポートします`)) {
+        fetch(url, { mode: "cors" })
+          .then(res => res.text())
+          .then(text => dictionary.load(text, null, url))
+          .catch(err => alert(err));
+      }
+    } else {
+      alert("URL の形式が正しくありません。");
+    }
+  }
+});
+
 $("#save-overwrite").on("click", function () {
   dictionary.overwrite();
 });

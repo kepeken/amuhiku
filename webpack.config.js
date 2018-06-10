@@ -2,6 +2,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
+  entry: [
+    "whatwg-fetch",
+    "./src/js/main.js",
+    "./src/css/main.css",
+  ],
   module: {
     rules: [
       {

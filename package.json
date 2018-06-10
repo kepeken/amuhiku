@@ -7,7 +7,8 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
-    "dropbox": "^4.0.5"
+    "dropbox": "^4.0.5",
+    "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.3",
