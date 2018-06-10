@@ -1,5 +1,6 @@
 import * as u from "./util";
-import readAsText from "./util/read-as-text";
+import readAsText from "./util/readAsText";
+import _dropbox from "./resource/dropbox";
 
 var a, m;
 
@@ -175,67 +176,60 @@ var storage = (function () {
   return storage;
 })();
 
-var dropbox = (function () {
-  var dropbox = {};
+const dropbox = {
 
-  dropbox.loggedIn = false;
-  dropbox.client = new Dropbox.Dropbox({ clientId: "rtid7yv8kjr94tc" });
+  get loggedIn() {
+    return _dropbox.loggedIn;
+  },
 
-  dropbox.setAccessToken = (accessToken) => {
-    dropbox.accessToken = accessToken;
-    dropbox.loggedIn = true;
-    dropbox.client = new Dropbox.Dropbox({ accessToken: dropbox.accessToken });
-  };
-
-  dropbox.logIn = () => {
-    if (confirm("Dropbox にログインします。")) {
-      var red = location.origin + "/dropbox.html";
-      const callback = (event) => {
-        if (event.source !== authWindow) return;
-        var match = event.data.match(/access_token\=([^&]+)/);
-        if (match) dropbox.setAccessToken(match[1]);
-        window.removeEventListener("message", callback, false);
-      };
-      window.addEventListener("message", callback, false);
-      const authWindow = window.open(dropbox.client.getAuthenticationUrl(red), null, "width=640,height=480");
+  logIn() {
+    if (confirm(`Dropbox にログインします。`)) {
+      _dropbox.logIn().then(() => {
+        alert(`ログインしました。`);
+      });
     }
-  };
+  },
 
-  dropbox.dir = (path, callback) => {
+  dir(path, callback) {
     loader.start();
-    dropbox.client.filesListFolder({ path: path })
-      .then((res) => {
-        loader.end();
-        callback(res.entries.filter((entry) => {
-          return entry[".tag"] === "folder" || entry[".tag"] === "file";
-        }).map((entry) => ({
-          isFolder: entry[".tag"] === "folder", name: entry.name, path: entry.path_display
-        })));
-      })
-      .catch((err) => { loader.end(); alert(JSON.stringify(err)); });
-  };
-  dropbox.read = (path, callback) => {
-    loader.start();
-    dropbox.client.filesDownload({ path: path })
-      .then((res) => {
-        loader.end();
-        readAsText(res.fileBlob).then(callback).catch((err) => alert(err));
-      })
-      .catch((err) => { loader.end(); alert(JSON.stringify(err)); });
-  };
-  dropbox.write = (path, text, callback, overwrite) => {
-    loader.start();
-    dropbox.client.filesUpload({
-      path: path,
-      contents: new Blob([text], { type: "application/json" }),
-      mode: { ".tag": overwrite ? "overwrite" : "add" }
-    })
-      .then((res) => { loader.end(); callback && callback(); })
-      .catch((err) => { loader.end(); alert(JSON.stringify(err)); });
-  };
-  return dropbox;
-})();
+    _dropbox.dir(path).then((res) => {
+      loader.end();
+      callback && callback(res);
+    }).catch((err) => {
+      loader.end();
+      alert(err);
+    });
+  },
 
+  read(path, callback) {
+    loader.start();
+    _dropbox.read(path).then((res) => {
+      loader.end();
+      callback && callback(res);
+    }).catch((err) => {
+      loader.end();
+      alert(err);
+    });
+  },
+
+  write(path, text, callback, overwrite) {
+    loader.start();
+    let promise;
+    if (overwrite) {
+      promise = _dropbox.update(path, text);
+    } else {
+      promise = _dropbox.create(path, text);
+    }
+    promise.then((res) => {
+      loader.end();
+      callback && callback(res);
+    }).catch((err) => {
+      loader.end();
+      alert(err);
+    });
+  },
+
+};
 
 
 OAuth.initialize('gxWBn3Ig6n_dBKLCm6ac5I-egLU');
