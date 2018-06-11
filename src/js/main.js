@@ -282,26 +282,14 @@ var github = {
   read: function (path, callback) {
     loader.start();
     path = github.parse(path).folder;
-    var done = function (res) {
+    github.client.get(path).done((res) => {
       loader.end();
       var name = Object.keys(res.files)[0];
       callback(res.files[name].content);
-    };
-    var fail = function (err) {
+    }).fail((err) => {
       loader.end();
       alert(JSON.stringify(err));
-    };
-    if (github.client) {
-      github.client.get(path).done(done).fail(fail);
-    } else {
-      $.ajax({
-        type: "GET",
-        url: "https://api.github.com" + path,
-        dataType: "jsonp",
-        success: (res) => done(res.data),
-        error: fail
-      });
-    }
+    });
   },
 
   write: function (path, text, callback, overwrite) {
@@ -629,36 +617,11 @@ $("#open-help").on("click", function () {
 });
 
 $("#open-github").on("click", function () {
-  pushPage({
-    title: "GitHub Gist",
-    content: [m.item({
-      text: "URL を入力",
-      icon: "fab fa-github",
-      onclick: function () {
-        while (true) {
-          var url = prompt("URL を入力（https://gist.github.com/:username/:id）");
-          if (!url) return;
-          var m = /^https:\/\/gist\.github\.com\/[-a-z0-9]+\/([0-9a-z]+)/i.exec(url);
-          if (m && m[1]) {
-            github.read("/gists/" + m[1], (text) => dictionary.load(text, null, "gist"));
-            return;
-          } else {
-            alert("URL が正しくありません");
-          }
-        }
-      }
-    }), m.item({
-      text: "自分の Gist",
-      icon: "fab fa-github",
-      onclick: function () {
-        if (github.loggedIn) {
-          openerList("", github);
-        } else {
-          github.logIn();
-        }
-      }
-    })]
-  })
+  if (github.loggedIn) {
+    openerList("", github);
+  } else {
+    github.logIn();
+  }
 });
 
 $("#open-online").on("click", function () {
