@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "dropbox": "^4.0.5",
+    "netlify-auth-providers": "^1.0.0-alpha5",
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {

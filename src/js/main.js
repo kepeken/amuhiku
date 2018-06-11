@@ -1,6 +1,7 @@
 import * as u from "./util";
 import readAsText from "./util/readAsText";
 import _dropbox from "./resource/dropbox";
+import _github from "./resource/github";
 
 var a, m;
 
@@ -183,6 +184,7 @@ const dropbox = {
   },
 
   logIn() {
+    // クリックイベント時に呼び出すこと
     if (confirm(`Dropbox にログインします。`)) {
       _dropbox.logIn().then(() => {
         alert(`ログインしました。`);
@@ -231,96 +233,62 @@ const dropbox = {
 
 };
 
+const github = {
 
-OAuth.initialize('gxWBn3Ig6n_dBKLCm6ac5I-egLU');
-
-var github = {
-  loggedIn: false,
-  client: null,
-
-  parse: function (path) {
-    return {
-      folder: path.split("/").slice(0, 3).join("/"),
-      file: path.split("/")[3]
-    };
+  get loggedIn() {
+    return _github.loggedIn;
   },
 
   logIn: function () {
     // クリックイベント時に呼び出すこと
-    if (confirm("GitHub にログインします。")) {
-      OAuth.popup('github')
-        .done(function (res) {
-          github.client = res;
-          github.loggedIn = true;
-        })
-        .fail(function (err) {
-          alert(err);
-        });
+    if (confirm(`GitHub にログインします。`)) {
+      _github.logIn().then(() => {
+        alert(`ログインしました。`);
+      });
     }
   },
 
-  dir: function (path, callback) {
+  dir(path, callback) {
     loader.start();
-    github.client.get("/gists")
-      .done(function (res) {
-        loader.end();
-        callback(res.map((gist) => {
-          var name = Object.keys(gist.files)[0];
-          return {
-            isFolder: false,
-            name: name,
-            path: `/gists/${gist.id}/${name}`
-          };
-        }));
-      })
-      .fail(function (err) {
-        loader.end();
-        alert(JSON.stringify(err));
-      });
-  },
-
-  read: function (path, callback) {
-    loader.start();
-    path = github.parse(path).folder;
-    github.client.get(path).done((res) => {
+    _github.dir(path).then((res) => {
       loader.end();
-      var name = Object.keys(res.files)[0];
-      callback(res.files[name].content);
-    }).fail((err) => {
+      callback && callback(res);
+    }).catch((err) => {
       loader.end();
-      alert(JSON.stringify(err));
+      alert(err);
     });
   },
 
-  write: function (path, text, callback, overwrite) {
+  read(path, callback) {
     loader.start();
-    var files = {};
-    var req;
+    _github.read(path).then((res) => {
+      loader.end();
+      callback && callback(res);
+    }).catch((err) => {
+      loader.end();
+      alert(err);
+    });
+  },
+
+  write(path, text, callback, overwrite) {
+    loader.start();
+    let promise;
     if (overwrite) {
-      var p = github.parse(path);
-      files[p.file] = { content: text };
-      req = github.client.patch(p.folder, {
-        data: JSON.stringify({
-          files: files
-        })
-      });
+      promise = _github.update(path, text);
     } else {
-      files[path.split("/")[1]] = { content: text };
-      req = github.client.post("/gists", {
-        data: JSON.stringify({
-          files: files,
-          public: confirm("public にしますか？")
-        })
+      promise = _github.create(path, text, {
+        public: confirm(`public にしますか？`),
       });
     }
-    req.done(function () {
+    promise.then((res) => {
       loader.end();
-      callback && callback();
-    }).fail(function (err) {
+      callback && callback(res);
+    }).catch((err) => {
       loader.end();
-      alert(JSON.stringify(err));
+      alert(err);
     });
-  }
+  },
+
 };
 
 
