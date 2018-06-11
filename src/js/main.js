@@ -356,17 +356,14 @@ var dictionary = {
         default: return null;
       }
     })();
-    if (name) {
-      if (confirm(`${name}\n${dictionary.currentPath}\nに現在のデータを上書きします`)) {
-        dictionary.currentStorage.write(
-          dictionary.currentPath, dictionary.compose(), () => {
-            alert("上書きしました");
-            dictionary.changed = false;
-          }, true
-        );
-      }
-    } else {
-      alert("上書き先がありません");
+    if (!name) return alert("上書き先がありません");
+    if (confirm(`${name}\n${dictionary.currentPath}\nに現在のデータを上書きします`)) {
+      dictionary.currentStorage.write(
+        dictionary.currentPath, dictionary.compose(), () => {
+          alert("上書きしました");
+          dictionary.changed = false;
+        }, true
+      );
     }
   },
   settings: {
@@ -666,18 +663,13 @@ $("#open-github").on("click", function () {
 
 $("#open-online").on("click", function () {
   const url = prompt(`JSON ファイルの URL を指定してください。\n・プロトコルは http: か https: であること\n・CORS に対応していること`);
-  const ok = url && /^https?:\/\//.test(url);
-  if (url) {
-    if (ok) {
-      if (confirm(`${url} をインポートします`)) {
-        fetch(url, { mode: "cors" })
-          .then(res => res.text())
-          .then(text => dictionary.load(text, null, url))
-          .catch(err => alert(err));
-      }
-    } else {
-      alert("URL の形式が正しくありません。");
-    }
+  if (!url) return;
+  if (!/^https?:\/\//.test(url)) return alert("URL の形式が正しくありません。");
+  if (confirm(`${url} をインポートします`)) {
+    fetch(url, { mode: "cors" })
+      .then(res => res.text())
+      .then(text => dictionary.load(text, null, url))
+      .catch(err => alert(err));
   }
 });
 
