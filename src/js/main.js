@@ -1,5 +1,6 @@
 import * as u from "./util";
 import readAsText from "./util/readAsText";
+import jacksonPrettyPrint from "./util/jacksonPrettyPrint";
 import _dropbox from "./resource/dropbox";
 import _github from "./resource/github";
 
@@ -386,7 +387,12 @@ dictionary.load = function (str, sto, path) {
 }
 
 dictionary.compose = function () {
-  return JSON.stringify(otm, null, dictionary.settings.get("prettify-json"));
+  const space = dictionary.settings.get("prettify-json");
+  if (space === "zpdic") {
+    return jacksonPrettyPrint(otm);
+  } else {
+    return JSON.stringify(otm, null, space);
+  }
 };
 
 
@@ -923,43 +929,28 @@ $("#editor-enter").on("click", function () {
 });
 
 $("#save-settings").on("click", function () {
-  var s, n;
-  var space = dictionary.settings.get("prettify-json");
+  let sel;
   pushPage({
     title: "設定",
-    content: [
-      m.checkbox({
-        text: "JSONを整形",
-        value: space !== null,
-        callback: (value) => {
-          space = value ? Array(+n.value + 1).join(s.value) : null;
+    content: m("div", { class: "settings" }, [
+      m("h5", null, "出力する JSON の整形："),
+      sel = m("select", {
+        class: "item clickable",
+        onchange() {
+          const space = this.value === "none" ? null : this.value;
           dictionary.settings.set("prettify-json", space);
-          // s.style.display = n.style.display = value ? "" : "none";
-          s.disabled = n.disabled = !value;
-        }
-      }),
-      s = m.select({
-        options: {
-          " ": "スペース",
-          "\t": "タブ"
         },
-        selected: space ? space[0] : " ",
-        disabled: space === null,
-        callback: function () {
-          space = u.repeat(s.value, n.value);
-          dictionary.settings.set("prettify-json", space);
-        }
-      }),
-      n = m.number({
-        value: space ? space.length : 4,
-        disabled: space === null,
-        callback: function () {
-          space = u.repeat(s.value, n.value);
-          dictionary.settings.set("prettify-json", space);
-        }
-      })
-    ]
-  })
+      }, [
+          m("option", { value: "none", text: "整形しない" }),
+          m("option", { value: "zpdic", text: "ZpDIC 準拠" }),
+          m("option", { value: "  ", text: "スペース ×2" }),
+          m("option", { value: "    ", text: "スペース ×4" }),
+          m("option", { value: "\t", text: "タブ" }),
+        ]),
+    ])
+  });
+  const space = dictionary.settings.get("prettify-json");
+  sel.value = space === null ? "none" : space;
 });
 
 /* init */

@@ -165,7 +165,7 @@ body {
 
 input.item,
 select.item {
-  width: calc(50% - 1px);
+  /* width: calc(50% - 1px); */
   text-align: center;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -182,6 +182,19 @@ select.item:disabled {}
   left: -8px;
   width: 36px;
   text-align: center;
+}
+
+.settings h5 {
+  margin: 0;
+  padding: 0 1em;
+  line-height: 44px;
+  width: calc(50% - 1px);
+  float: left;
+}
+
+.settings .item {
+  width: calc(50% - 1px);
+  float: left;
 }
 
 #searcher-field {
