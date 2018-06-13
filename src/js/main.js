@@ -1,22 +1,16 @@
-import * as u from "./util";
-import readAsText from "./util/readAsText";
-import jacksonPrettyPrint from "./util/jacksonPrettyPrint";
+import {
+  autoLink,
+  escapeRegExp,
+  execCopy,
+  jacksonPrettyPrint,
+  readAsText,
+} from "./util";
 import _dropbox from "./resource/dropbox";
 import _github from "./resource/github";
 
 var a, m;
 
 a = {}
-
-a.execCopy = function (text) {
-  var $e = m("textarea", { value: text, readOnly: true })
-  document.body.appendChild($e)
-  $e.select()
-  $e.setSelectionRange(0, $e.value.length)
-  var res = document.execCommand("copy")
-  document.body.removeChild($e)
-  alert(res ? "コピーしました" : "コピーに失敗しました")
-}
 
 m = function (tag, attrs, children) {
   var e = typeof tag === "string" ? document.createElement(tag) : tag;
@@ -66,26 +60,6 @@ m.checkbox = (arg) => {
       $icon = m.icon(checkIcon[value]),
       arg.text
     ]);
-};
-// options, selected, disabled, callback
-m.select = (arg) => {
-  var arr = [];
-  for (var k in arg.options) arr.push(m("option", { value: k, selected: arg.selected === k }, arg.options[k]));
-  return m("select", {
-    class: "item clickable",
-    disabled: arg.disabled,
-    onchange: function () { arg.callback(this.options[this.selectedIndex].value); }
-  }, arr);
-};
-// value, disabled, callback
-m.number = (arg) => {
-  return m("input", {
-    type: "number",
-    class: "item",
-    disabled: arg.disabled,
-    value: arg.value,
-    onchange: function () { arg.callback(this.value); }
-  });
 };
 
 var loader = {
@@ -474,39 +448,40 @@ function saverList({ path, resource, title }) {
       content: [
         m.item({
           icon: "fas fa-plus",
-          onclick: function () {
-            var name = promptForFileName();
-            if (name) {
-              resource.write(`${path}/${name}`, dictionary.compose(), () => {
-                alert("保存しました。");
-                dictionary.changed = false;
-                hideModal();
-              }, false);
-            }
+          text: "新しいファイルとして保存",
+          onclick() {
+            const name = promptForFileName();
+            if (!name) return;
+            resource.write(`${path}/${name}`, dictionary.compose(), () => {
+              alert("保存しました。");
+              dictionary.changed = false;
+              hideModal();
+            }, false);
           },
-          text: "新しいファイルとして保存"
         }),
         res.map(entry => {
-          var item = {};
-          item.text = entry.name;
           if (entry.isFolder) {
-            item.icon = "fas fa-folder";
-            item.onclick = function () {
-              saverList({ path: entry.path, resource, title: entry.name });
-            };
+            return m.item({
+              icon: "fas fa-folder",
+              text: entry.name,
+              onclick() {
+                saverList({ path: entry.path, resource, title: entry.name });
+              },
+            });
           } else {
-            item.icon = "far fa-file";
-            item.onclick = function () {
-              if (confirm(`${entry.path}\nに上書きしますか？`)) {
+            return m.item({
+              icon: "far fa-file",
+              text: entry.name,
+              onclick() {
+                if (!confirm(`${entry.path}\nに上書きしますか？`)) return;
                 resource.write(entry.path, dictionary.compose(), () => {
                   alert("上書き保存しました。");
                   dictionary.changed = false;
                   hideModal();
                 }, true);
-              }
-            };
+              },
+            });
           }
-          return m.item(item);
         }),
       ]
     });
@@ -630,7 +605,7 @@ $("#save-storage").on("click", function () {
 });
 
 $("#save-clipboard").on("click", function () {
-  a.execCopy(dictionary.compose())
+  execCopy(dictionary.compose())
 });
 
 m.wordViewer = function (word) {
@@ -660,7 +635,7 @@ m.wordViewer = function (word) {
     word.contents.map(function (cont) {
       return m("div", null, [
         m("div", { class: "otm-content-title" }, cont.title),
-        m("div", { class: "otm-content-text", innerHTML: u.autoLink(cont.text) }),
+        m("div", { class: "otm-content-text", innerHTML: autoLink(cont.text) }),
       ]);
     }),
     word.variations.map(function (va) {
@@ -684,8 +659,8 @@ function compileWordTester(str) {
   var m = str.match(/\S+/g);
   if (!m) return none;
   var re = new RegExp("^" + m.map(p =>
-    // p[0] === "-" ? "(?!.*" + u.escapeRegExp(p.substr(1)) + ")" :
-    "(?=.*" + u.escapeRegExp(p) + ")"
+    // p[0] === "-" ? "(?!.*" + escapeRegExp(p.substr(1)) + ")" :
+    "(?=.*" + escapeRegExp(p) + ")"
   ).join(""), "i");
   return (w) => {
     return re.test(w.entry.form) ||
@@ -937,11 +912,10 @@ $("#save-settings").on("click", function () {
       sel = m("select", {
         class: "item clickable",
         onchange() {
-          const space = this.value === "none" ? null : this.value;
-          dictionary.settings.set("prettify-json", space);
+          dictionary.settings.set("prettify-json", this.value || null);
         },
       }, [
-          m("option", { value: "none", text: "整形しない" }),
+          m("option", { value: "", text: "整形しない" }),
           m("option", { value: "zpdic", text: "ZpDIC 準拠" }),
           m("option", { value: "  ", text: "スペース ×2" }),
           m("option", { value: "    ", text: "スペース ×4" }),
@@ -949,8 +923,7 @@ $("#save-settings").on("click", function () {
         ]),
     ])
   });
-  const space = dictionary.settings.get("prettify-json");
-  sel.value = space === null ? "none" : space;
+  sel.value = dictionary.settings.get("prettify-json") || "";
 });
 
 /* init */
