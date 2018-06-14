@@ -829,7 +829,7 @@ function pickEditor() {
     },
     translations: $e.find(".ed-translation").map((i, t) => ({
       title: t.querySelector("input").value,
-      forms: t.querySelector("textarea").value.split(/\,\s*|、|\s+/g)
+      forms: t.querySelector("textarea").value.split(/\,\s*|、|\n+/g)
     })).get(),
     tags: $e.find(".ed-tag").map((i, t) => (
       t.querySelector("input").value
