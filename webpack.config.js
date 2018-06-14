@@ -5,7 +5,7 @@ module.exports = {
   entry: [
     "whatwg-fetch",
     "./src/js/main.js",
-    "./src/css/main.css",
+    "./src/css/main.scss",
   ],
   module: {
     rules: [
@@ -24,13 +24,14 @@ module.exports = {
         }
       },
       {
-        test: /\.css$/,
+        test: /\.(?:scss|css)$/,
         use: [
           MiniCssExtractPlugin.loader,
           {
             loader: "css-loader",
             options: { minimize: true }
-          }
+          },
+          "sass-loader"
         ]
       },
     ]

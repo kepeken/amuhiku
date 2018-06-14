@@ -29,6 +29,7 @@ body {
 #content {
   max-width: 768px;
   margin: auto;
+  padding: 5px;
 }
 
 #info {
@@ -184,31 +185,32 @@ select.item:disabled {}
   text-align: center;
 }
 
-.settings h5 {
-  margin: 0;
-  padding: 0 1em;
-  line-height: 44px;
-  width: calc(50% - 1px);
-  float: left;
-}
-
-.settings .item {
-  width: calc(50% - 1px);
-  float: left;
+.settings {
+  h5 {
+    margin: 0;
+    padding: 0 1em;
+    line-height: 44px;
+    width: calc(50% - 1px);
+    float: left;
+  }
+  .item {
+    width: calc(50% - 1px);
+    float: left;
+  }
 }
 
 #searcher-field {
+  -webkit-appearance: none;
+  -moz-appearance: none;
   display: inline-block;
-  border: solid 1px #999;
-  border-radius: 4px;
   outline: 0;
-  padding: 2px 10px;
+  margin-bottom: 5px;
+  border: solid 1px #cecece;
+  border-radius: 5px;
+  padding: 10px;
   width: 100%;
   height: 100%;
   font-size: 1em;
-  vertical-align: top;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
 #searcher-field:focus {
@@ -266,11 +268,14 @@ select.item:disabled {}
 .otm-word {
   background-color: #fcfcfc;
   border-radius: 5px;
-  margin: 5px;
+  margin-bottom: 5px;
   padding: 14px;
   font-size: .85em;
   line-height: 1.6;
   border: solid 1px #cecece;
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .edit {
@@ -339,31 +344,31 @@ select.item:disabled {}
   content: "＞";
 }
 
-#editor .list {
-  padding: 15px;
-}
-
-#editor input,
-#editor textarea {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  display: inline-block;
-  border-radius: 2px;
-  margin: 0;
-  border: 0;
-  width: 40%;
-  height: 40px;
-  font-size: 1em;
-}
-
-#editor textarea {
-  height: 80px;
-}
-
-#editor input+input,
-#editor input+textarea {
-  margin-top: 4px;
-  width: 100%;
+#editor {
+  .list {
+    padding: 15px;
+  }
+  input,
+  textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: inline-block;
+    margin: 0;
+    border: 1px solid #ced4da;
+    border-radius: 2px;
+    padding: 5px;
+    width: 50%;
+    height: 40px;
+    font-size: 1em;
+  }
+  textarea {
+    height: 80px;
+  }
+  input+input,
+  input+textarea {
+    margin-top: 4px;
+    width: 100%;
+  }
 }
 
 .delete-item {

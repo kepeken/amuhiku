@@ -517,7 +517,7 @@ $("#save").on("click", function () {
 });
 
 $("#search").on("click", function () {
-  $("#searcher").addClass("show");
+  // $("#searcher").addClass("show");
   scroller.scrollTop();
   $("#searcher-field").trigger("focus");
 });
@@ -690,7 +690,7 @@ a.search = function (text) {
   else if ($field.val() !== text) $field.val(text);
   var test = compileWordTester(text);
   var view = otm.words.filter(test).map(m.wordViewer);
-  $("#content").empty().append(m.fragment(view));
+  $("#search-result").empty().append(m.fragment(view));
   $("#info-num").text(view.length);
 }
 
