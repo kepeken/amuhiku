@@ -5,12 +5,15 @@ import {
   jacksonPrettyPrint,
   readAsText,
 } from "./util";
-import _dropbox from "./resource/dropbox";
-import _github from "./resource/github";
+
+import resourceHandler from "./resource/all";
+const browser = resourceHandler.get("browser");
+const dropbox = resourceHandler.get("dropbox");
+const github = resourceHandler.get("github");
 
 var a, m;
 
-a = {}
+a = {};
 
 m = function (tag, attrs, children) {
   var e = typeof tag === "string" ? document.createElement(tag) : tag;
@@ -38,7 +41,7 @@ m = function (tag, attrs, children) {
 
 m.fragment = (children) => {
   return m(document.createDocumentFragment(), null, children)
-}
+};
 
 m.icon = (cls) => m("i", { class: cls });
 m.item = (arg) => m("div", { class: "item clickable", onclick: arg.onclick }, [
@@ -62,21 +65,15 @@ m.checkbox = (arg) => {
     ]);
 };
 
-var loader = {
-  $e: $("#loading").hide(),
-  start: function () { this.$e.show(); },
-  end: function () { this.$e.hide(); }
-};
-
 var scroller = {
   top: 0,
-  pause: function () {
+  pause() {
     this.top = document.documentElement.scrollTop || document.body.scrollTop;
   },
-  resume: function () {
+  resume() {
     document.documentElement.scrollTop = document.body.scrollTop = this.top;
   },
-  scrollTop: function (val) {
+  scrollTop(val) {
     this.top = val || 0;
     this.resume();
   }
@@ -115,192 +112,40 @@ var localFile = (function () {
   return localFile;
 })();
 
-var storage = (function () {
-  var storage = {};
-  storage.dir = (path, callback) => {
-    var entries = [];
-    try {
-      for (var i = 0; i < localStorage.length; i++) {
-        var key = localStorage.key(i);
-        if (key[0] === "/") entries.push({
-          isFolder: false, path: key, name: key.split("/").pop()
-        });
-      }
-      callback(entries);
-    } catch (e) {
-      alert(e);
-    }
-  };
-  storage.read = (path, callback) => {
-    try {
-      callback(localStorage.getItem(path));
-    } catch (e) {
-      alert(e);
-    }
-  };
-  storage.write = (path, text, callback, overwrite) => {
-    try {
-      if (!overwrite && localStorage.getItem(path)) {
-        throw "既に存在しています。";
-      }
-      localStorage.setItem(path, text);
-      callback && callback();
-    } catch (e) {
-      alert(e);
-    }
-  };
-  return storage;
-})();
-
-const dropbox = {
-
-  logIn() {
-    // クリックイベント時に呼び出すこと
-    if (confirm(`Dropbox にログインします。`)) {
-      _dropbox.logIn().then(() => {
-        alert(`ログインしました。`);
-      });
-    }
-  },
-
-  dir(path, callback) {
-    loader.start();
-    _dropbox.dir(path).then((res) => {
-      loader.end();
-      callback && callback(res);
-    }).catch((err) => {
-      loader.end();
-      alert(err);
-    });
-  },
-
-  read(path, callback) {
-    loader.start();
-    _dropbox.read(path).then((res) => {
-      loader.end();
-      callback && callback(res);
-    }).catch((err) => {
-      loader.end();
-      alert(err);
-    });
-  },
-
-  write(path, text, callback, overwrite) {
-    loader.start();
-    let promise;
-    if (overwrite) {
-      promise = _dropbox.update(path, text);
-    } else {
-      promise = _dropbox.create(path, text);
-    }
-    promise.then((res) => {
-      loader.end();
-      callback && callback(res);
-    }).catch((err) => {
-      loader.end();
-      alert(err);
-    });
-  },
-
-};
-
-const github = {
-
-  logIn: function () {
-    // クリックイベント時に呼び出すこと
-    if (confirm(`GitHub にログインします。`)) {
-      _github.logIn().then(() => {
-        alert(`ログインしました。`);
-      });
-    }
-  },
-
-  dir(path, callback) {
-    loader.start();
-    _github.dir(path).then((res) => {
-      loader.end();
-      callback && callback(res);
-    }).catch((err) => {
-      loader.end();
-      alert(err);
-    });
-  },
-
-  read(path, callback) {
-    loader.start();
-    _github.read(path).then((res) => {
-      loader.end();
-      callback && callback(res);
-    }).catch((err) => {
-      loader.end();
-      alert(err);
-    });
-  },
-
-  write(path, text, callback, overwrite) {
-    loader.start();
-    let promise;
-    if (overwrite) {
-      promise = _github.update(path, text);
-    } else {
-      promise = _github.create(path, text, {
-        public: confirm(`public にしますか？`),
-      });
-    }
-    promise.then((res) => {
-      loader.end();
-      callback && callback(res);
-    }).catch((err) => {
-      loader.end();
-      alert(err);
-    });
-  },
-
-};
-
 
 var dictionary = {
   defaultOTM: '{"words":[]}',
   defaultWord: '{"entry":{"id":-1,"form":""},"translations":[],"tags":[],"contents":[],"variations":[],"relations":[]}',
   changed: false,
-  currentStorage: null,
   currentPath: null,
+  currentEntry: null,
   refresh: function () {
-    storage.write("temp", JSON.stringify(otm), null, true);
+    localStorage.setItem("temp", JSON.stringify(otm));
     $("#info-den").text(otm.words.length);
     a.search(null);
   },
   overwrite: function () {
-    var name = (function () {
-      switch (dictionary.currentStorage) {
-        case dropbox: return "Dropbox";
-        case github: return "GitHub Gist";
-        case storage: return "ブラウザストレージ";
-        default: return null;
-      }
-    })();
+    const name = dictionary.currentEntry ? dictionary.currentEntry.name : null;
     if (!name) return alert("上書き先がありません");
     if (confirm(`${name}\n${dictionary.currentPath}\nに現在のデータを上書きします`)) {
-      dictionary.currentStorage.write(
-        dictionary.currentPath, dictionary.compose(), () => {
-          alert("上書きしました");
-          dictionary.changed = false;
-        }, true
-      );
+      dictionary.currentEntry.update(
+        dictionary.currentPath, dictionary.compose()
+      ).then(() => {
+        alert("上書きしました");
+        dictionary.changed = false;
+      });
     }
   },
   settings: {
-    data: (function () {
-      var def = {
+    data: Object.assign(
+      {
         "prettify-json": null
-      };
-      var data;
-      storage.read("settings", _ => data = _);
-      return data ? JSON.parse(data) : def;
-    })(),
+      },
+      JSON.parse(localStorage.getItem("settings"))
+    ),
     set: (k, v) => {
       dictionary.settings.data[k] = v;
-      storage.write("settings", JSON.stringify(dictionary.settings.data), null, true);
+      localStorage.setItem("settings", JSON.stringify(dictionary.settings.data));
     },
     get: (k) => {
       return dictionary.settings.data[k];
@@ -339,7 +184,7 @@ dictionary.checkOTM = (function () {
 })();
 
 
-dictionary.load = function (str, sto, path) {
+dictionary.load = function (str, entry, path) {
   var _otm;
   try {
     _otm = JSON.parse(str);
@@ -353,7 +198,7 @@ dictionary.load = function (str, sto, path) {
   hideModal($("#opener"));
   otm = _otm;
   dictionary.changed = false;
-  dictionary.currentStorage = sto;
+  dictionary.currentEntry = entry;
   dictionary.currentPath = path;
   $("#info-path").text(path.split("/").pop());
   dictionary.refresh();
@@ -399,7 +244,7 @@ function pushPage(data) {
   ]);
   var oldPage = modal.lastElementChild;
   modal.appendChild(newPage);
-  setTimeout(function () {
+  setTimeout(() => {
     newPage.classList.remove("page-right");
     oldPage.classList.add("page-left");
   }, 0);
@@ -411,38 +256,43 @@ function removePage(data) {
   var oldPage = newPage.previousElementSibling;
   newPage.classList.add("page-right");
   oldPage.classList.remove("page-left");
-  setTimeout(function () {
+  setTimeout(() => {
     modal.removeChild(newPage);
   }, 400);
 }
 
-function openerList({ path, resource, title }) {
-  resource.dir(path, (res) => {
+function openerList({ resource, title }) {
+  resource.dir().then(res => {
     pushPage({
       title,
       content: res.map(entry => {
-        var item = {};
-        item.text = entry.name;
         if (entry.isFolder) {
-          item.icon = "fas fa-folder";
-          item.onclick = function () {
-            openerList({ path: entry.path, resource, title: entry.name });
-          };
+          return m.item({
+            icon: "fas fa-folder",
+            text: entry.name,
+            onclick() {
+              openerList({ resource: entry, title: entry.name });
+            },
+          });
         } else {
-          item.icon = "far fa-file";
-          item.onclick = function () {
-            resource.read(entry.path, (text) => dictionary.load(text, resource, entry.path));
-          };
+          return m.item({
+            icon: "far fa-file",
+            text: entry.name,
+            onclick() {
+              entry.read().then(text => {
+                dictionary.load(text, entry, entry.path);
+              });
+            },
+          });
         }
-        return m.item(item);
       })
     });
   });
 }
 
 
-function saverList({ path, resource, title }) {
-  resource.dir(path, (res) => {
+function saverList({ resource, title }) {
+  resource.dir().then(res => {
     pushPage({
       title,
       content: [
@@ -452,11 +302,11 @@ function saverList({ path, resource, title }) {
           onclick() {
             const name = promptForFileName();
             if (!name) return;
-            resource.write(`${path}/${name}`, dictionary.compose(), () => {
+            resource.create(name, dictionary.compose()).then(() => {
               alert("保存しました。");
               dictionary.changed = false;
               hideModal();
-            }, false);
+            });
           },
         }),
         res.map(entry => {
@@ -465,7 +315,7 @@ function saverList({ path, resource, title }) {
               icon: "fas fa-folder",
               text: entry.name,
               onclick() {
-                saverList({ path: entry.path, resource, title: entry.name });
+                saverList({ resource: entry, title: entry.name });
               },
             });
           } else {
@@ -474,11 +324,11 @@ function saverList({ path, resource, title }) {
               text: entry.name,
               onclick() {
                 if (!confirm(`${entry.path}\nに上書きしますか？`)) return;
-                resource.write(entry.path, dictionary.compose(), () => {
+                entry.update(dictionary.compose()).then(() => {
                   alert("上書き保存しました。");
                   dictionary.changed = false;
                   hideModal();
-                }, true);
+                });
               },
             });
           }
@@ -489,9 +339,12 @@ function saverList({ path, resource, title }) {
 }
 
 function showModal($e) {
-  $e.addClass("show");
+  $e.show();
+  setTimeout(() => {
+    $e.addClass("show");
+  }, 0);
   scroller.pause();
-  setTimeout(function () {
+  setTimeout(() => {
     $("#content").hide();
   }, 400);
 }
@@ -500,6 +353,9 @@ function hideModal() {
   $(".modal").removeClass("show");
   $("#content").show();
   scroller.resume();
+  setTimeout(() => {
+    $(".modal").hide();
+  }, 400);
 }
 
 $(".close").on("click", function () {
@@ -517,7 +373,6 @@ $("#save").on("click", function () {
 });
 
 $("#search").on("click", function () {
-  // $("#searcher").addClass("show");
   scroller.scrollTop();
   $("#searcher-field").trigger("focus");
 });
@@ -537,24 +392,24 @@ $("#open-local").on("click", function () {
 });
 
 $("#open-dropbox").on("click", function () {
-  if (_dropbox.loggedIn) {
-    openerList({ path: "", resource: dropbox, title: `Dropbox` });
+  if (dropbox.loggedIn) {
+    openerList({ resource: dropbox, title: `Dropbox` });
   } else {
     dropbox.logIn();
   }
 });
 
 $("#open-storage").on("click", function () {
-  openerList({ path: "", resource: storage, title: `ブラウザストレージ` });
+  openerList({ resource: browser, title: `ブラウザストレージ` });
 });
 
 $("#open-help").on("click", function () {
-  dictionary.load($("#help-json").text(), null, "help");
+  dictionary.load(JSON.stringify(require("./data/help")), null, "help");
 });
 
 $("#open-github").on("click", function () {
-  if (_github.loggedIn) {
-    openerList({ path: "", resource: github, title: `GitHub Gist` });
+  if (github.loggedIn) {
+    openerList({ resource: github, title: `GitHub Gist` });
   } else {
     github.logIn();
   }
@@ -585,27 +440,27 @@ $("#save-local-bin").on("click", function () {
 });
 
 $("#save-dropbox").on("click", function () {
-  if (_dropbox.loggedIn) {
-    saverList({ path: "", resource: dropbox, title: `Dropbox` });
+  if (dropbox.loggedIn) {
+    saverList({ resource: dropbox, title: `Dropbox` });
   } else {
     dropbox.logIn();
   }
 });
 
 $("#save-github").on("click", function () {
-  if (_github.loggedIn) {
-    saverList({ path: "", resource: github, title: `GitHub Gist` });
+  if (github.loggedIn) {
+    saverList({ resource: github, title: `GitHub Gist` });
   } else {
     github.logIn();
   }
 });
 
 $("#save-storage").on("click", function () {
-  saverList({ path: "", resource: storage, title: `ブラウザストレージ` });
+  saverList({ resource: browser, title: `ブラウザストレージ` });
 });
 
 $("#save-clipboard").on("click", function () {
-  execCopy(dictionary.compose())
+  execCopy(dictionary.compose());
 });
 
 m.wordViewer = function (word) {
@@ -928,12 +783,11 @@ $("#save-settings").on("click", function () {
 
 /* init */
 (function () {
-  storage.write("v", "20180308", null, true);
-  storage.read("temp", (text) => {
-    if (text) {
-      dictionary.load(text, null, "temp");
-    } else {
-      $("#open-help").trigger("click");
-    }
-  });
+  localStorage.setItem("v", "20180308");
+  const temp = localStorage.getItem("temp");
+  if (temp) {
+    dictionary.load(temp, null, "temp");
+  } else {
+    $("#open-help").trigger("click");
+  }
 })();

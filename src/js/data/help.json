@@ -1,0 +1,205 @@
+{
+  "words": [
+    {
+      "entry": {
+        "id": 0,
+        "form": "# amuhiku"
+      },
+      "translations": [],
+      "tags": [],
+      "contents": [
+        {
+          "title": "amuhiku とは？",
+          "text": "辞書を作成・編集・閲覧できる Web アプリです。ブラウザ上で動くので、スマホでも扱えます（むしろ PC よりもスマホでの操作性を重視しています）。"
+        },
+        {
+          "title": "報告など",
+          "text": "報告などは Twitter @kepeken に送るか、#amuhiku をつけてください。"
+        },
+        {
+          "title": "更新履歴",
+          "text": "Twitter #amuhiku でつぶやいていきます。"
+        },
+        {
+          "title": "To Do",
+          "text": "・関連語選択\n・検索機能の強化\n・ファイル操作"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 1,
+        "form": "# Open"
+      },
+      "translations": [],
+      "tags": [],
+      "contents": [
+        {
+          "title": "概要",
+          "text": "OTM-JSON 形式の辞書ファイルを開くことが出来ます。詳細は http://ja.conlinguistics.wikia.com/wiki/OTM-JSON を確認してください。"
+        },
+        {
+          "title": "新しいデータ",
+          "text": "新しいデータを作成します。"
+        },
+        {
+          "title": "ローカルファイル",
+          "text": "使っているデバイスからデータを取り込みます。"
+        },
+        {
+          "title": "Dropbox",
+          "text": "ログインして Dropbox からデータを取り込みます。セキュリティの都合上、アプリ専用フォルダ（/アプリ/amuhiku/）にのみアクセスできます。"
+        },
+        {
+          "title": "ブラウザストレージ",
+          "text": "ブラウザのストレージ（localStorage）からデータを取り込みます。プライベートブラウジングを使用していると正しく取り込めません。"
+        },
+        {
+          "title": "ヘルプ",
+          "text": "ヘルプを開きます。誤って編集しても、読み込み直せば初期状態に戻ります。"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 2,
+        "form": "# Save"
+      },
+      "translations": [],
+      "tags": [],
+      "contents": [
+        {
+          "title": "概要",
+          "text": "OTM-JSON 形式のファイルを保存することが出来ます。詳細は http://ja.conlinguistics.wikia.com/wiki/OTM-JSON を確認してください。"
+        },
+        {
+          "title": "補足",
+          "text": "ファイル出力形式は、iOS で出力したときの動作が２種類あるっぽいので両方設けました。他のブラウザはわからないです…"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 3,
+        "form": "# Search"
+      },
+      "translations": [],
+      "tags": [],
+      "contents": [
+        {
+          "title": "概要",
+          "text": "単語を検索できます。オプションについては迷走中なので後々アップデートしていきます。"
+        },
+        {
+          "title": "説明",
+          "text": "・スペースを挟むと AND 検索"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 4,
+        "form": "# Add"
+      },
+      "translations": [],
+      "tags": [],
+      "contents": [
+        {
+          "title": "概要",
+          "text": "単語を追加できます。各単語には【見出し語 Entry】【ID】【訳語 Translations】【タグ Tags】【内容 Contents】【変化形 Variations】【関連語 Relations】の項目を付けられます。"
+        },
+        {
+          "title": "補足",
+          "text": "訳語は仕様では配列なので、「, 」「、」〈改行〉で勝手に区切られます。"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 5,
+        "form": "# Edit"
+      },
+      "translations": [],
+      "tags": [],
+      "contents": [
+        {
+          "title": "概要",
+          "text": "表示されている単語の右上のアイコンを押すと、その単語を編集できます。削除もそこからできます。そのほかは『追加』と同じです。"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 6,
+        "form": "# 表示例"
+      },
+      "translations": [
+        {
+          "title": "品詞1",
+          "forms": [
+            "訳語1-1",
+            "訳語1-2"
+          ]
+        },
+        {
+          "title": "品詞2",
+          "forms": [
+            "訳語2-1"
+          ]
+        }
+      ],
+      "tags": [
+        "タグ1",
+        "タグ2"
+      ],
+      "contents": [
+        {
+          "title": "内容1",
+          "text": "文章1"
+        },
+        {
+          "title": "内容2",
+          "text": "文章2"
+        }
+      ],
+      "variations": [
+        {
+          "title": "変化形1",
+          "form": "綴り1"
+        },
+        {
+          "title": "変化形2",
+          "form": "綴り2"
+        }
+      ],
+      "relations": [
+        {
+          "title": "関連語1",
+          "entry": {
+            "id": 1,
+            "form": "単語1"
+          }
+        },
+        {
+          "title": "関連語2",
+          "entry": {
+            "id": 2,
+            "form": "単語2"
+          }
+        }
+      ]
+    }
+  ]
+}
