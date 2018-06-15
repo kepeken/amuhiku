@@ -13,6 +13,8 @@ const browser = resourceHandler.get("browser");
 const dropbox = resourceHandler.get("dropbox");
 const github = resourceHandler.get("github");
 
+import { pushPage, popPage } from "./components/pages";
+
 var a, m;
 
 a = {};
@@ -142,40 +144,11 @@ var dictionary = {
 
 var otm;
 
-
-dictionary.checkOTM = (function () {
-  // http://ja.conlinguistics.wikia.com/wiki/OTM-JSON
-  var string = x => typeof x === "string";
-  var integer = x => x | 0 === x;
-  var array = t => x => Array.isArray(x) && x.every(t);
-  var object = t => x => {
-    if (typeof x !== "object" || !x) return false;
-    for (var k in t) if (!t[k](x[k])) return false;
-    return true;
-  };
-  var translation = object({ title: string, forms: array(string) });
-  var content = object({ title: string, text: string });
-  var variation = object({ title: string, form: string });
-  var relation = object({ title: string, entry: object({ id: integer, form: string }) });
-  var word = object({
-    entry: object({ id: integer, form: string }),
-    translations: array(translation),
-    tags: array(string),
-    contents: array(content),
-    variations: array(variation),
-    relations: array(relation)
-  });
-  return object({
-    words: array(word)
-  });
-})();
-
-
 dictionary.load = function (str, entry, path) {
   var _otm;
   try {
     _otm = JSON.parse(str);
-    if (!dictionary.checkOTM(_otm)) {
+    if (!app.validateOTM(_otm)) {
       throw "OTM-JSON のフォーマットが正しくありません。";
     }
   } catch (e) {
@@ -211,47 +184,10 @@ function promptForFileName() {
   }
 }
 
-
-// data: { title, content: [ { icon, onclick, text } ] }
-function pushPage(data) {
-  var modal = document.querySelector(".modal.show");
-  var newPage = m("div", { class: "page page-right" }, [
-    m("div", { class: "header" }, [
-      m("div", {
-        class: "header-left clickable",
-        onclick: function () {
-          removePage(data);
-        }
-      }, [
-          m.icon("fas fa-chevron-left")
-        ]),
-      data.title
-    ]),
-    m("div", { class: "list" }, data.content)
-  ]);
-  var oldPage = modal.lastElementChild;
-  modal.appendChild(newPage);
-  setTimeout(() => {
-    newPage.classList.remove("page-right");
-    oldPage.classList.add("page-left");
-  }, 0);
-}
-
-function removePage(data) {
-  var modal = document.querySelector(".modal.show");
-  var newPage = modal.lastElementChild;
-  var oldPage = newPage.previousElementSibling;
-  newPage.classList.add("page-right");
-  oldPage.classList.remove("page-left");
-  setTimeout(() => {
-    modal.removeChild(newPage);
-  }, 400);
-}
-
 function openerList({ resource, title }) {
   resource.dir().then(res => {
     pushPage({
-      title,
+      header: title,
       content: res.map(entry => {
         if (entry.isFolder) {
           return m.item({
@@ -281,7 +217,7 @@ function openerList({ resource, title }) {
 function saverList({ resource, title }) {
   resource.dir().then(res => {
     pushPage({
-      title,
+      header: title,
       content: [
         m.item({
           icon: "fas fa-plus",
@@ -563,19 +499,19 @@ m.propDeleter = function () {
   );
 }
 
-m.propEditor = function (opt) {
+m.propEditor = function ({ word, prop, init, view }) {
   var create = data =>
-    m("div", { class: "ed-" + opt.prop }, [
+    m("div", { class: "ed-" + prop }, [
       m.propExchanger(),
       m.propDeleter(),
-      opt.view(data)
+      view(data)
     ]);
-  return m("div", { class: "ed-" + opt.prop + "s ed" }, [
-    opt.word[opt.prop + "s"].map(create),
+  return m("div", { class: "ed-" + prop + "s ed" }, [
+    word[prop + "s"].map(create),
     m("div", {
       class: "add-item clickable",
       onclick: function () {
-        this.parentNode.insertBefore(create(null), this);
+        this.parentNode.insertBefore(create(init), this);
       }
     }, m.icon("fas fa-plus"))
   ]);
@@ -603,20 +539,26 @@ function openWordEditor(word) {
 }
 
 m.wordEditor = function (word) {
+  function join(formsArray) {
+    const punct = (otm.zpdic || {}).punctuations || [",", "、"];
+    punct[0] = punct[0] || ",";
+    return formsArray.join(punct[0] + " ");
+  }
   return m("div", { class: "list" }, [
     m("h4", null, "単語"),
     m("div", { class: "ed-entry ed" }, [
       m("input", { placeholder: "見出し語", value: word.entry.form }),
-      m("span", null, "#" + word.entry.id)
+      m("span", null, `#${word.entry.id}`)
     ]),
     m("hr"),
     m("h4", null, "訳語"),
     m.propEditor({
       word: word,
       prop: "translation",
+      init: { title: "", forms: [] },
       view: (t) => [
-        m("input", { placeholder: "品詞など", value: t && t.title }),
-        m("textarea", { placeholder: "訳語", value: t && t.forms.join(", ") })
+        m("input", { placeholder: "品詞など", value: t.title }),
+        m("textarea", { placeholder: "訳語", value: join(t.forms) })
       ]
     }),
     m("hr"),
@@ -624,6 +566,7 @@ m.wordEditor = function (word) {
     m.propEditor({
       word: word,
       prop: "tag",
+      init: "",
       view: (t) => [
         m("input", { placeholder: "", value: t })
       ]
@@ -633,9 +576,10 @@ m.wordEditor = function (word) {
     m.propEditor({
       word: word,
       prop: "content",
+      init: { title: "", text: "" },
       view: (t) => [
-        m("input", { placeholder: "", value: t && t.title }),
-        m("textarea", { placeholder: "", value: t && t.text })
+        m("input", { placeholder: "", value: t.title }),
+        m("textarea", { placeholder: "", value: t.text })
       ]
     }),
     m("hr"),
@@ -643,9 +587,10 @@ m.wordEditor = function (word) {
     m.propEditor({
       word: word,
       prop: "variation",
+      init: { title: "", form: "" },
       view: (t) => [
-        m("input", { placeholder: "説明", value: t && t.title }),
-        m("input", { placeholder: "綴り", value: t && t.form })
+        m("input", { placeholder: "説明", value: t.title }),
+        m("input", { placeholder: "綴り", value: t.form })
       ]
     }),
     m("hr"),
@@ -653,10 +598,11 @@ m.wordEditor = function (word) {
     m.propEditor({
       word: word,
       prop: "relation",
+      init: { title: "", entry: { id: "", form: "" } },
       view: (t) => [
-        m("input", { placeholder: "説明", value: t && t.title }),
-        m("input", { placeholder: "ID", value: t && t.entry.id }),
-        m("input", { placeholder: "単語", value: t && t.entry.form }),
+        m("input", { placeholder: "説明", value: t.title }),
+        m("input", { placeholder: "ID", value: t.entry.id }),
+        m("input", { placeholder: "単語", value: t.entry.form }),
       ]
     }),
   ]);
@@ -664,6 +610,11 @@ m.wordEditor = function (word) {
 
 function pickEditor() {
   var $e = $("#editor");
+  function split(formsString) {
+    const punct = (otm.zpdic || {}).punctuations || [",", "、"];
+    const re = new RegExp(punct.map(escapeRegExp).join("|") + "|\\n+");
+    return formsString.split(re).map(s => s.trim());
+  }
   return {
     entry: {
       id: $e.find(".ed-entry span").text().replace(/^#/, "") | 0,
@@ -671,7 +622,7 @@ function pickEditor() {
     },
     translations: $e.find(".ed-translation").map((i, t) => ({
       title: t.querySelector("input").value,
-      forms: t.querySelector("textarea").value.split(/\,\s*|、|\n+/g)
+      forms: split(t.querySelector("textarea").value)
     })).get(),
     tags: $e.find(".ed-tag").map((i, t) => (
       t.querySelector("input").value
@@ -748,7 +699,7 @@ $("#editor-enter").on("click", function () {
 $("#save-settings").on("click", function () {
   let sel;
   pushPage({
-    title: "設定",
+    header: "設定",
     content: m("div", { class: "settings" }, [
       m("h5", null, "出力する JSON の整形："),
       sel = m("select", {
