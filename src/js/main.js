@@ -6,6 +6,8 @@ import {
   readAsText,
 } from "./util";
 
+import app from "./app";
+
 import resourceHandler from "./resource/all";
 const browser = resourceHandler.get("browser");
 const dropbox = resourceHandler.get("dropbox");
@@ -129,28 +131,13 @@ var dictionary = {
     if (!name) return alert("上書き先がありません");
     if (confirm(`${name}\n${dictionary.currentPath}\nに現在のデータを上書きします`)) {
       dictionary.currentEntry.update(
-        dictionary.currentPath, dictionary.compose()
+        dictionary.compose()
       ).then(() => {
         alert("上書きしました");
         dictionary.changed = false;
       });
     }
   },
-  settings: {
-    data: Object.assign(
-      {
-        "prettify-json": null
-      },
-      JSON.parse(localStorage.getItem("settings"))
-    ),
-    set: (k, v) => {
-      dictionary.settings.data[k] = v;
-      localStorage.setItem("settings", JSON.stringify(dictionary.settings.data));
-    },
-    get: (k) => {
-      return dictionary.settings.data[k];
-    }
-  }
 };
 
 var otm;
@@ -206,7 +193,7 @@ dictionary.load = function (str, entry, path) {
 }
 
 dictionary.compose = function () {
-  const space = dictionary.settings.get("prettify-json");
+  const space = app.globalSettings.get("prettify-json");
   if (space === "zpdic") {
     return jacksonPrettyPrint(otm);
   } else {
@@ -767,7 +754,7 @@ $("#save-settings").on("click", function () {
       sel = m("select", {
         class: "item clickable",
         onchange() {
-          dictionary.settings.set("prettify-json", this.value || null);
+          app.globalSettings.set("prettify-json", this.value || null);
         },
       }, [
           m("option", { value: "", text: "整形しない" }),
@@ -778,12 +765,11 @@ $("#save-settings").on("click", function () {
         ]),
     ])
   });
-  sel.value = dictionary.settings.get("prettify-json") || "";
+  sel.value = app.globalSettings.get("prettify-json") || "";
 });
 
 /* init */
 (function () {
-  localStorage.setItem("v", "20180308");
   const temp = localStorage.getItem("temp");
   if (temp) {
     dictionary.load(temp, null, "temp");
