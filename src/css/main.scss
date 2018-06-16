@@ -133,8 +133,7 @@ body {
   right: 0;
 }
 
-.page .content,
-.list {
+.page .content {
   padding: 1px 1px 0 0;
   height: 100%;
   overflow-y: scroll;
@@ -326,7 +325,7 @@ select.item {
 }
 
 #editor {
-  .list {
+  .word-editor {
     padding: 15px;
   }
   input,
@@ -357,41 +356,37 @@ select.item {
     border: 0;
     border-top: solid 1px #999;
   }
-}
-
-.delete-item {
-  float: right;
-  width: 40px;
-  vertical-align: middle;
-  text-align: center;
-  line-height: 40px;
-  background-color: #ff7a66;
-  color: #fff;
-  border-radius: 2px;
-}
-
-.exchange-item,
-.add-item {
-  text-align: center;
-  line-height: 28px;
-  color: #777;
-}
-
-div:first-child>.exchange-item {
-  display: none;
-}
-
-#editor .ed-entry input {
-  width: 80%;
-}
-
-.ed-entry span {
-  font-size: .9em;
-  color: #999;
-  float: right;
+  .item-deleter {
+    float: right;
+    width: 40px;
+    vertical-align: middle;
+    text-align: center;
+    line-height: 40px;
+    background-color: #ff7a66;
+    color: #fff;
+    border-radius: 2px;
+  }
+  .item-swapper,
+  .item-adder {
+    text-align: center;
+    line-height: 28px;
+    color: #777;
+  }
+  div:first-child>.item-swapper {
+    display: none;
+  }
+  .entry-id {
+    font-size: .9em;
+    color: #999;
+    float: right;
+  }
+  input[name="entry[form]"] {
+    width: 80%;
+  }
 }
 
 .delete-word {
+  margin: 15px;
   margin-top: 100px;
   text-align: center;
   line-height: 40px;

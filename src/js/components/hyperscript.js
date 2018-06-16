@@ -2,8 +2,8 @@ export default function (_tag, attrs, children) {
   const match = _tag.match(/^((?:[\-\w]+)?)((?:#[\-\w]+)?)((?:\.[\-\w]+)*)/) || [];
   const [, tag, id, classes] = match;
   const e = document.createElement(tag || "div");
-  if (id) e.id = id;
-  for (const c of classes.slice(1).split(".")) e.classList.add(c);
+  if (id) e.id = id.slice(1);
+  if (classes) for (const c of classes.slice(1).split(".")) e.classList.add(c);
   const pname = { "class": "className", "data": "dataset" };
   if (attrs) {
     for (const [_name, value] of Object.entries(attrs)) {
@@ -25,5 +25,10 @@ export default function (_tag, attrs, children) {
     }
   }
   append(children);
+
+  if (tag === "select") {
+    if (attrs && "value" in attrs) e.value = attrs.value;
+  }
+
   return e;
 }
