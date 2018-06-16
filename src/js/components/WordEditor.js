@@ -1,7 +1,5 @@
 import m from "./hyperscript";
-// import collectFormData from "../util/collectFormData";
-import escapeRegExp from "../util/escapeRegExp";
-// import uniqid from "../util/uniqid";
+import { escapeRegExp } from "../util";
 
 function ItemSwapper() {
   return m(".item-swapper.clickable", {
@@ -59,7 +57,7 @@ function PropEditor(data, view) {
  * @param {Object} word
  * @param {string[]} punctuations
  */
-export function WordEditor(word, punctuations) {
+export default function WordEditor(word, punctuations) {
   let punct = punctuations[0];
   if (punct === ",") punct += " ";
   return m(".word-editor", {}, [
@@ -71,33 +69,33 @@ export function WordEditor(word, punctuations) {
     ]),
     m("hr"),
     m("h4", {}, "訳語"),
-    PropEditor(word.translations, ($) => [
-      m("input", { name: `translations[][title]`, value: $ && $.title }),
-      m("input", { name: `translations[][forms]`, value: $ && $.forms.join(punct) }),
+    PropEditor(word.translations, ($item) => [
+      m("input", { name: `translations[][title]`, value: $item && $item.title, placeholder: "品詞など" }),
+      m("input", { name: `translations[][forms]`, value: $item && $item.forms.join(punct), placeholder: "訳語" }),
     ]),
     m("hr"),
     m("h4", {}, "タグ"),
-    PropEditor(word.tags, ($) => [
-      m("input", { name: `tags[]`, value: $ }),
+    PropEditor(word.tags, ($item) => [
+      m("input", { name: `tags[]`, value: $item, placeholder: "" }),
     ]),
     m("hr"),
     m("h4", {}, "内容"),
-    PropEditor(word.contents, ($) => [
-      m("input", { name: `contents[][title]`, value: $ && $.title, placeholder: "" }),
-      m("textarea", { name: `contents[][text]`, value: $ && $.text, placeholder: "" })
+    PropEditor(word.contents, ($item) => [
+      m("input", { name: `contents[][title]`, value: $item && $item.title, placeholder: "タイトル" }),
+      m("textarea", { name: `contents[][text]`, value: $item && $item.text, placeholder: "内容" }),
     ]),
     m("hr"),
     m("h4", {}, "変化形"),
-    PropEditor(word.variations, ($) => [
-      m("input", { name: `variations[][title]`, value: $ && $.title, placeholder: "説明", }),
-      m("input", { name: `variations[][form]`, value: $ && $.form, placeholder: "綴り", })
+    PropEditor(word.variations, ($item) => [
+      m("input", { name: `variations[][title]`, value: $item && $item.title, placeholder: "説明" }),
+      m("input", { name: `variations[][form]`, value: $item && $item.form, placeholder: "綴り" }),
     ]),
     m("hr"),
     m("h4", {}, "関連語"),
-    PropEditor(word.relations, ($) => [
-      m("input", { name: `relations[][title]`, value: $ && $.title, placeholder: "説明" }),
-      m("input", { name: `relations[][entry][id]`, value: $ && $.entry.id, placeholder: "ID" }),
-      m("input", { name: `relations[][entry][form]`, value: $ && $.entry.form, placeholder: "単語" }),
+    PropEditor(word.relations, ($item) => [
+      m("input", { name: `relations[][title]`, value: $item && $item.title, placeholder: "説明" }),
+      m("input", { name: `relations[][entry][id]`, value: $item && $item.entry.id, placeholder: "ID" }),
+      m("input", { name: `relations[][entry][form]`, value: $item && $item.entry.form, placeholder: "単語" }),
     ]),
   ]);
 }
@@ -106,7 +104,7 @@ export function WordEditor(word, punctuations) {
  * @param {HTMLElement} root
  * @param {string[]} punctuations
  */
-export function collectFromWordEditor(root, punctuations) {
+WordEditor.collect = function (root, punctuations) {
   const punct = new RegExp(punctuations.map(p => `\\s*${escapeRegExp(p)}\\s*`).join("|") + "|\\n+");
   const word = {
     entry: { id: 0, form: "" },
@@ -149,17 +147,4 @@ export function collectFromWordEditor(root, punctuations) {
     actions[input.name] && actions[input.name](input.value);
   }
   return word;
-  // const word = collectFormData(root);
-  // for (const name of ["translations", "tags", "contents", "variations", "relations"]) {
-  //   console.log(word, name);
-  //   word[name] = word[name] ? Object.values(word[name]) : [];
-  // }
-  // word.entry.id |= 0;
-  // word.translations.forEach(translation => {
-  //   translation.forms = translation.forms.split(punct);
-  // });
-  // word.relations.forEach(relation => {
-  //   relation.entry.id |= 0;
-  // });
-  // return word;
 }

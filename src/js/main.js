@@ -472,51 +472,6 @@ a.search = function (text) {
   $("#info-num").text(view.length);
 }
 
-m.propExchanger = function () {
-  return m("div", {
-    class: "exchange-item clickable",
-    onclick: function () {
-      var parent = this.parentNode;
-      parent.parentNode.insertBefore(parent, parent.previousElementSibling);
-    }
-  }, [
-      m.icon("fas fa-long-arrow-alt-up"),
-      m.icon("fas fa-long-arrow-alt-down")
-    ]);
-}
-
-m.propDeleter = function () {
-  return m("div", {
-    class: "delete-item clickable",
-    onclick: function () {
-      if (confirm("削除します")) {
-        var parent = this.parentNode;
-        parent.parentNode.removeChild(parent);
-      }
-    }
-  },
-    m.icon("fas fa-trash-alt")
-  );
-}
-
-m.propEditor = function ({ word, prop, init, view }) {
-  var create = data =>
-    m("div", { class: "ed-" + prop }, [
-      m.propExchanger(),
-      m.propDeleter(),
-      view(data)
-    ]);
-  return m("div", { class: "ed-" + prop + "s ed" }, [
-    word[prop + "s"].map(create),
-    m("div", {
-      class: "add-item clickable",
-      onclick: function () {
-        this.parentNode.insertBefore(create(init), this);
-      }
-    }, m.icon("fas fa-plus"))
-  ]);
-}
-
 function openWordEditor(word) {
   var title, addition;
   if (word) {
@@ -538,129 +493,18 @@ function openWordEditor(word) {
   $("#editor").data("word", JSON.stringify(word));
 }
 
-import { WordEditor } from "./components/WordEditor";
+import WordEditor from "./components/WordEditor";
 
 m.wordEditor = function (word) {
   const punct = (otm.zpdic || {}).punctuations || [",", "、"];
   return WordEditor(word, punct);
 }
 
-// m.wordEditor = function (word) {
-//   function join(formsArray) {
-//     const punct = (otm.zpdic || {}).punctuations || [",", "、"];
-//     punct[0] = punct[0] || ",";
-//     return formsArray.join(punct[0] + " ");
-//   }
-//   return m("div", { class: "list" }, [
-//     m("h4", null, "単語"),
-//     m("div", { class: "ed-entry ed" }, [
-//       m("input", { placeholder: "見出し語", value: word.entry.form }),
-//       m("span", null, `#${word.entry.id}`)
-//     ]),
-//     m("hr"),
-//     m("h4", null, "訳語"),
-//     m.propEditor({
-//       word: word,
-//       prop: "translation",
-//       init: { title: "", forms: [] },
-//       view: (t) => [
-//         m("input", { placeholder: "品詞など", value: t.title }),
-//         m("textarea", { placeholder: "訳語", value: join(t.forms) })
-//       ]
-//     }),
-//     m("hr"),
-//     m("h4", null, "タグ"),
-//     m.propEditor({
-//       word: word,
-//       prop: "tag",
-//       init: "",
-//       view: (t) => [
-//         m("input", { placeholder: "", value: t })
-//       ]
-//     }),
-//     m("hr"),
-//     m("h4", null, "内容"),
-//     m.propEditor({
-//       word: word,
-//       prop: "content",
-//       init: { title: "", text: "" },
-//       view: (t) => [
-//         m("input", { placeholder: "", value: t.title }),
-//         m("textarea", { placeholder: "", value: t.text })
-//       ]
-//     }),
-//     m("hr"),
-//     m("h4", null, "変化形"),
-//     m.propEditor({
-//       word: word,
-//       prop: "variation",
-//       init: { title: "", form: "" },
-//       view: (t) => [
-//         m("input", { placeholder: "説明", value: t.title }),
-//         m("input", { placeholder: "綴り", value: t.form })
-//       ]
-//     }),
-//     m("hr"),
-//     m("h4", null, "関連語"),
-//     m.propEditor({
-//       word: word,
-//       prop: "relation",
-//       init: { title: "", entry: { id: "", form: "" } },
-//       view: (t) => [
-//         m("input", { placeholder: "説明", value: t.title }),
-//         m("input", { placeholder: "ID", value: t.entry.id }),
-//         m("input", { placeholder: "単語", value: t.entry.form }),
-//       ]
-//     }),
-//   ]);
-// }
-
-import { collectFromWordEditor } from "./components/WordEditor";
-
 function pickEditor() {
   const $e = $("#editor")[0];
   const punct = (otm.zpdic || {}).punctuations || [",", "、"];
-  return collectFromWordEditor($e, punct);
+  return WordEditor.collect($e, punct);
 }
-
-window.pick = pickEditor;
-
-// function pickEditor() {
-//   const $e = $("#editor");
-//   const punct = (otm.zpdic || {}).punctuations || [",", "、"];
-//   const separator = new RegExp(punct.map(escapeRegExp).join("|") + "|\\n+");
-//   function split(formsString) {
-//     return formsString.split(separator).map(s => s.trim());
-//   }
-//   return {
-//     entry: {
-//       id: $e.find(".ed-entry span").text().replace(/^#/, "") | 0,
-//       form: $e.find(".ed-entry input").val()
-//     },
-//     translations: $e.find(".ed-translation").map((i, t) => ({
-//       title: t.querySelector("input").value,
-//       forms: split(t.querySelector("textarea").value)
-//     })).get(),
-//     tags: $e.find(".ed-tag").map((i, t) => (
-//       t.querySelector("input").value
-//     )).get(),
-//     contents: $e.find(".ed-content").map((i, t) => ({
-//       title: t.querySelector("input").value,
-//       text: t.querySelector("textarea").value
-//     })).get(),
-//     variations: $e.find(".ed-variation").map((i, t) => ({
-//       title: t.querySelector("input:nth-child(3)").value,
-//       form: t.querySelector("input:nth-child(4)").value
-//     })).get(),
-//     relations: $e.find(".ed-relation").map((i, t) => ({
-//       title: t.querySelector("input:nth-child(3)").value,
-//       entry: {
-//         id: t.querySelector("input:nth-child(4)").value | 0,
-//         form: t.querySelector("input:nth-child(5)").value
-//       }
-//     })).get()
-//   }
-// }
 
 m.wordDeleter = function (id) {
   return m("div", {
