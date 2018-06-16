@@ -432,24 +432,25 @@ m.wordViewer = function (word) {
   ]);
 }
 
-function compileWordTester(str) {
-  var none = () => true;
-  var m = str.match(/\S+/g);
-  if (!m) return none;
-  var re = new RegExp("^" + m.map(p =>
-    // p[0] === "-" ? "(?!.*" + escapeRegExp(p.substr(1)) + ")" :
-    "(?=.*" + escapeRegExp(p) + ")"
-  ).join(""), "i");
-  return (w) => {
-    return re.test(w.entry.form) ||
-      w.translations.some((c) => re.test(c.forms.join(" "))) ||
-      re.test(w.tags.join(" ")) ||
-      w.contents.some((c) => re.test(c.text)) ||
-      w.variations.some((c) => re.test(c.form)) ||
-      w.relations.some((c) => re.test(c.entry.form));
-  };
+function SearchOption() {
+  return m("form", { class: "search-option" }, [
+    m("div", {}, [
+      m("label", {}, [m("input", { type: "radio", name: "mode", value: "name", checked: true }), "単語"]),
+      m("label", {}, [m("input", { type: "radio", name: "mode", value: "equivalent" }), "訳語"]),
+      m("label", {}, [m("input", { type: "radio", name: "mode", value: "content" }), "全文"]),
+    ]),
+    m("div", {}, [
+      m("label", {}, [m("input", { type: "radio", name: "type", value: "exact", checked: true }), "完全一致"]),
+      m("label", {}, [m("input", { type: "radio", name: "type", value: "part" }), "部分一致"]),
+    ])
+  ]);
 }
 
+const so = SearchOption();
+$("#searcher-field").after(so);
+$(so).on("click", "input", () => {
+  a.search($("#searcher-field").val());
+});
 
 var timeoutId = null;
 
@@ -466,7 +467,7 @@ a.search = function (text) {
   var $field = $("#searcher-field");
   if (text === null) text = $field.val();
   else if ($field.val() !== text) $field.val(text);
-  var test = compileWordTester(text);
+  var test = app.compileWordTester(text, { mode: so.mode.value, type: so.type.value });
   var view = otm.words.filter(test).map(m.wordViewer);
   $("#search-result").empty().append(m.fragment(view));
   $("#info-num").text(view.length);
