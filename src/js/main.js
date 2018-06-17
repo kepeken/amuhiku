@@ -126,7 +126,6 @@ var dictionary = {
   refresh: function () {
     localStorage.setItem("temp", JSON.stringify(otm));
     $("#info-den").text(otm.words.length);
-    // a.search(null);
     $(".search-field").trigger("input");
   },
   overwrite: function () {
@@ -176,7 +175,6 @@ dictionary.load = function (str, entry, path) {
     );
   }
   $("#content").empty().append(WordList({ dict: otm, buttonFactory }));
-  // a.search("");
 }
 
 dictionary.compose = function () {

@@ -1,4 +1,3 @@
-import app from "../app";
 import m from "./hyperscript";
 import { pushPage, popPage } from "./pages";
 import WordList from "./WordList";
