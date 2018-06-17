@@ -29,7 +29,6 @@ body {
 #content {
   max-width: 768px;
   margin: auto;
-  padding: 5px;
 }
 
 #info {
@@ -178,19 +177,26 @@ select.item {
   }
 }
 
-.search-field {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  display: inline-block;
-  outline: 0;
-  margin-bottom: 5px;
-  border: solid 1px #cecece;
-  border-radius: 5px;
-  padding: 10px;
-  width: 100%;
-  font-size: 1em;
-  &:focus {
-    border-color: #4286f4;
+.word-list {
+  margin: 5px;
+  .search-field {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    display: inline-block;
+    outline: 0;
+    margin-bottom: 5px;
+    border: solid 1px #cecece;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    font-size: 1em;
+    &:focus {
+      border-color: #4286f4;
+    }
+  }
+  .search-option {
+    padding: 8px;
+    text-align: center;
   }
 }
 
@@ -253,11 +259,6 @@ select.item {
   &:last-child {
     margin: 0;
   }
-}
-
-.search-option {
-  padding: 8px;
-  text-align: center;
 }
 
 .edit {
@@ -328,10 +329,8 @@ select.item {
   }
 }
 
-#editor {
-  .word-editor {
-    padding: 15px;
-  }
+.word-editor {
+  padding: 15px;
   input,
   textarea {
     -webkit-appearance: none;

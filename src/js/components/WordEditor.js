@@ -1,5 +1,6 @@
 import m from "./hyperscript";
 import { escapeRegExp } from "../util";
+import RelatedWordSelector from "./RelatedWordSelector";
 
 function ItemSwapper() {
   return m(".item-swapper.clickable", {
@@ -57,7 +58,7 @@ function PropEditor(data, view) {
  * @param {Object} word
  * @param {string[]} punctuations
  */
-export default function WordEditor(word, punctuations) {
+export default function WordEditor({ dict, word, punctuations }) {
   let punct = punctuations[0];
   if (punct === ",") punct += " ";
   return m(".word-editor", {}, [
@@ -94,8 +95,7 @@ export default function WordEditor(word, punctuations) {
     m("h4", {}, "関連語"),
     PropEditor(word.relations, ($item) => [
       m("input", { name: `relations[][title]`, value: $item && $item.title, placeholder: "説明" }),
-      m("input", { name: `relations[][entry][id]`, value: $item && $item.entry.id, placeholder: "ID" }),
-      m("input", { name: `relations[][entry][form]`, value: $item && $item.entry.form, placeholder: "単語" }),
+      RelatedWordSelector({ dict, entry: $item && $item.entry }),
     ]),
   ]);
 }

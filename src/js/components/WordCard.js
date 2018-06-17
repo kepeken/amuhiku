@@ -1,21 +1,9 @@
 import m from "./hyperscript";
 import { autoLink } from "../util";
 
-function WordEditorOpener({ word }) {
-  return m("span.edit.clickable", {
-    onclick() {
-      // 移植中
-      window.openWordEditor(word);
-    }
-  },
-    m("i.fas.fa-edit")
-  );
-}
-
-export default function WordCard({ word, mode }) {
+export default function WordCard({ word, button }) {
   return m(".otm-word", {}, [
-    mode === "edit" ? WordEditorOpener({ word })
-      : null,
+    button,
     m("h3.otm-entry-form", {}, word.entry.form),
     word.translations.map(translation =>
       m("div", {}, [

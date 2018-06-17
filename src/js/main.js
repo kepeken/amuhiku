@@ -165,7 +165,17 @@ dictionary.load = function (str, entry, path) {
   dictionary.currentPath = path;
   $("#info-path").text(path.split("/").pop());
   dictionary.refresh();
-  $("#content").empty().append(WordList({ dict: otm }));
+  function buttonFactory({ word }) {
+    return m("span", {
+      class: "edit clickable",
+      onclick() {
+        window.openWordEditor(word);
+      }
+    },
+      m.icon("fas fa-edit")
+    );
+  }
+  $("#content").empty().append(WordList({ dict: otm, buttonFactory }));
   // a.search("");
 }
 
@@ -414,8 +424,8 @@ window.openWordEditor = function openWordEditor(word) {
 import WordEditor from "./components/WordEditor";
 
 m.wordEditor = function (word) {
-  const punct = (otm.zpdic || {}).punctuations || [",", "、"];
-  return WordEditor(word, punct);
+  const punctuations = (otm.zpdic || {}).punctuations || [",", "、"];
+  return WordEditor({ dict: otm, word, punctuations });
 }
 
 function pickEditor() {

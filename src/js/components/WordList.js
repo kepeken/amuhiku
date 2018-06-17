@@ -39,7 +39,8 @@ function SearchOption({ update }) {
     ]);
 }
 
-export default function WordList({ dict }) {
+
+export default function WordList({ dict, buttonFactory }) {
   function update() {
     const test = app.compileWordTester($field.value, {
       mode: $option.mode.value, type: $option.type.value
@@ -47,9 +48,11 @@ export default function WordList({ dict }) {
     const result = dict.words.filter(test);
     $newResult =
       m(".search-result", {},
-        result.map(word =>
-          WordCard({ word, mode: "edit" })
-        )
+        result.map(word => {
+          let button = null;
+          if (buttonFactory) button = buttonFactory({ word });
+          return WordCard({ word, button });
+        })
       );
     $oldResult.parentNode.replaceChild($newResult, $oldResult);
     $oldResult = $newResult;
