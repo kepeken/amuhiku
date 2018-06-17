@@ -49,6 +49,7 @@ body {
   width: 100%;
   height: 44px;
   border: solid 1px #ccc;
+  z-index: 10;
 }
 
 #header>div {
@@ -178,7 +179,7 @@ select.item {
   }
 }
 
-#searcher-field {
+.search-field {
   -webkit-appearance: none;
   -moz-appearance: none;
   display: inline-block;
@@ -188,7 +189,6 @@ select.item {
   border-radius: 5px;
   padding: 10px;
   width: 100%;
-  height: 100%;
   font-size: 1em;
   &:focus {
     border-color: #4286f4;

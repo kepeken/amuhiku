@@ -17,11 +17,24 @@ const resources = {
 };
 
 
+const $loader = document.querySelector("#loading");
+$loader.style.display = "none";
+
 const loader = {
-  $e: $("#loading").hide(),
-  start() { this.$e.show(); },
-  end() { this.$e.hide(); },
+  start() { $loader.style.display = ""; },
+  end() { $loader.style.display = "none"; },
 };
+
+function wrap(promise) {
+  loader.start();
+  return promise.then(res => {
+    loader.end();
+    return res;
+  }).catch(err => {
+    loader.end();
+    throw err;
+  });
+}
 
 
 class Handler {
@@ -50,7 +63,9 @@ class Handler {
 
   dir() {
     if (!this.isFolder) return Promise.reject();
-    return this.resource.api.dir(this.path).then((res) => {
+    return wrap(
+      this.resource.api.dir(this.path)
+    ).then(res => {
       return res.map(({ isFolder, path, name }) => {
         return new Handler(this.resource, path, isFolder);
       });
@@ -59,7 +74,9 @@ class Handler {
 
   read() {
     if (this.isFolder) return Promise.reject();
-    return this.resource.api.read(this.path);
+    return wrap(
+      this.resource.api.read(this.path)
+    );
   }
 
   create(fileName, content) {
@@ -70,12 +87,16 @@ class Handler {
         public: confirm("public にしますか？"),
       }
     }
-    return this.resource.api.create(`${this.path}/${fileName}`, content, option);
+    return wrap(
+      this.resource.api.create(`${this.path}/${fileName}`, content, option)
+    );
   }
 
   update(content) {
     if (this.isFolder) return Promise.reject();
-    return this.resource.api.update(this.path, content);
+    return wrap(
+      this.resource.api.update(this.path, content)
+    );
   }
 }
 

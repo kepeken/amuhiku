@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param {string} _tag
+ * @param {*} attrs
+ * @param {*} children
+ * @returns {HTMLElement}
+ */
 export default function (_tag, attrs, children) {
   const match = _tag.match(/^((?:[\-\w]+)?)((?:#[\-\w]+)?)((?:\.[\-\w]+)*)/) || [];
   const [, tag, id, classes] = match;

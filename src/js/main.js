@@ -126,7 +126,8 @@ var dictionary = {
   refresh: function () {
     localStorage.setItem("temp", JSON.stringify(otm));
     $("#info-den").text(otm.words.length);
-    a.search(null);
+    // a.search(null);
+    $(".search-field").trigger("input");
   },
   overwrite: function () {
     const name = dictionary.currentEntry ? dictionary.currentEntry.name : null;
@@ -143,6 +144,8 @@ var dictionary = {
 };
 
 var otm;
+
+import WordList from "./components/WordList";
 
 dictionary.load = function (str, entry, path) {
   var _otm;
@@ -162,7 +165,8 @@ dictionary.load = function (str, entry, path) {
   dictionary.currentPath = path;
   $("#info-path").text(path.split("/").pop());
   dictionary.refresh();
-  a.search("");
+  $("#content").empty().append(WordList({ dict: otm }));
+  // a.search("");
 }
 
 dictionary.compose = function () {
@@ -297,7 +301,7 @@ $("#save").on("click", function () {
 
 $("#search").on("click", function () {
   scroller.scrollTop();
-  $("#searcher-field").trigger("focus");
+  $(".search-field").trigger("focus");
 });
 
 $("#add").on("click", function () {
@@ -386,94 +390,7 @@ $("#save-clipboard").on("click", function () {
   execCopy(dictionary.compose());
 });
 
-m.wordViewer = function (word) {
-  return m("div", { class: "otm-word" }, [
-    m("span", {
-      class: "edit clickable",
-      onclick: function () {
-        openWordEditor(word);
-      }
-    },
-      m.icon("fas fa-edit")
-    ),
-    m("h3", { class: "otm-entry-form" }, word.entry.form),
-    word.translations.map(function (trans) {
-      return m("div", null, [
-        m("span", { class: "otm-translation-title" }, trans.title),
-        trans.forms.map(function (form) {
-          return m("span", { class: "otm-translation-form" }, form)
-        }),
-      ]);
-    }),
-    m("div", null, [
-      word.tags.map(function (tag) {
-        return m("span", { class: "otm-tag" }, tag)
-      })
-    ]),
-    word.contents.map(function (cont) {
-      return m("div", null, [
-        m("div", { class: "otm-content-title" }, cont.title),
-        m("div", { class: "otm-content-text", innerHTML: autoLink(cont.text) }),
-      ]);
-    }),
-    word.variations.map(function (va) {
-      return m("div", null, [
-        m("span", { class: "otm-variation-title" }, va.title),
-        m("span", { class: "otm-variation-form" }, va.form),
-      ]);
-    }),
-    word.relations.map(function (rel) {
-      return m("div", null, [
-        m("span", { class: "otm-relation-title" }, rel.title),
-        //m("a", {class:"otm-relation-entry-form", href:"#"+rel.entry.id}, rel.entry.form),
-        m("span", { class: "otm-relation-entry-form" }, rel.entry.form),
-      ]);
-    }),
-  ]);
-}
-
-function SearchOption() {
-  return m("form", { class: "search-option" }, [
-    m("div", {}, [
-      m("label", {}, [m("input", { type: "radio", name: "mode", value: "name", checked: true }), "単語"]),
-      m("label", {}, [m("input", { type: "radio", name: "mode", value: "equivalent" }), "訳語"]),
-      m("label", {}, [m("input", { type: "radio", name: "mode", value: "content" }), "全文"]),
-    ]),
-    m("div", {}, [
-      m("label", {}, [m("input", { type: "radio", name: "type", value: "exact", checked: true }), "完全一致"]),
-      m("label", {}, [m("input", { type: "radio", name: "type", value: "part" }), "部分一致"]),
-    ])
-  ]);
-}
-
-const so = SearchOption();
-$("#searcher-field").after(so);
-$(so).on("click", "input", () => {
-  a.search($("#searcher-field").val());
-});
-
-var timeoutId = null;
-
-$("#searcher-field").on("input", function () {
-  if (typeof timeoutId === "number") {
-    clearTimeout(timeoutId);
-  }
-  timeoutId = setTimeout(() => {
-    a.search(this.value);
-  }, 250);
-});
-
-a.search = function (text) {
-  var $field = $("#searcher-field");
-  if (text === null) text = $field.val();
-  else if ($field.val() !== text) $field.val(text);
-  var test = app.compileWordTester(text, { mode: so.mode.value, type: so.type.value });
-  var view = otm.words.filter(test).map(m.wordViewer);
-  $("#search-result").empty().append(m.fragment(view));
-  $("#info-num").text(view.length);
-}
-
-function openWordEditor(word) {
+window.openWordEditor = function openWordEditor(word) {
   var title, addition;
   if (word) {
     addition = false;
@@ -564,7 +481,7 @@ $("#save-settings").on("click", function () {
   let sel;
   pushPage({
     header: "設定",
-    content: new Settings().render(),
+    content: Settings(),
   });
 });
 
