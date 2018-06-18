@@ -13,6 +13,8 @@ const browser = resourceHandler.get("browser");
 const dropbox = resourceHandler.get("dropbox");
 const github = resourceHandler.get("github");
 
+import device from "./resource/device";
+
 import { pushPage, popPage } from "./components/pages";
 
 var a, m;
@@ -42,10 +44,6 @@ m = function (tag, attrs, children) {
   append(children);
   return e;
 }
-
-m.fragment = (children) => {
-  return m(document.createDocumentFragment(), null, children)
-};
 
 m.icon = (cls) => m("i", { class: cls });
 m.item = (arg) => m("div", { class: "item clickable", onclick: arg.onclick }, [
@@ -82,40 +80,6 @@ var scroller = {
     this.resume();
   }
 };
-
-var localFile = (function () {
-  var localFile = {};
-  var _callback = null;
-  var $e = m("input", {
-    type: "file",
-    accept: ".json",
-    style: { display: "none" },
-    onchange: function () {
-      readAsText(this.files[0]).then(_callback).catch((err) => alert(err));
-    }
-  });
-  document.body.appendChild($e);
-  localFile.read = function (path, callback) {
-    /* クリックイベント発火時に呼び出すこと */
-    _callback = callback;
-    $e.click();
-  };
-  localFile.write = (path, text, callback) => {
-    /* クリックイベント発火時に呼び出すこと */
-    var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
-    var blob = new Blob([bom, text], { type: path === "text" ? "text/plain" : "application/json;" });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = url;
-    //a.download = "test.json";
-    a.target = "_blank";
-    a.click();
-    //URL.revokeObjectURL(url);
-    callback && callback();
-  };
-  return localFile;
-})();
-
 
 var dictionary = {
   defaultOTM: '{"words":[]}',
@@ -323,7 +287,9 @@ $("#open-new").on("click", function () {
 });
 
 $("#open-local").on("click", function () {
-  localFile.read(null, (text) => dictionary.load(text, null, "local"));
+  device.import().then(text => {
+    dictionary.load(text, null, "local");
+  });
 });
 
 $("#open-dropbox").on("click", function () {
@@ -367,11 +333,11 @@ $("#save-overwrite").on("click", function () {
 });
 
 $("#save-local-text").on("click", function () {
-  localFile.write("text", dictionary.compose());
+  device.export(dictionary.compose(), { type: "text/plain" });
 });
 
 $("#save-local-bin").on("click", function () {
-  localFile.write("bin", dictionary.compose());
+  device.export(dictionary.compose(), { type: "application/json;" });
 });
 
 $("#save-dropbox").on("click", function () {
