@@ -1,9 +1,6 @@
 <!DOCTYPE html>
-<title>amuhiku</title>
 <script>
   if (window.opener) {
-    window.opener.postMessage(location.hash, location.origin);
-    history.replaceState(null, null, "/");
+    window.opener.postMessage(null, location.origin);
   }
-  window.close();
 </script>

@@ -32,6 +32,7 @@ function wrap(promise) {
     return res;
   }).catch(err => {
     loader.end();
+    alert(err);
     throw err;
   });
 }

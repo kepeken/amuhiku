@@ -15,16 +15,20 @@ class DropboxResourceHandler {
 
   logIn() {
     return new Promise((resolve, reject) => {
-      const red = `${location.origin}/dropbox.html`;
-      const authUrl = this.client.getAuthenticationUrl(red);
+      const redirectUri = `${location.origin}/dropbox.html`;
+      const authUrl = this.client.getAuthenticationUrl(redirectUri);
       const callback = (event) => {
         if (event.source !== authWindow) return;
-        const match = event.data.match(/access_token\=([^&]+)/);
-        if (match) {
-          this.setAccessToken(match[1]);
+        if (event.origin !== location.origin) return;
+        const params = new URLSearchParams(authWindow.location.hash.slice(1));
+        authWindow.history.replaceState(null, null, "#");
+        const accessToken = params.get("access_token");
+        if (accessToken) {
+          this.setAccessToken(accessToken);
           resolve();
         }
         window.removeEventListener("message", callback, false);
+        authWindow.close();
       };
       window.addEventListener("message", callback, false);
       const authWindow = window.open(authUrl, null, "width=640,height=480");
