@@ -1,5 +1,8 @@
+import alertError from "../decorator/alertError";
+
 class BrowserResourceHandler {
 
+  @alertError
   dir(path) {
     return new Promise((resolve, reject) => {
       const entries = [];
@@ -17,12 +20,14 @@ class BrowserResourceHandler {
     });
   }
 
+  @alertError
   read(path) {
     return new Promise((resolve, reject) => {
       resolve(localStorage.getItem(path));
     });
   }
 
+  @alertError
   create(path, text) {
     return new Promise((resolve, reject) => {
       if (localStorage.getItem(path) !== null) {
@@ -33,6 +38,7 @@ class BrowserResourceHandler {
     });
   }
 
+  @alertError
   update(path, text) {
     return new Promise((resolve, reject) => {
       if (localStorage.getItem(path) === null) {

@@ -1,4 +1,6 @@
 import NetlifyAuthProviders from "netlify-auth-providers";
+import load from "../decorator/load";
+import alertError from "../decorator/alertError";
 
 class GitHubResourceHandler {
 
@@ -16,6 +18,7 @@ class GitHubResourceHandler {
     };
   }
 
+  @alertError
   logIn() {
     return new Promise((resolve, reject) => {
       this.netlifyAuth.authenticate({ provider: "github", scope: "gist" }, (err, res) => {
@@ -37,6 +40,8 @@ class GitHubResourceHandler {
     return fetch(req);
   }
 
+  @load
+  @alertError
   dir(path) {
     return this.request("/gists")
       .then(res => res.json())
@@ -52,6 +57,8 @@ class GitHubResourceHandler {
       });
   }
 
+  @load
+  @alertError
   read(path) {
     path = this.parse(path).folder;
     return this.request(path)
@@ -62,6 +69,8 @@ class GitHubResourceHandler {
       });
   }
 
+  @load
+  @alertError
   create(path, text, init = {}) {
     const files = {};
     files[path.split("/")[1]] = { content: text };
@@ -74,6 +83,8 @@ class GitHubResourceHandler {
     }).then(res => res.json());
   }
 
+  @load
+  @alertError
   update(path, text) {
     const files = {};
     const p = this.parse(path);

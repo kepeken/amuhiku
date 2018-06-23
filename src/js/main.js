@@ -17,11 +17,7 @@ import device from "./resource/device";
 
 import { pushPage, popPage } from "./components/pages";
 
-var a, m;
-
-a = {};
-
-m = function (tag, attrs, children) {
+var m = function (tag, attrs, children) {
   var e = typeof tag === "string" ? document.createElement(tag) : tag;
   var pname = { "class": "className", "data": "dataset" };
   if (attrs) for (var n in attrs) {
@@ -49,23 +45,6 @@ m.icon = (cls) => m("i", { class: cls });
 m.item = (arg) => m("div", { class: "item clickable", onclick: arg.onclick }, [
   m.icon(arg.icon), arg.text
 ]);
-// text, value, callback
-m.checkbox = (arg) => {
-  var checkIcon = { true: "fas fa-check-square", false: "far fa-square" }
-  var $icon;
-  var value = !!arg.value;
-  return m("div", {
-    class: "item clickable",
-    onclick: function () {
-      value = !value;
-      $icon.className = checkIcon[value];
-      arg.callback(value);
-    }
-  }, [
-      $icon = m.icon(checkIcon[value]),
-      arg.text
-    ]);
-};
 
 var scroller = {
   top: 0,
@@ -132,7 +111,7 @@ dictionary.load = function (str, entry, path) {
     return m("span", {
       class: "edit clickable",
       onclick() {
-        window.openWordEditor(word);
+        openWordEditor(word);
       }
     },
       m.icon("fas fa-edit")
@@ -272,7 +251,6 @@ $("#save").on("click", function () {
 });
 
 $("#search").on("click", function () {
-  scroller.scrollTop();
   $(".search-field").trigger("focus");
 });
 
@@ -364,7 +342,7 @@ $("#save-clipboard").on("click", function () {
   execCopy(dictionary.compose());
 });
 
-window.openWordEditor = function openWordEditor(word) {
+function openWordEditor(word) {
   var title, addition;
   if (word) {
     addition = false;

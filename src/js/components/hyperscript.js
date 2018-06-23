@@ -17,6 +17,8 @@ export default function (_tag, attrs, children) {
       const name = pname[_name] || _name;
       if (name === "style" || name === "data") {
         Object.assign(e[name], value);
+      } else if (name.slice(0, 2) === "on") {
+        e.addEventListener(name.slice(2), value, false);
       } else {
         e[name] = value;
       }

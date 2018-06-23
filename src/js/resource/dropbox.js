@@ -1,5 +1,7 @@
 import { Dropbox } from "dropbox";
 import readAsText from "../util/readAsText";
+import load from "../decorator/load";
+import alertError from "../decorator/alertError";
 
 class DropboxResourceHandler {
 
@@ -13,6 +15,7 @@ class DropboxResourceHandler {
     this.client = new Dropbox({ accessToken });
   };
 
+  @alertError
   logIn() {
     return new Promise((resolve, reject) => {
       const redirectUri = `${location.origin}/dropbox.html`;
@@ -35,6 +38,8 @@ class DropboxResourceHandler {
     });
   }
 
+  @load
+  @alertError
   dir(path) {
     return this.client.filesListFolder({ path })
       .then((result) => {
@@ -50,12 +55,16 @@ class DropboxResourceHandler {
       });
   }
 
+  @load
+  @alertError
   read(path) {
     return this.client.filesDownload({ path })
       .then(result => result.fileBlob)
       .then(readAsText);
   }
 
+  @load
+  @alertError
   create(path, text) {
     return this.client.filesUpload({
       path,
@@ -64,6 +73,8 @@ class DropboxResourceHandler {
     });
   }
 
+  @load
+  @alertError
   update(path, text) {
     return this.client.filesUpload({
       path,
