@@ -26,4 +26,3 @@ const word = object({
 export default object({
   words: array(word)
 });
-

@@ -89,7 +89,7 @@ var otm;
 
 import WordList from "./components/WordList";
 
-dictionary.load = function (str, entry, path) {
+dictionary.load = function (str, entry, path, url) {
   var _otm;
   try {
     _otm = JSON.parse(str);
@@ -118,6 +118,13 @@ dictionary.load = function (str, entry, path) {
     );
   }
   $("#content").empty().append(WordList({ dict: otm, buttonFactory }));
+  const newURL = new URL(location.href);
+  if (url) {
+    newURL.search = new URLSearchParams({ r: url });
+  } else {
+    newURL.search = "";
+  }
+  history.replaceState(null, null, newURL.toString());
 }
 
 dictionary.compose = function () {
@@ -295,13 +302,13 @@ $("#open-github").on("click", function () {
 });
 
 $("#open-online").on("click", function () {
-  const url = prompt(`JSON ファイルの URL を指定してください。\n・プロトコルは http: か https: であること\n・CORS に対応していること`);
+  const url = prompt(`JSON ファイルの URL を指定してください。\n・http: か https: で始まっていること\n・CORS に対応していること`);
   if (!url) return;
   if (!/^https?:\/\//.test(url)) return alert("URL の形式が正しくありません。");
   if (confirm(`${url} をインポートします`)) {
     fetch(url, { mode: "cors" })
       .then(res => res.text())
-      .then(text => dictionary.load(text, null, url))
+      .then(text => dictionary.load(text, null, url, url))
       .catch(err => alert(err));
   }
 });
@@ -430,19 +437,25 @@ $("#editor-enter").on("click", function () {
 import Settings from "./components/Settings";
 
 $("#save-settings").on("click", function () {
-  let sel;
   pushPage({
     header: "設定",
     content: Settings(),
   });
 });
 
+
+import fetchFromSearchParams from "./app/fetchFromSearchParams";
+
 /* init */
-(function () {
-  const temp = localStorage.getItem("temp");
-  if (temp) {
-    dictionary.load(temp, null, "temp");
-  } else {
-    $("#open-help").trigger("click");
-  }
-})();
+fetchFromSearchParams()
+  .then(({ text, url }) => {
+    dictionary.load(text, null, url, url);
+  })
+  .catch(() => {
+    const temp = localStorage.getItem("temp");
+    if (temp) {
+      dictionary.load(temp, null, "temp");
+    } else {
+      $("#open-help").trigger("click");
+    }
+  });
