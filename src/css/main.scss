@@ -329,6 +329,24 @@ select.item {
   }
 }
 
+.show-more {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: #fcfcfc;
+  border-radius: 5px;
+  padding: 7px;
+  font-size: 1em;
+  line-height: 1.6;
+  border: solid 1px #cecece;
+  color: #0067d4;
+  cursor: pointer;
+  &:hover{
+    color: #0055af;
+    background-color: #ececec;
+  }
+}
+
 .word-editor {
   padding: 15px;
   input,

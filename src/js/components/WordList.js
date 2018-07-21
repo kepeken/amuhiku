@@ -41,22 +41,36 @@ function SearchOption({ update }) {
 
 
 export default function WordList({ dict, buttonFactory }) {
+  const SIZE = 100;
   function update() {
     const test = app.compileWordTester($field.value, {
       mode: $option.mode.value, type: $option.type.value
     });
     const result = dict.words.filter(test);
-    $newResult =
-      m(".search-result", {},
-        result.map(word => {
-          let button = null;
-          if (buttonFactory) button = buttonFactory({ word });
-          return WordCard({ word, button });
-        })
-      );
+    let page = 0;
+    const $showMoreButton = m("button.show-more", { onclick: append });
+    $newResult = m(".search-result", {}, $showMoreButton);
     $oldResult.parentNode.replaceChild($newResult, $oldResult);
     $oldResult = $newResult;
     $newResult = null;
+    function append() {
+      const fragment = document.createDocumentFragment();
+      result.slice(page * SIZE, (page + 1) * SIZE).map(word => {
+        let button = null;
+        if (buttonFactory) button = buttonFactory({ word });
+        fragment.appendChild(WordCard({ word, button }));
+      });
+      $oldResult.insertBefore(fragment, $showMoreButton);
+      page++;
+      const rest = result.length - page * SIZE;
+      if (rest > 0) {
+        $showMoreButton.style.display = null;
+        $showMoreButton.textContent = `次の ${Math.min(SIZE, rest)} 件を表示`;
+      } else {
+        $showMoreButton.style.display = "none";
+      }
+    }
+    append();
     // Zepto
     $("#info-num").text(result.length);
   }
