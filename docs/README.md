@@ -5,7 +5,7 @@
 ### GitHub レポジトリや Gist にある辞書
 
 - https://github.com/ から、データとして使いたい JSON ファイルのあるページを開きます。
-- **Raw** | **Blame** | **History** などと並んでいるところの **Raw** を押します。ファイルサイズが大きい場合は中央に **View Raw** などど表示されているのでそれを押します。
+- **Raw** **Blame** **History** などと並んでいるところの **Raw** を押します。ファイルサイズが大きい場合は中央に **View Raw** などど表示されているのでそれを押します。
 - https://raw.githubusercontent.com/ で始まる URL にリダイレクトされるので、URL をコピーします。
 
 ### Dropbox にある辞書
