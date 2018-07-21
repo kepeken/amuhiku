@@ -1,5 +1,30 @@
 # amuhiku
 
+https://amuhiku.netlify.com/
+
+
+## 対応ブラウザ
+
+### スマホ
+- iOS Safari 10~
+- Android Chrome
+
+### PC
+- Chrome
+- Firefox ?
+- Edge ?
+- Safari 10~
+
+## 非対応ブラウザ
+
+### スマホ
+- iOS Safari ~9
+- Android Browser
+
+### PC
+- Internet Explorer
+
+
 ## 辞書を公開するには
 
 ### GitHub レポジトリや Gist にある辞書
