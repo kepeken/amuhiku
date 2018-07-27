@@ -1,5 +1,4 @@
 import m from "./hyperscript";
-import { autoLink } from "../util";
 
 export default function WordCard({ word, button }) {
   return m(".otm-word", {}, [
@@ -21,7 +20,7 @@ export default function WordCard({ word, button }) {
     word.contents.map(content =>
       m("div", {}, [
         m("div.otm-content-title", {}, content.title),
-        m("div.otm-content-text", { innerHTML: autoLink(content.text) }),
+        m("div.otm-content-text", {}, content.text),
       ])
     ),
     word.variations.map(variation =>
