@@ -8,7 +8,7 @@ body {
   word-wrap: break-word;
   -webkit-overflow-scrolling: touch;
   background-color: #ededed;
-  padding-top: 44px;
+  padding-top: 80px;
 }
 
 .clickable {
@@ -41,22 +41,37 @@ body {
 }
 
 #header {
-  display: inline-block;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 44px;
+  height: 80px;
+  background-color: #eee;
   border: solid 1px #ccc;
 }
 
-#header>div {
-  float: left;
+#info-path {
+  padding: 0 10px;
+  line-height: 36px;
+  font-size: 13px;
+  color: #3c4c5e;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: solid 1px #ccc;
+}
+
+.header-list {
+  display: flex;
+}
+
+.header-list-item {
   width: 25%;
   line-height: 40px;
   text-align: center;
   border: solid 1px #ccc;
-  background-color: #eee;
+  cursor: pointer;
 }
 
 .modal {
@@ -341,7 +356,7 @@ select.item {
   border: solid 1px #cecece;
   color: #0067d4;
   cursor: pointer;
-  &:hover{
+  &:hover {
     color: #0055af;
     background-color: #ececec;
   }
