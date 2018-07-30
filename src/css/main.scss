@@ -215,54 +215,6 @@ select.item {
   }
 }
 
-.otm {
-  background-color: #ddd;
-  overflow: hidden;
-}
-
-.otm-search {
-  margin: 5px;
-}
-
-.otm-search input[type=text],
-.otm-search select,
-.otm-search label {
-  display: inline-block;
-  box-sizing: border-box;
-  margin: 5px;
-  border: solid 1px #ccc;
-  border-radius: 5px;
-  padding: .4em .6em;
-  height: 2.4em;
-  font-size: 1em;
-  line-height: 1.6em;
-  vertical-align: middle;
-}
-
-.otm-search-field {
-  width: 300px;
-}
-
-.otm-search select {
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-#otm-search-option {
-  display: none;
-}
-
-.otm-search label {
-  background-color: #fff;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-#otm-search-option:checked+label {
-  border: solid 1px #347fbe;
-  background-color: #3d8fd5;
-}
-
 .otm-word {
   background-color: #fcfcfc;
   border-radius: 5px;

@@ -1,6 +1,4 @@
 import {
-  autoLink,
-  escapeRegExp,
   execCopy,
   jacksonPrettyPrint,
   readAsText,
