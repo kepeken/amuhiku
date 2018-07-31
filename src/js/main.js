@@ -106,8 +106,8 @@ dictionary.load = function (str, entry, path, url) {
   $("#info-path").text(path.split("/").pop());
   dictionary.refresh();
   function buttonFactory({ word }) {
-    return m("span", {
-      class: "edit clickable",
+    return m("button", {
+      class: "btn-select-item",
       onclick() {
         openWordEditor(word);
       }

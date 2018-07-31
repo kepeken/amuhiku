@@ -1,3 +1,6 @@
+$color-word-list-item-border: #cecece;
+$color-body-background: #fcfcfc;
+
 * {
   box-sizing: border-box;
 }
@@ -7,8 +10,9 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Noto Sans Japanese", "ヒラギノ角ゴ ProN W3", Meiryo, sans-serif;
   word-wrap: break-word;
   -webkit-overflow-scrolling: touch;
-  background-color: #ededed;
-  padding-top: 80px;
+  background-color: $color-body-background;
+  padding-top: 72px;
+  color: #212529;
 }
 
 .clickable {
@@ -45,14 +49,14 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px;
+  height: 72px;
   background-color: #eee;
   border: solid 1px #ccc;
 }
 
 #info-path {
   padding: 0 10px;
-  line-height: 36px;
+  line-height: 28px;
   font-size: 13px;
   color: #3c4c5e;
   text-align: center;
@@ -200,7 +204,7 @@ select.item {
     display: inline-block;
     outline: 0;
     margin-bottom: 5px;
-    border: solid 1px #cecece;
+    border: solid 1px $color-word-list-item-border;
     border-radius: 5px;
     padding: 10px;
     width: 100%;
@@ -215,32 +219,51 @@ select.item {
   }
 }
 
-.otm-word {
+.word-list-item {
   background-color: #fcfcfc;
   border-radius: 5px;
   margin-bottom: 5px;
-  padding: 14px;
   font-size: .85em;
   line-height: 1.6;
-  border: solid 1px #cecece;
+  border: solid 1px $color-word-list-item-border;
+  overflow: hidden;
   &:last-child {
     margin: 0;
   }
 }
 
-.edit {
+.word-list-item-header {
+  background-color: #eee;
+}
+
+.word-list-item-header::after{
+  content: "";
+  border-bottom: solid 1px $color-word-list-item-border;
+  display: block;
+  clear: both;
+}
+
+.word-list-item-body {
+  padding: 12px 14px;
+}
+
+.btn-select-item {
   float: right;
   width: 44px;
   height: 44px;
   line-height: 44px;
   text-align: center;
-  margin-top: -10px;
-  margin-right: -10px;
   color: #777;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 1em;
 }
 
 .otm-entry-form {
   margin: 0px;
+  line-height: 28px;
+  padding: 8px 14px;
 }
 
 .otm-tag,
@@ -305,7 +328,7 @@ select.item {
   padding: 7px;
   font-size: 1em;
   line-height: 1.6;
-  border: solid 1px #cecece;
+  border: solid 1px $color-word-list-item-border;
   color: #0067d4;
   cursor: pointer;
   &:hover {

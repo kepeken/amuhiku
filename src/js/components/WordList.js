@@ -1,6 +1,6 @@
 import m from "./hyperscript";
 import app from "../app";
-import WordCard from "./WordCard";
+import WordListItem from "./WordListItem";
 
 
 function SearchField({ update }) {
@@ -58,7 +58,7 @@ export default function WordList({ dict, buttonFactory }) {
       result.slice(page * SIZE, (page + 1) * SIZE).map(word => {
         let button = null;
         if (buttonFactory) button = buttonFactory({ word });
-        fragment.appendChild(WordCard({ word, button }));
+        fragment.appendChild(WordListItem({ word, button }));
       });
       $oldResult.insertBefore(fragment, $showMoreButton);
       page++;

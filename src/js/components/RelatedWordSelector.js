@@ -6,7 +6,7 @@ import WordList from "./WordList";
 export default function RelatedWordSelector({ dict, entry }) {
   let $id, $form;
   function buttonFactory({ word }) {
-    return m("span.edit.clickable", {
+    return m("button.btn-select-item", {
       onclick() {
         $id.value = word.entry.id;
         $form.value = word.entry.form;
