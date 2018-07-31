@@ -4,7 +4,13 @@ export default function WordListItem({ word, button }) {
   return m(".word-list-item", {}, [
     m(".word-list-item-header", {}, [
       button,
-      m("h3.otm-entry-form", {}, word.entry.form),
+      m("h3.otm-entry-form", {}, [
+        word.entry.form,
+        " ",
+        word.tags.map(tag => [
+          m("span.otm-tag", {}, tag), " "
+        ])
+      ]),
     ]),
     m(".word-list-item-body", {}, [
       word.translations.map(translation =>
@@ -15,11 +21,6 @@ export default function WordListItem({ word, button }) {
           ),
         ])
       ),
-      m("div", {}, [
-        word.tags.map(tag =>
-          m("span.otm-tag", {}, tag)
-        )
-      ]),
       word.contents.map(content =>
         m("div", {}, [
           m("div.otm-content-title", {}, content.title),

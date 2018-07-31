@@ -1,5 +1,6 @@
 $color-word-list-item-border: #cecece;
 $color-body-background: #fcfcfc;
+/* */
 
 * {
   box-sizing: border-box;
@@ -197,7 +198,7 @@ select.item {
 }
 
 .word-list {
-  margin: 5px;
+  margin: 7px;
   .search-field {
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -222,7 +223,7 @@ select.item {
 .word-list-item {
   background-color: #fcfcfc;
   border-radius: 5px;
-  margin-bottom: 5px;
+  margin-bottom: 7px;
   font-size: .85em;
   line-height: 1.6;
   border: solid 1px $color-word-list-item-border;
@@ -236,7 +237,7 @@ select.item {
   background-color: #eee;
 }
 
-.word-list-item-header::after{
+.word-list-item-header::after {
   content: "";
   border-bottom: solid 1px $color-word-list-item-border;
   display: block;
@@ -270,13 +271,18 @@ select.item {
 .otm-translation-title {
   border: solid 1px #888;
   border-radius: 2px;
-  font-size: .85em;
-  padding: .1em .3em;
-  margin: .1em .3em;
+  font-size: .75rem;
+  padding: 1px 4px;
+  margin: 1px 4px;
+  line-height: 1;
 }
 
 .otm-tag {
-  background-color: #dbe9ff;
+  font-weight: normal;
+}
+
+.otm-tag:first-of-type {
+  margin-left: 10px;
 }
 
 .otm-translation-form+.otm-translation-form::before {
