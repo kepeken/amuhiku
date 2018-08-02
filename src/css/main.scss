@@ -1,5 +1,6 @@
+$color-body-background: #efefef;
+$color-body-text: #212529;
 $color-word-list-item-border: #cecece;
-$color-body-background: #fcfcfc;
 /* */
 
 * {
@@ -13,7 +14,7 @@ body {
   -webkit-overflow-scrolling: touch;
   background-color: $color-body-background;
   padding-top: 72px;
-  color: #212529;
+  color: $color-body-text;
 }
 
 .clickable {
@@ -34,15 +35,6 @@ body {
 #content {
   max-width: 768px;
   margin: auto;
-}
-
-#info {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  background-color: #eee;
-  padding: 4px;
-  border-top-left-radius: 4px;
 }
 
 #header {
@@ -86,7 +78,7 @@ body {
   width: 100%;
   height: 100%;
   transition: opacity .4s, transform .4s;
-  background-color: #eee;
+  background-color: $color-body-background;
   opacity: 0;
   transform: translateY(100%);
   box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.2);
@@ -103,7 +95,7 @@ body {
   width: 100%;
   height: 100%;
   padding-top: 44px;
-  background-color: #eee;
+  background-color: $color-body-background;
   transition: transform .4s, box-shadow .4s;
   transform: translateX(0);
   box-shadow: 0 0 0 1000px rgba(0, 0, 0, 0.2);
@@ -220,6 +212,11 @@ select.item {
   }
 }
 
+.search-info {
+  margin-bottom: 7px;
+  text-align: center;
+}
+
 .word-list-item {
   background-color: #fcfcfc;
   border-radius: 5px;
@@ -235,11 +232,11 @@ select.item {
 
 .word-list-item-header {
   background-color: #eee;
+  border-bottom: solid 1px $color-word-list-item-border;
 }
 
 .word-list-item-header::after {
   content: "";
-  border-bottom: solid 1px $color-word-list-item-border;
   display: block;
   clear: both;
 }

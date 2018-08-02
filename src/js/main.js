@@ -66,7 +66,6 @@ var dictionary = {
   currentEntry: null,
   refresh: function () {
     localStorage.setItem("temp", JSON.stringify(otm));
-    $("#info-den").text(otm.words.length);
     $(".search-field").trigger("input");
   },
   overwrite: function () {

@@ -43,7 +43,10 @@ export default function WordList({ dict, buttonFactory }) {
     const result = dict.words.filter(test);
     let page = 0;
     const $showMoreButton = m("button.show-more", { onclick: append });
-    $newResult = m(".search-result", {}, $showMoreButton);
+    $newResult = m(".search-result", {}, [
+      m(".search-info", {}, `${result.length} / ${dict.words.length}`),
+      $showMoreButton
+    ]);
     $oldResult.parentNode.replaceChild($newResult, $oldResult);
     $oldResult = $newResult;
     $newResult = null;
@@ -65,8 +68,6 @@ export default function WordList({ dict, buttonFactory }) {
       }
     }
     append();
-    // Zepto
-    $("#info-num").text(result.length);
   }
   const $field = SearchField({ update });
   const $option = SearchOption({ update });
