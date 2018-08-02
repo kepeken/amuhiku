@@ -47,10 +47,10 @@ m.item = (arg) => m("div", { class: "item clickable", onclick: arg.onclick }, [
 var scroller = {
   top: 0,
   pause() {
-    this.top = document.documentElement.scrollTop || document.body.scrollTop;
+    this.top = document.scrollingElement.scrollTop;
   },
   resume() {
-    document.documentElement.scrollTop = document.body.scrollTop = this.top;
+    document.scrollingElement.scrollTop = this.top;
   },
   scrollTop(val) {
     this.top = val || 0;
