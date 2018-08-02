@@ -35,7 +35,7 @@ function SearchOption({ update }) {
 
 
 export default function WordList({ dict, buttonFactory }) {
-  const SIZE = 100;
+  const SIZE = 120;
   function update() {
     const test = app.compileWordTester($field.value, {
       mode: $option.mode.value, type: $option.type.value
