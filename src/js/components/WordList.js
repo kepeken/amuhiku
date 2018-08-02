@@ -1,20 +1,14 @@
 import m from "./hyperscript";
 import app from "../app";
 import WordListItem from "./WordListItem";
-
+import debounce from "lodash/debounce";
 
 function SearchField({ update }) {
-  let timeoutId = null;
   return m("input.search-field", {
     placeholder: "Search",
-    oninput() {
-      if (typeof timeoutId === "number") {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        update();
-      }, 250);
-    },
+    oninput: debounce(function () {
+      update();
+    }, 250)
   });
 }
 
