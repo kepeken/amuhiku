@@ -26,7 +26,8 @@ export function popPage() {
   const oldPage = newPage.previousElementSibling;
   newPage.classList.add("page-right");
   oldPage.classList.remove("page-left");
-  setTimeout(() => {
+  newPage.addEventListener("transitionend", function end() {
+    newPage.removeEventListener("transitionend", end);
     modal.removeChild(newPage);
-  }, 400);
+  }, false);
 }
