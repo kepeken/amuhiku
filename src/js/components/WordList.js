@@ -3,20 +3,16 @@ import app from "../app";
 import WordListItem from "./WordListItem";
 import debounce from "lodash/debounce";
 
-function SearchField({ update }) {
+function SearchField({ oninput }) {
   return m("input.search-field", {
     placeholder: "Search",
-    oninput: debounce(function () {
-      update();
-    }, 250)
+    oninput: debounce(oninput, 250),
   });
 }
 
-function SearchOption({ update }) {
+function SearchOptionsForm({ oninput }) {
   return m("form.search-option", {
-    onclick(e) {
-      if (e.target.tagName === "INPUT") update();
-    }
+    oninput,
   }, [
       m("div", {}, [
         m("label", {}, [m("input", { type: "radio", name: "mode", value: "name", checked: true }), "単語"]),
@@ -36,20 +32,18 @@ function SearchOption({ update }) {
 
 export default function WordList({ dict, buttonFactory }) {
   const SIZE = 120;
+  let searchText = "";
+  let searchOptions = { mode: "name", type: "exact" };
   function update() {
-    const test = app.compileWordTester($field.value, {
-      mode: $option.mode.value, type: $option.type.value
-    });
+    const test = app.compileWordTester(searchText, searchOptions);
     const result = dict.words.filter(test);
     let page = 0;
-    const $showMoreButton = m("button.show-more", { onclick: append });
-    $newResult = m(".search-result", {}, [
+    while ($searchResult.firstChild) $searchResult.removeChild($searchResult.firstChild);
+    $searchResult.appendChild(
       m(".search-info", {}, `${result.length} / ${dict.words.length}`),
-      $showMoreButton
-    ]);
-    $oldResult.parentNode.replaceChild($newResult, $oldResult);
-    $oldResult = $newResult;
-    $newResult = null;
+    );
+    const $showMoreButton = m("button.show-more", { onclick: append });
+    $searchResult.appendChild($showMoreButton);
     function append() {
       const fragment = document.createDocumentFragment();
       result.slice(page * SIZE, (page + 1) * SIZE).map(word => {
@@ -57,7 +51,7 @@ export default function WordList({ dict, buttonFactory }) {
         if (buttonFactory) button = buttonFactory({ word });
         fragment.appendChild(WordListItem({ word, button }));
       });
-      $oldResult.insertBefore(fragment, $showMoreButton);
+      $searchResult.insertBefore(fragment, $showMoreButton);
       page++;
       const rest = result.length - page * SIZE;
       if (rest > 0) {
@@ -69,14 +63,22 @@ export default function WordList({ dict, buttonFactory }) {
     }
     append();
   }
-  const $field = SearchField({ update });
-  const $option = SearchOption({ update });
-  let $oldResult = m(".search-result");
-  let $newResult = null;
+  let $searchResult = m(".search-result");
   const ret = m(".word-list", {}, [
-    $field,
-    $option,
-    $oldResult,
+    SearchField({
+      oninput() {
+        searchText = this.value;
+        update();
+      }
+    }),
+    SearchOptionsForm({
+      oninput() {
+        searchOptions.mode = this.mode.value;
+        searchOptions.type = this.type.value;
+        update();
+      }
+    }),
+    $searchResult,
   ]);
   update();
   return ret;
