@@ -12,7 +12,7 @@ function SearchField({ oninput }) {
 
 function SearchOptionsForm({ oninput }) {
   return m("form.search-option", {
-    oninput,
+    onchange: oninput,
   }, [
       m("div", {}, [
         m("label", {}, [m("input", { type: "radio", name: "mode", value: "name", checked: true }), "単語"]),
