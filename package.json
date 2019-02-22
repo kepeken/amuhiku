@@ -7,9 +7,13 @@
     "build": "webpack --mode production"
   },
   "dependencies": {
+    "@types/react": "^16.8.4",
+    "@types/react-dom": "^16.8.2",
     "dropbox": "^4.0.5",
     "lodash": "^4.17.10",
     "netlify-auth-providers": "^1.0.0-alpha5",
+    "react": "^16.8.3",
+    "react-dom": "^16.8.3",
     "url-search-params-polyfill": "^4.0.0",
     "whatwg-fetch": "^2.0.4"
   },
@@ -17,6 +21,7 @@
     "@babel/core": "^7.0.0-beta.51",
     "@babel/plugin-proposal-decorators": "^7.0.0-beta.51",
     "@babel/preset-env": "^7.0.0-beta.51",
+    "awesome-typescript-loader": "^5.2.1",
     "babel-loader": "^8.0.0-beta.3",
     "css-loader": "^0.28.11",
     "html-loader": "^0.5.5",
@@ -24,6 +29,8 @@
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.3",
+    "source-map-loader": "^0.2.4",
+    "typescript": "^3.3.3333",
     "webpack": "^4.11.1",
     "webpack-cli": "^3.0.2",
     "webpack-dev-server": "^3.1.4"
