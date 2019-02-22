@@ -7,8 +7,15 @@ module.exports = {
     "./src/js/main.js",
     "./src/css/main.scss",
   ],
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".json"],
+  },
   module: {
     rules: [
+      {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
