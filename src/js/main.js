@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import {
   execCopy,
   jacksonPrettyPrint,
@@ -431,15 +434,24 @@ $("#editor-enter").on("click", function () {
   hideModal();
 });
 
-import Settings from "./components/Settings";
 
-$("#save-settings").on("click", function () {
-  pushPage({
-    header: "設定",
-    content: Settings(),
+import SettingsEditor from "./components/SettingsEditor";
+
+{
+  const div = document.createElement("div");
+  div.className = "settings";
+  ReactDOM.render(
+    React.createElement(SettingsEditor),
+    div
+  );
+
+  $("#save-settings").on("click", function () {
+    pushPage({
+      header: "設定",
+      content: div,
+    });
   });
-});
-
+}
 
 import fetchFromSearchParams from "./app/fetchFromSearchParams";
 
