@@ -2,18 +2,19 @@ import * as React from 'react';
 import debounce = require('lodash/debounce');
 
 interface Props {
-  onChange: (value: string) => void;
+  text: string;
+  onChange: (text: string) => void;
 }
 
 interface State {
-  value: string;
+  text: string;
 }
 
 export default class SearchField extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      value: "",
+      text: props.text,
     };
     this.handleChange = this.handleChange.bind(this);
     this.emitChangeDebounced = debounce(this.emitChange, 250);
@@ -21,21 +22,21 @@ export default class SearchField extends React.Component<Props, State> {
   handleChange(event: React.FormEvent<HTMLInputElement>) {
     const target = event.target as HTMLInputElement;
     this.setState({
-      value: target.value
+      text: target.value
     });
     this.emitChangeDebounced(target.value);
   }
-  emitChange(value: string) {
-    this.props.onChange(value);
+  emitChange(text: string) {
+    this.props.onChange(text);
   }
-  emitChangeDebounced: (value: string) => void;
+  emitChangeDebounced: (text: string) => void;
   render() {
     return (
       <input
         type="text"
         className="search-field"
         placeholder="Search"
-        value={this.state.value}
+        value={this.state.text}
         onChange={this.handleChange}
       />
     );

@@ -1,21 +1,17 @@
 import * as React from 'react';
+import { SearchOptions } from '../app/OTM/compileWordTester';
 
 interface Props {
-  onChange: (state: State) => void;
+  onChange: (options: SearchOptions) => void;
+  options: SearchOptions;
 }
 
-interface State {
-  mode: "name" | "equivalent" | "content";
-  type: "exact" | "part";
-}
+interface State extends SearchOptions { }
 
 export default class SearchOptionForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      mode: "name",
-      type: "exact"
-    };
+    this.state = props.options;
   }
   handleChange<K extends keyof State>(newState: Pick<State, K>) {
     this.setState(newState);
