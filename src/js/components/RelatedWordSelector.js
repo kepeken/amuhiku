@@ -1,21 +1,24 @@
 import m from "./hyperscript";
 import { pushPage, popPage } from "./pages";
-import WordList from "./WordList";
 
+import React from 'react';
+import ReactDOM from 'react-dom';
+import WordList from './WordListTSX';
 
 export default function RelatedWordSelector({ dict, entry }) {
   let $id, $form;
-  function buttonFactory({ word }) {
-    return m("button.btn-select-item", {
-      onclick() {
+  const wordList = document.createElement("div");
+  ReactDOM.render(
+    React.createElement(WordList, {
+      words: dict.words,
+      onSelect: (word) => {
         $id.value = word.entry.id;
         $form.value = word.entry.form;
         popPage();
-      }
-    },
-      m("i.fas.fa-check")
-    );
-  }
+      },
+    }),
+    wordList
+  );
   const root = [
     $id = m("input", { name: `relations[][entry][id]`, type: "hidden" }),
     $form = m("input", {
@@ -26,7 +29,7 @@ export default function RelatedWordSelector({ dict, entry }) {
         this.blur();
         pushPage({
           header: `単語を選択`,
-          content: WordList({ dict, buttonFactory }),
+          content: wordList,
         });
       },
     }),
