@@ -8,9 +8,11 @@ const defaultSettingsData: Settings = {
   "prettify-json": null,
 };
 
+const stored = localStorage.getItem("settings");
+
 const settingsData = Object.assign(
   defaultSettingsData,
-  JSON.parse(localStorage.getItem("settings")) as Settings
+  stored ? JSON.parse(stored) as Settings : null
 );
 
 export default {
