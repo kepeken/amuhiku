@@ -26,7 +26,7 @@ class DropboxClient {
       const authUrl = this.client.getAuthenticationUrl(redirectUri);
       const authWindow = window.open(authUrl, undefined, "width=640,height=480");
       if (authWindow === null) {
-        reject(new Error("could not open a window"));
+        reject(new Error("ポップアップがブロックされました。"));
         return;
       }
       const callback = (event: MessageEvent) => {
@@ -59,18 +59,18 @@ class DropboxFile implements File {
   }
 
   async read() {
-    return this.client.filesDownload({ path: this.path })
-      // Dropbox SDK の不備により FileMetadata.fileBlob の型定義が抜けているため矯正
-      .then((result: any) => result.fileBlob as Blob)
-      .then(readAsText);
+    const result = await this.client.filesDownload({ path: this.path });
+    // Dropbox SDK の不備により FileMetadata.fileBlob の型定義が抜けているため矯正
+    const blob = (result as any).fileBlob as Blob;
+    return readAsText(blob);
   }
 
   async update(text: string) {
-    return this.client.filesUpload({
+    await this.client.filesUpload({
       path: this.path,
       contents: new Blob([text], { type: "application/json" }),
       mode: { ".tag": "overwrite" },
-    }).then(() => { });
+    });
   }
 }
 
@@ -86,18 +86,16 @@ class DropboxFolder implements Folder {
   }
 
   async list() {
-    return this.client.filesListFolder({ path: this.path })
-      .then(result => {
-        const entries = [];
-        for (const entry of result.entries) {
-          if (entry[".tag"] === "file") {
-            entries.push(new DropboxFile(this.client, this.path, entry.name));
-          } else if (entry[".tag"] === "folder") {
-            entries.push(new DropboxFolder(this.client, this.path, entry.name));
-          }
-        }
-        return entries;
-      });
+    const result = await this.client.filesListFolder({ path: this.path });
+    const entries = [];
+    for (const entry of result.entries) {
+      if (entry[".tag"] === "file") {
+        entries.push(new DropboxFile(this.client, this.path, entry.name));
+      } else if (entry[".tag"] === "folder") {
+        entries.push(new DropboxFolder(this.client, this.path, entry.name));
+      }
+    }
+    return entries;
   }
 
   child(name: string) {
@@ -106,10 +104,11 @@ class DropboxFolder implements Folder {
 
   async create(name: string, text: string) {
     const file = new DropboxFile(this.client, this.path, name);
-    return this.client.filesUpload({
+    await this.client.filesUpload({
       path: `${this.path}/${name}`,
       contents: new Blob([text], { type: "application/json" }),
       mode: { ".tag": "add" },
-    }).then(() => file);
+    });
+    return file;
   }
 }
