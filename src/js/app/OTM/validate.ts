@@ -49,7 +49,7 @@ const relation = object<OTM.Relation>({
   entry: entry,
 });
 
-const word = object<OTM.Word>({
+export const word = object<OTM.Word>({
   entry: entry,
   translations: array(translation),
   tags: array(tag),
@@ -58,6 +58,6 @@ const word = object<OTM.Word>({
   relations: array(relation),
 });
 
-export default object({
+export const dictionary = object<OTM.Dictionary>({
   words: array(word),
 });

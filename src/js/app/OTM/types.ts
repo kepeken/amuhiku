@@ -1,3 +1,8 @@
+export type Dictionary = {
+  words: Word[];
+  [key: string]: any;
+};
+
 export type Word = {
   entry: Entry;
   translations: Translation[];
