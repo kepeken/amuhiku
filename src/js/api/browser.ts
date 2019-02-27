@@ -10,7 +10,12 @@ class BrowserFile implements File {
   }
 
   async read() {
-    return localStorage.getItem(this.key);
+    const text = localStorage.getItem(this.key);
+    if (text === null) {
+      throw new Error("item not found");
+    } else {
+      return text;
+    }
   }
 
   async update(text: string) {

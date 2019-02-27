@@ -1,6 +1,6 @@
 export interface File {
   readonly name: string;
-  read(): Promise<string | null>;
+  read(): Promise<string>;
   update(text: string): Promise<void>;
 }
 
