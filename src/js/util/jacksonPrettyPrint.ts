@@ -1,12 +1,13 @@
-class JacksonPrettyPrintStream {
-  constructor() {
-    this.space = "  ";
-    this.newline = "\n";
-    this.output = "";
-    this.indent = 0;
-  }
+// ZpDIC 内部で使用している Jackson の模倣
+// https://github.com/FasterXML/jackson-core/blob/master/src/main/java/com/fasterxml/jackson/core/util/DefaultPrettyPrinter.java
 
-  write(value) {
+class JacksonPrettyPrintStream {
+  private readonly space = "  ";
+  private readonly newline = "\n";
+  public output = "";
+  public indent = 0;
+
+  write(value: any) {
     if (value == null) {
       this.writeNull();
     } else if (typeof value === "boolean") {
@@ -24,7 +25,7 @@ class JacksonPrettyPrintStream {
     }
   }
 
-  writeRaw(raw) {
+  writeRaw(raw: string) {
     this.output += raw;
   }
 
@@ -37,19 +38,19 @@ class JacksonPrettyPrintStream {
     this.writeRaw("null");
   }
 
-  writeBoolean(boolean) {
+  writeBoolean(boolean: boolean) {
     this.writeRaw(boolean ? "true" : "false");
   }
 
-  writeString(string) {
+  writeString(string: string) {
     this.writeRaw(JSON.stringify(string));
   }
 
-  writeNumber(number) {
+  writeNumber(number: number) {
     this.writeRaw(JSON.stringify(number));
   }
 
-  writeArray(array) {
+  writeArray(array: any[]) {
     this.writeRaw("[");
     let first = true;
     for (const element of array) {
@@ -61,7 +62,7 @@ class JacksonPrettyPrintStream {
     this.writeRaw("]");
   }
 
-  writeObject(object) {
+  writeObject(object: any) {
     const entries = Object.entries(object);
     this.writeRaw("{");
     if (entries.length === 0) {
@@ -83,7 +84,7 @@ class JacksonPrettyPrintStream {
   }
 }
 
-export default function jacksonPrettyPrint(value) {
+export default function jacksonPrettyPrint(value: any) {
   const stream = new JacksonPrettyPrintStream();
   stream.write(value);
   return stream.output;

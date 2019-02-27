@@ -2,6 +2,11 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "jsx": "react",
+    "lib": [
+      "es6",
+      "dom",
+      "es2017.object"
+    ],
     "module": "commonjs",
     "outDir": "./dist/",
     "sourceMap": true,
