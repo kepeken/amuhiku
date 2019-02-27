@@ -353,7 +353,9 @@ $("#save-storage").on("click", function () {
 });
 
 $("#save-clipboard").on("click", function () {
-  execCopy(dictionary.compose());
+  execCopy(dictionary.compose())
+    .then(() => alert("コピーしました"))
+    .catch(() => alert("コピーに失敗しました"));
 });
 
 function openWordEditor(word) {

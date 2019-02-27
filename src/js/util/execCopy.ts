@@ -1,4 +1,4 @@
-export default function execCopy(text) {
+export default async function execCopy(text: string) {
   const textarea = document.createElement("textarea");
   textarea.value = text;
   textarea.readOnly = true;
@@ -7,5 +7,9 @@ export default function execCopy(text) {
   textarea.setSelectionRange(0, textarea.value.length);
   const result = document.execCommand("copy");
   document.body.removeChild(textarea);
-  alert(result ? "コピーしました" : "コピーに失敗しました");
+  if (result) {
+    return Promise.resolve();
+  } else {
+    return Promise.reject();
+  }
 }
