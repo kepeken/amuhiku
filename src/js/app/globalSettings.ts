@@ -20,12 +20,14 @@ export default {
     settingsData[k] = v;
     localStorage.setItem("settings", JSON.stringify(settingsData));
   },
-  get(k: keyof Settings) {
-    return settingsData[k];
-  }
+  get<K extends keyof Settings>(k: K) {
+    return settingsData[k] as Readonly<Settings[K]>;
+  },
+  getAll() {
+    return settingsData as Readonly<Settings>;
+  },
 };
 
 export {
-  settingsData,
   Settings,
 };
