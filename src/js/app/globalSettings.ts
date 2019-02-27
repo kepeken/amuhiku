@@ -1,6 +1,7 @@
 localStorage.setItem("v", "20180308");
 
 type Settings = {
+  // 今のところ null | "zpdic" | "  " | "    " | "\t" に限られるはず
   "prettify-json": null | string;
 };
 
