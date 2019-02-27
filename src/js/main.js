@@ -132,8 +132,10 @@ dictionary.load = function (str, entry, path, url) {
   history.replaceState(null, null, newURL.toString());
 }
 
+import globalSettings from './app/globalSettings';
+
 dictionary.compose = function () {
-  const space = app.globalSettings.get("prettify-json");
+  const space = globalSettings.get("prettify-json");
   if (space === "zpdic") {
     return jacksonPrettyPrint(otm);
   } else {
