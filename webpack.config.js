@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   entry: [
@@ -57,5 +58,6 @@ module.exports = {
       filename: "[name].css",
       chunkFilename: "[id].css"
     }),
+    // new BundleAnalyzerPlugin(),
   ],
-}
+};
