@@ -1,8 +1,16 @@
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck,
-} from '@fortawesome/free-solid-svg-icons'
+  faLongArrowAltDown,
+  faLongArrowAltUp,
+  faPlus,
+  faTrashAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 library.add(
   faCheck,
+  faLongArrowAltDown,
+  faLongArrowAltUp,
+  faPlus,
+  faTrashAlt,
 );

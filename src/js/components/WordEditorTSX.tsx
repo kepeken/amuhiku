@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as OTM from '../app/OTM/types';
 import uniqueId = require('lodash/uniqueId');
 import cloneDeep = require('lodash/cloneDeep');
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface Props {
   word: OTM.Word;
@@ -39,20 +40,21 @@ const PropEditor = <T extends {}>(props: {
         i !== 0 && (
           <div key={`swapper-${i}`}>
             <button onClick={() => props.onChange([...props.items.slice(0, i - 1), props.items[i], props.items[i - 1], ...props.items.slice(i + 1)])}>
-              Swap
-              </button>
+              <FontAwesomeIcon icon="long-arrow-alt-up" />
+              <FontAwesomeIcon icon="long-arrow-alt-down" />
+            </button>
           </div>
         ),
         <div key={key}>
           {props.children(item, updateFactory(key))}
           <button onClick={() => props.onChange(props.items.filter(([k, _]) => k !== key))}>
-            Remove
-            </button>
+            <FontAwesomeIcon icon="trash-alt" />
+          </button>
         </div>
       ])}
       <button onClick={() => props.onChange([...props.items, [uniqueId(), cloneDeep(props.defaultItem)]])}>
-        Add
-        </button>
+        <FontAwesomeIcon icon="plus" />
+      </button>
     </div>
   );
 };
