@@ -103,7 +103,7 @@ export default class WordEditor extends React.Component<Props, State> {
         <PropEditor
           title="訳語"
           items={this.state.translations}
-          defaultItem={{ title: "", forms: [] }}
+          defaultItem={{ title: "", forms: "" }}
           onChange={translations => this.setState({ translations })}
         >
           {(translation, update) => <>
