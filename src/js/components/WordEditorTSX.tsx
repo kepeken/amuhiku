@@ -17,7 +17,7 @@ type Keyed<T> = [string, T];
 
 interface State {
   entryForm: string;
-  translations: Keyed<OTM.Translation>[];
+  translations: Keyed<{ title: string, forms: string }>[];
   tags: Keyed<OTM.Tag>[];
   contents: Keyed<OTM.Content>[];
   variations: Keyed<OTM.Variation>[];
@@ -78,7 +78,10 @@ export default class WordEditor extends React.Component<Props, State> {
     super(props);
     this.state = {
       entryForm: props.word.entry.form,
-      translations: props.word.translations.map(withKey),
+      translations: props.word.translations.map(translation => ({
+        title: translation.title,
+        forms: translation.forms.join("\n"),
+      })).map(withKey),
       tags: props.word.tags.map(withKey),
       contents: props.word.contents.map(withKey),
       variations: props.word.variations.map(withKey),
@@ -109,8 +112,8 @@ export default class WordEditor extends React.Component<Props, State> {
               onChange={e => update({ ...translation, title: e.target.value })}
             />
             <textarea
-              value={translation.forms.join("\n")}
-              onChange={e => update({ ...translation, forms: e.target.value.split("\n") })}
+              value={translation.forms}
+              onChange={e => update({ ...translation, forms: e.target.value })}
             />
           </>}
         </PropEditor>
