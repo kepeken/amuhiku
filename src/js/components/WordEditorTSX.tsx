@@ -3,6 +3,7 @@ import * as OTM from '../app/OTM/types';
 import uniqueId = require('lodash/uniqueId');
 import cloneDeep = require('lodash/cloneDeep');
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import './WordEditor.scss';
 
 interface Props {
   word: OTM.Word;
@@ -23,6 +24,7 @@ interface State {
   relations: Keyed<OTM.Relation>[];
 }
 
+// フォーカスが嫌なので各ボタンは div にした
 const PropEditor = <T extends {}>(props: {
   title: string,
   items: Keyed<T>[],
@@ -36,25 +38,35 @@ const PropEditor = <T extends {}>(props: {
   return (
     <div className="prop-editor">
       <div className="prop-title">{props.title}</div>
-      {props.items.map(([key, item], i) => [
-        i !== 0 && (
-          <div key={`swapper-${i}`}>
-            <button onClick={() => props.onChange([...props.items.slice(0, i - 1), props.items[i], props.items[i - 1], ...props.items.slice(i + 1)])}>
+      <div className="prop-body">
+        {props.items.map(([key, item], i) => [
+          i !== 0 && (
+            <div
+              key={`swapper-${i}`}
+              className="item-swapper"
+              onClick={() => props.onChange([...props.items.slice(0, i - 1), props.items[i], props.items[i - 1], ...props.items.slice(i + 1)])}
+            >
               <FontAwesomeIcon icon="long-arrow-alt-up" />
               <FontAwesomeIcon icon="long-arrow-alt-down" />
-            </button>
+            </div>
+          ),
+          <div key={key} className="prop-item">
+            {props.children(item, updateFactory(key))}
+            <div
+              className="item-remover"
+              onClick={() => props.onChange(props.items.filter(entry => entry[0] !== key))}
+            >
+              <FontAwesomeIcon icon="trash-alt" />
+            </div>
           </div>
-        ),
-        <div key={key}>
-          {props.children(item, updateFactory(key))}
-          <button onClick={() => props.onChange(props.items.filter(([k, _]) => k !== key))}>
-            <FontAwesomeIcon icon="trash-alt" />
-          </button>
+        ])}
+        <div
+          className="item-adder"
+          onClick={() => props.onChange([...props.items, [uniqueId(), cloneDeep(props.defaultItem)]])}
+        >
+          <FontAwesomeIcon icon="plus" />
         </div>
-      ])}
-      <button onClick={() => props.onChange([...props.items, [uniqueId(), cloneDeep(props.defaultItem)]])}>
-        <FontAwesomeIcon icon="plus" />
-      </button>
+      </div>
     </div>
   );
 };
@@ -75,29 +87,79 @@ export default class WordEditor extends React.Component<Props, State> {
   }
   render() {
     return (
-      <div>
-        <input
-          value={this.state.entryForm}
-          onChange={event => this.setState({ entryForm: event.target.value })}
-        />
+      <div className="word-editor-hoge">
+        <div className="prop-editor">
+          <div className="prop-title">単語</div>
+          <div className="prop-body">
+            <input
+              value={this.state.entryForm}
+              onChange={event => this.setState({ entryForm: event.target.value })}
+            />
+          </div>
+        </div>
+        <PropEditor
+          title="訳語"
+          items={this.state.translations}
+          defaultItem={{ title: "", forms: [] }}
+          onChange={translations => this.setState({ translations })}
+        >
+          {(translation, update) => <>
+            <input
+              value={translation.title}
+              onChange={e => update({ ...translation, title: e.target.value })}
+            />
+            <textarea
+              value={translation.forms.join("\n")}
+              onChange={e => update({ ...translation, forms: e.target.value.split("\n") })}
+            />
+          </>}
+        </PropEditor>
+        <PropEditor
+          title="タグ"
+          items={this.state.tags}
+          defaultItem={""}
+          onChange={tags => this.setState({ tags })}
+        >
+          {(tag, update) => <>
+            <input
+              value={tag}
+              onChange={e => update(e.target.value)}
+            />
+          </>}
+        </PropEditor>
         <PropEditor
           title="内容"
           items={this.state.contents}
           defaultItem={{ title: "", text: "" }}
           onChange={contents => this.setState({ contents })}
         >
-          {(content, update) => (
-            <div>
-              <input
-                value={content.title}
-                onChange={e => update({ ...content, title: e.target.value })}
-              />
-              <textarea
-                value={content.text}
-                onChange={e => update({ ...content, text: e.target.value })}
-              />
-            </div>
-          )}
+          {(content, update) => <>
+            <input
+              value={content.title}
+              onChange={e => update({ ...content, title: e.target.value })}
+            />
+            <textarea
+              value={content.text}
+              onChange={e => update({ ...content, text: e.target.value })}
+            />
+          </>}
+        </PropEditor>
+        <PropEditor
+          title="変化形"
+          items={this.state.variations}
+          defaultItem={{ title: "", form: "" }}
+          onChange={variations => this.setState({ variations })}
+        >
+          {(variation, update) => <>
+            <input
+              value={variation.title}
+              onChange={e => update({ ...variation, title: e.target.value })}
+            />
+            <input
+              value={variation.form}
+              onChange={e => update({ ...variation, form: e.target.value })}
+            />
+          </>}
         </PropEditor>
       </div>
     );
