@@ -54,7 +54,7 @@ const PropEditor = <T extends {}>(props: {
             {props.children(item, updateFactory(key))}
             <div
               className="item-remover"
-              onClick={() => props.onChange(props.items.filter(entry => entry[0] !== key))}
+              onClick={() => confirm("項目を削除します。") && props.onChange(props.items.filter(entry => entry[0] !== key))}
             >
               <FontAwesomeIcon icon="trash-alt" />
             </div>
