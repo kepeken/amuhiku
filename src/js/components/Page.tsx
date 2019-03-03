@@ -1,27 +1,50 @@
 import * as React from 'react';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { CSSTransition, Transition, TransitionGroup } from 'react-transition-group';
 
-export const List = (props: {
-  children?: React.ReactNode;
-}) => (
-    <TransitionGroup className="page-list">
-      {props.children}
-    </TransitionGroup>
-  );
+export class List extends React.Component<{
+  children?: React.ReactNode | React.ReactNode[];
+}, {
+  transiting: boolean;
+}> {
+  public state = {
+    transiting: false,
+  };
+
+  reflow(node: HTMLElement) {
+    // https://github.com/reactjs/react-transition-group/blob/master/src/CSSTransition.js#L120
+    node.scrollTop;
+  }
+
+  render() {
+    const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
+    return (
+      <TransitionGroup className={[
+        "page-list",
+        this.state.transiting ? "page-transiting" : ""
+      ].join(" ")} >
+        {children.map((item, i) => item && (
+          <Transition
+            key={i}
+            timeout={300}
+            onEnter={() => this.setState({ transiting: true })}
+            onEntering={(node) => { this.reflow(node); this.setState({ transiting: false }); }}
+            onExiting={() => this.setState({ transiting: true })}
+            onExited={() => this.setState({ transiting: false })}
+          >
+            {item}
+          </Transition>
+        ))}
+      </TransitionGroup>
+    );
+  }
+}
 
 export const Item = (props: {
-  key?: string | number;
   children?: React.ReactNode;
 }) => (
-    <CSSTransition
-      key={props.key}
-      timeout={300}
-      classNames="page"
-    >
-      <div className="page-item">
-        {props.children}
-      </div>
-    </CSSTransition>
+    <div className="page-item">
+      {props.children}
+    </div>
   );
 
 export const Header = (props: { children?: React.ReactNode }) => (
