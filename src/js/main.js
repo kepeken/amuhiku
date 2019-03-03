@@ -6,7 +6,6 @@ import './icons';
 import {
   execCopy,
   jacksonPrettyPrint,
-  readAsText,
 } from "./util";
 
 import app from "./app";
@@ -18,7 +17,7 @@ const github = resourceHandler.get("github");
 
 import device from "./resource/device";
 
-import { pushPage, popPage } from "./components/pages";
+import { pushPage } from "./components/pages";
 
 var m = function (tag, attrs, children) {
   var e = typeof tag === "string" ? document.createElement(tag) : tag;
