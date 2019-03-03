@@ -11,7 +11,7 @@ interface Props {
   onEdit: (word: OTM.Word) => void;
   onCancel: () => void;
   onRemove: () => void;
-  onSelect: () => Promise<OTM.Entry | null>;
+  onSelect: () => Promise<OTM.Entry>;
 }
 
 type Keyed<T> = [string, T];
@@ -132,6 +132,8 @@ export default class WordEditor extends React.Component<Props, State> {
       if (confirm("閉じると変更は破棄されます。閉じますか？")) {
         this.props.onCancel();
       }
+    } else {
+      this.props.onCancel();
     }
   }
 
@@ -242,7 +244,7 @@ export default class WordEditor extends React.Component<Props, State> {
                 />
                 <input
                   readOnly
-                  defaultValue={variation.entry ? variation.entry.form : ""}
+                  value={variation.entry ? variation.entry.form : ""}
                   onClick={async (e) => {
                     // @ts-ignore
                     e.target.blur();

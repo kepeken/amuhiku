@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
+import './Page.scss';
 
 export class List extends React.Component<{
   children?: React.ReactNode | React.ReactNode[];
