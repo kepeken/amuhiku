@@ -79,7 +79,8 @@
   */
   .item-remover,
   .item-swapper,
-  .item-adder {
+  .item-adder,
+  .remove-word {
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -106,8 +107,7 @@
   .item-swapper {
     margin-bottom: 5px;
   }
-  .delete-word {
-    margin: 15px;
+  .remove-word {
     margin-top: 100px;
     text-align: center;
     line-height: 40px;
@@ -115,7 +115,7 @@
     color: #fff;
     border-radius: 2px;
   }
-  .delete-word i {
-    width: 32px;
+  .remove-word-text {
+    margin-left: .5rem;
   }
 }

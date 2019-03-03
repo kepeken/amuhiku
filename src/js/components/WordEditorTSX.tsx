@@ -91,6 +91,7 @@ export default class WordEditor extends React.Component<Props, State> {
     };
     this.handleEdit = this.handleEdit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.handleRemove = this.handleRemove.bind(this);
   }
 
   buildWord(): OTM.Word {
@@ -134,6 +135,13 @@ export default class WordEditor extends React.Component<Props, State> {
     }
   }
 
+  handleRemove() {
+    if (confirm("単語を削除しますか？")) {
+      alert("削除しました。");
+      this.props.onRemove();
+    }
+  }
+
   render() {
     return (
       <Page.Item>
@@ -142,6 +150,9 @@ export default class WordEditor extends React.Component<Props, State> {
             <FontAwesomeIcon icon="times" />
           </Page.Button>
           <Page.Title>単語の編集</Page.Title>
+          <Page.Button onClick={this.handleEdit}>
+            <FontAwesomeIcon icon="check" />
+          </Page.Button>
         </Page.Header>
         <Page.Body>
           <div className="word-editor-hoge">
@@ -232,10 +243,18 @@ export default class WordEditor extends React.Component<Props, State> {
                 <input
                   readOnly
                   defaultValue={variation.entry ? variation.entry.form : ""}
-                  onClick={async () => update({ ...variation, entry: await this.props.onSelect() })}
+                  onClick={async (e) => {
+                    // @ts-ignore
+                    e.target.blur();
+                    update({ ...variation, entry: await this.props.onSelect() });
+                  }}
                 />
               </>}
             </PropEditor>
+            <div className="remove-word" onClick={this.handleRemove}>
+              <FontAwesomeIcon icon="trash-alt" />
+              <span className="remove-word-text">単語を削除</span>
+            </div>
           </div>
         </Page.Body>
       </Page.Item>
