@@ -167,6 +167,7 @@ export default class WordEditor extends React.Component<Props, State> {
                 <div className="prop-title">単語</div>
                 <div className="prop-body">
                   <input
+                    placeholder="見出し語"
                     value={this.state.entryForm}
                     onChange={event => this.setState({ entryForm: event.target.value })}
                   />
@@ -180,10 +181,12 @@ export default class WordEditor extends React.Component<Props, State> {
               >
                 {(translation, update) => <>
                   <input
+                    placeholder="品詞など"
                     value={translation.title}
                     onChange={e => update({ ...translation, title: e.target.value })}
                   />
                   <textarea
+                    placeholder="訳語（１行に１つ）"
                     value={translation.forms}
                     onChange={e => update({ ...translation, forms: e.target.value })}
                   />
@@ -210,10 +213,12 @@ export default class WordEditor extends React.Component<Props, State> {
               >
                 {(content, update) => <>
                   <input
+                    placeholder="タイトル"
                     value={content.title}
                     onChange={e => update({ ...content, title: e.target.value })}
                   />
                   <textarea
+                    placeholder="内容"
                     value={content.text}
                     onChange={e => update({ ...content, text: e.target.value })}
                   />
@@ -227,10 +232,12 @@ export default class WordEditor extends React.Component<Props, State> {
               >
                 {(variation, update) => <>
                   <input
+                    placeholder="説明"
                     value={variation.title}
                     onChange={e => update({ ...variation, title: e.target.value })}
                   />
                   <input
+                    placeholder="綴り"
                     value={variation.form}
                     onChange={e => update({ ...variation, form: e.target.value })}
                   />
@@ -244,6 +251,7 @@ export default class WordEditor extends React.Component<Props, State> {
               >
                 {(variation, update) => <>
                   <input
+                    placeholder="説明"
                     value={variation.title}
                     onChange={e => update({ ...variation, title: e.target.value })}
                   />
