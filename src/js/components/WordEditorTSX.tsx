@@ -3,27 +3,14 @@ import * as OTM from '../app/OTM/types';
 import uniqueId = require('lodash/uniqueId');
 import cloneDeep = require('lodash/cloneDeep');
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './WordEditor.scss';
 import * as Page from './Page';
-
-interface Props {
-  word: OTM.Word;
-  onEdit: (word: OTM.Word) => void;
-  onCancel: () => void;
-  onRemove: () => void;
-  onSelect: () => Promise<OTM.Entry>;
-}
+import WordList from './WordListTSX';
+import './WordEditor.scss';
 
 type Keyed<T> = [string, T];
 
-interface State {
-  entryForm: string;
-  translations: Keyed<{ title: string, forms: string }>[];
-  tags: Keyed<OTM.Tag>[];
-  contents: Keyed<OTM.Content>[];
-  variations: Keyed<OTM.Variation>[];
-  relations: Keyed<{ title: string, entry: OTM.Entry | null }>[];
-}
+const withKey = <T extends {}>(item: T) => [uniqueId(), item] as Keyed<T>;
+const withoutKey = <T extends {}>(entry: Keyed<T>) => entry[1];
 
 // フォーカスが嫌なので各ボタンは div にした
 const PropEditor = <T extends {}>(props: {
@@ -72,8 +59,23 @@ const PropEditor = <T extends {}>(props: {
   );
 };
 
-const withKey = <T extends {}>(item: T) => [uniqueId(), item] as Keyed<T>;
-const withoutKey = <T extends {}>(entry: Keyed<T>) => entry[1];
+interface Props {
+  words: OTM.Word[];
+  word: OTM.Word;
+  onEdit: (word: OTM.Word) => void;
+  onCancel: () => void;
+  onRemove: () => void;
+}
+
+interface State {
+  entryForm: string;
+  translations: Keyed<{ title: string, forms: string }>[];
+  tags: Keyed<OTM.Tag>[];
+  contents: Keyed<OTM.Content>[];
+  variations: Keyed<OTM.Variation>[];
+  relations: Keyed<{ title: string, entry: OTM.Entry | null }>[];
+  select: ((entry: OTM.Entry) => void) | null;
+}
 
 export default class WordEditor extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -88,6 +90,7 @@ export default class WordEditor extends React.Component<Props, State> {
       contents: props.word.contents.map(withKey),
       variations: props.word.variations.map(withKey),
       relations: props.word.relations.map(withKey),
+      select: null,
     };
     this.handleEdit = this.handleEdit.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
@@ -145,121 +148,145 @@ export default class WordEditor extends React.Component<Props, State> {
   }
 
   render() {
+    const { select } = this.state;
     return (
-      <Page.Item>
-        <Page.Header>
-          <Page.Button onClick={this.handleCancel}>
-            <FontAwesomeIcon icon="times" />
-          </Page.Button>
-          <Page.Title>単語の編集</Page.Title>
-          <Page.Button onClick={this.handleEdit}>
-            <FontAwesomeIcon icon="check" />
-          </Page.Button>
-        </Page.Header>
-        <Page.Body>
-          <div className="word-editor-hoge">
-            <div className="prop-editor">
-              <div className="prop-title">単語</div>
-              <div className="prop-body">
-                <input
-                  value={this.state.entryForm}
-                  onChange={event => this.setState({ entryForm: event.target.value })}
-                />
+      <Page.List>
+        <Page.Item>
+          <Page.Header>
+            <Page.Button onClick={this.handleCancel}>
+              <FontAwesomeIcon icon="times" />
+            </Page.Button>
+            <Page.Title>単語の編集</Page.Title>
+            <Page.Button onClick={this.handleEdit}>
+              <FontAwesomeIcon icon="check" />
+            </Page.Button>
+          </Page.Header>
+          <Page.Body>
+            <div className="word-editor-hoge">
+              <div className="prop-editor">
+                <div className="prop-title">単語</div>
+                <div className="prop-body">
+                  <input
+                    value={this.state.entryForm}
+                    onChange={event => this.setState({ entryForm: event.target.value })}
+                  />
+                </div>
+              </div>
+              <PropEditor
+                title="訳語"
+                items={this.state.translations}
+                defaultItem={{ title: "", forms: "" }}
+                onChange={translations => this.setState({ translations })}
+              >
+                {(translation, update) => <>
+                  <input
+                    value={translation.title}
+                    onChange={e => update({ ...translation, title: e.target.value })}
+                  />
+                  <textarea
+                    value={translation.forms}
+                    onChange={e => update({ ...translation, forms: e.target.value })}
+                  />
+                </>}
+              </PropEditor>
+              <PropEditor
+                title="タグ"
+                items={this.state.tags}
+                defaultItem={""}
+                onChange={tags => this.setState({ tags })}
+              >
+                {(tag, update) => <>
+                  <input
+                    value={tag}
+                    onChange={e => update(e.target.value)}
+                  />
+                </>}
+              </PropEditor>
+              <PropEditor
+                title="内容"
+                items={this.state.contents}
+                defaultItem={{ title: "", text: "" }}
+                onChange={contents => this.setState({ contents })}
+              >
+                {(content, update) => <>
+                  <input
+                    value={content.title}
+                    onChange={e => update({ ...content, title: e.target.value })}
+                  />
+                  <textarea
+                    value={content.text}
+                    onChange={e => update({ ...content, text: e.target.value })}
+                  />
+                </>}
+              </PropEditor>
+              <PropEditor
+                title="変化形"
+                items={this.state.variations}
+                defaultItem={{ title: "", form: "" }}
+                onChange={variations => this.setState({ variations })}
+              >
+                {(variation, update) => <>
+                  <input
+                    value={variation.title}
+                    onChange={e => update({ ...variation, title: e.target.value })}
+                  />
+                  <input
+                    value={variation.form}
+                    onChange={e => update({ ...variation, form: e.target.value })}
+                  />
+                </>}
+              </PropEditor>
+              <PropEditor
+                title="関連語"
+                items={this.state.relations}
+                defaultItem={{ title: "", entry: null }}
+                onChange={relations => this.setState({ relations })}
+              >
+                {(variation, update) => <>
+                  <input
+                    value={variation.title}
+                    onChange={e => update({ ...variation, title: e.target.value })}
+                  />
+                  <input
+                    readOnly
+                    value={variation.entry ? variation.entry.form : ""}
+                    onClick={e => {
+                      // @ts-ignore
+                      e.target.blur();
+                      this.setState({
+                        select: entry => update({ ...variation, entry }),
+                      });
+                    }}
+                  />
+                </>}
+              </PropEditor>
+              <div className="remove-word" onClick={this.handleRemove}>
+                <FontAwesomeIcon icon="trash-alt" />
+                <span className="remove-word-text">単語を削除</span>
               </div>
             </div>
-            <PropEditor
-              title="訳語"
-              items={this.state.translations}
-              defaultItem={{ title: "", forms: "" }}
-              onChange={translations => this.setState({ translations })}
-            >
-              {(translation, update) => <>
-                <input
-                  value={translation.title}
-                  onChange={e => update({ ...translation, title: e.target.value })}
-                />
-                <textarea
-                  value={translation.forms}
-                  onChange={e => update({ ...translation, forms: e.target.value })}
-                />
-              </>}
-            </PropEditor>
-            <PropEditor
-              title="タグ"
-              items={this.state.tags}
-              defaultItem={""}
-              onChange={tags => this.setState({ tags })}
-            >
-              {(tag, update) => <>
-                <input
-                  value={tag}
-                  onChange={e => update(e.target.value)}
-                />
-              </>}
-            </PropEditor>
-            <PropEditor
-              title="内容"
-              items={this.state.contents}
-              defaultItem={{ title: "", text: "" }}
-              onChange={contents => this.setState({ contents })}
-            >
-              {(content, update) => <>
-                <input
-                  value={content.title}
-                  onChange={e => update({ ...content, title: e.target.value })}
-                />
-                <textarea
-                  value={content.text}
-                  onChange={e => update({ ...content, text: e.target.value })}
-                />
-              </>}
-            </PropEditor>
-            <PropEditor
-              title="変化形"
-              items={this.state.variations}
-              defaultItem={{ title: "", form: "" }}
-              onChange={variations => this.setState({ variations })}
-            >
-              {(variation, update) => <>
-                <input
-                  value={variation.title}
-                  onChange={e => update({ ...variation, title: e.target.value })}
-                />
-                <input
-                  value={variation.form}
-                  onChange={e => update({ ...variation, form: e.target.value })}
-                />
-              </>}
-            </PropEditor>
-            <PropEditor
-              title="関連語"
-              items={this.state.relations}
-              defaultItem={{ title: "", entry: null }}
-              onChange={relations => this.setState({ relations })}
-            >
-              {(variation, update) => <>
-                <input
-                  value={variation.title}
-                  onChange={e => update({ ...variation, title: e.target.value })}
-                />
-                <input
-                  readOnly
-                  value={variation.entry ? variation.entry.form : ""}
-                  onClick={async (e) => {
-                    // @ts-ignore
-                    e.target.blur();
-                    update({ ...variation, entry: await this.props.onSelect() });
-                  }}
-                />
-              </>}
-            </PropEditor>
-            <div className="remove-word" onClick={this.handleRemove}>
-              <FontAwesomeIcon icon="trash-alt" />
-              <span className="remove-word-text">単語を削除</span>
-            </div>
-          </div>
-        </Page.Body>
-      </Page.Item>
+          </Page.Body>
+        </Page.Item>
+        {select && (
+          <Page.Item>
+            <Page.Header>
+              <Page.Button onClick={() => this.setState({ select: null })}>
+                <FontAwesomeIcon icon="chevron-left" />
+              </Page.Button>
+              <Page.Title>単語の選択</Page.Title>
+            </Page.Header>
+            <Page.Body>
+              <WordList
+                words={this.props.words}
+                onSelect={(word) => {
+                  select(word.entry);
+                  this.setState({ select: null });
+                }}
+              />
+            </Page.Body>
+          </Page.Item>
+        )}
+      </Page.List>
     );
   }
 }
