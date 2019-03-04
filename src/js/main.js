@@ -88,7 +88,6 @@ var dictionary = {
 
 var otm;
 
-import WordList from "./components/WordList";
 import App from './components/App';
 
 dictionary.load = function (str, entry, path, url) {
@@ -109,20 +108,9 @@ dictionary.load = function (str, entry, path, url) {
   dictionary.currentPath = path;
   $("#info-path").text(path.split("/").pop());
   dictionary.refresh();
-  function buttonFactory({ word }) {
-    return m("button", {
-      class: "btn-select-item",
-      onclick() {
-        openWordEditor(word);
-      }
-    },
-      m.icon("fas fa-edit")
-    );
-  }
-  // $("#content").empty().append(WordList({ dict: otm, buttonFactory }));
   ReactDOM.render(
     React.createElement(App, {
-      dictionary: otm,
+      dictionary: str,
     }),
     document.getElementById("app")
   );
@@ -267,15 +255,6 @@ $("#save").on("click", function () {
   showModal($("#saver"));
 });
 
-$("#search").on("click", function () {
-  $(".search-field").trigger("focus");
-});
-
-$("#add").on("click", function () {
-  openWordEditor(null);
-});
-
-
 
 $("#open-new").on("click", function () {
   dictionary.load(dictionary.defaultOTM, null, "new");
@@ -359,91 +338,6 @@ $("#save-clipboard").on("click", function () {
   execCopy(dictionary.compose())
     .then(() => alert("コピーしました"))
     .catch(() => alert("コピーに失敗しました"));
-});
-
-function openWordEditor(word) {
-  var title, addition;
-  if (word) {
-    addition = false;
-    title = "Edit";
-    $("#editor").data("mode", "edit");
-  } else {
-    addition = true;
-    word = JSON.parse(dictionary.defaultWord);
-    title = "Add";
-    $("#editor").data("mode", "add");
-    var maxId = otm.words.reduce((a, c) => Math.max(a, c.entry.id), -1);
-    word.entry.id = maxId + 1;
-  }
-  $("#editor .header span").text(title);
-  $("#editor .content").empty().append(m.wordEditor(word));
-  if (!addition) $("#editor .content").append(m.wordDeleter(word.entry.id));
-  showModal($("#editor"));
-  $("#editor").data("word", JSON.stringify(word));
-}
-
-import WordEditor from "./components/WordEditor";
-
-m.wordEditor = function (word) {
-  const punctuations = (otm.zpdic || {}).punctuations || [",", "、"];
-  return WordEditor({ dict: otm, word, punctuations });
-}
-
-function pickEditor() {
-  const $e = $("#editor")[0];
-  const punct = (otm.zpdic || {}).punctuations || [",", "、"];
-  return WordEditor.collect($e, punct);
-}
-
-m.wordDeleter = function (id) {
-  return m("div", {
-    class: "delete-word clickable",
-    onclick: function () {
-      if (confirm("単語を削除しますか？")) {
-        otm.words = otm.words.filter(word => word.entry.id !== id);
-        dictionary.changed = true;
-        dictionary.refresh();
-        alert("削除しました\nID: " + id);
-        hideModal();
-      }
-    }
-  }, [
-      m.icon("fas fa-trash-alt"),
-      "単語を削除"
-    ]);
-}
-
-$("#editor .close").off("click").on("click", function () {
-  if (JSON.stringify($("#editor").data("word")) === JSON.stringify(pickEditor())
-    || confirm("閉じると変更は破棄されます。閉じますか？")) {
-    hideModal();
-  }
-});
-
-$("#editor-enter").on("click", function () {
-  var picked = pickEditor();
-  if (!/\S/.test(picked.entry.form)) {
-    alert("単語を入力してください");
-    return;
-  }
-  // if (JSON.stringify($("#editor").data("word")) === JSON.stringify(picked) || confirm(""))
-  if ($("#editor").data("mode") === "edit") {
-    otm.words.some((word, i, arr) => {
-      if (word.entry.id === picked.entry.id) {
-        arr[i] = picked;
-        dictionary.changed = true;
-        dictionary.refresh();
-        alert("変更しました\nID: " + picked.entry.id);
-        return true;
-      }
-    });
-  } else {
-    otm.words.push(picked);
-    dictionary.changed = true;
-    dictionary.refresh();
-    alert("追加しました\nID: " + picked.entry.id);
-  }
-  hideModal();
 });
 
 

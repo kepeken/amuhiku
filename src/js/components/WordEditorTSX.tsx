@@ -65,7 +65,7 @@ interface Props {
   word: OTM.Word;
   onEdit: (word: OTM.Word) => void;
   onCancel: () => void;
-  onRemove: () => void;
+  onRemove: (id: number) => void;
 }
 
 interface State {
@@ -121,11 +121,17 @@ export default class WordEditor extends React.Component<Props, State> {
   }
 
   handleEdit() {
+    if (this.state.entryForm.trim() === "") {
+      alert("単語を入力してください。");
+      return;
+    }
     const word = this.buildWord();
     const changed = JSON.stringify(this.props.word) !== JSON.stringify(word);
     if (changed) {
       alert("変更しました。");
       this.props.onEdit(word);
+    } else {
+      this.props.onCancel();
     }
   }
 
@@ -144,7 +150,7 @@ export default class WordEditor extends React.Component<Props, State> {
   handleRemove() {
     if (confirm("単語を削除しますか？")) {
       alert("削除しました。");
-      this.props.onRemove();
+      this.props.onRemove(this.props.word.entry.id);
     }
   }
 

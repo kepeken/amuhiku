@@ -6,19 +6,28 @@ import cloneDeep = require('lodash/cloneDeep');
 
 export default class Dictionary {
   private data: OTM.Dictionary;
+  private changed: boolean;
 
-  constructor(text?: string) {
+  constructor(text?: string | OTM.Dictionary) {
     if (text === undefined) {
       this.data = {
         words: [],
       };
-    } else {
+    } else if (typeof text === "string") {
       const data = JSON.parse(text);
       if (!validate.dictionary(data)) {
         throw new Error("OTM-JSON のフォーマットが正しくありません。");
       }
       this.data = data;
+    } else {
+      this.data = text;
     }
+    this.changed = false;
+    localStorage.setItem("temp", this.stringify(null));
+  }
+
+  get words() {
+    return this.data.words;
   }
 
   nextId() {
@@ -45,6 +54,27 @@ export default class Dictionary {
       variations: [],
       relations: [],
     };
+  }
+
+  addWord(word: OTM.Word) {
+    return new Dictionary({
+      ...this.data,
+      words: [...this.data.words, word],
+    });
+  }
+
+  updateWord(newWord: OTM.Word) {
+    return new Dictionary({
+      ...this.data,
+      words: this.data.words.map(word => word.entry.id === newWord.entry.id ? newWord : word),
+    });
+  }
+
+  removeWord(id: number) {
+    return new Dictionary({
+      ...this.data,
+      words: this.data.words.filter(word => word.entry.id !== id),
+    });
   }
 
   stringify(...args: [] | [Settings["prettify-json"]]) {
