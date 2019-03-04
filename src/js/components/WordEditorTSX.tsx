@@ -60,6 +60,7 @@ const PropEditor = <T extends {}>(props: {
 };
 
 interface Props {
+  mode: "add" | "edit";
   words: OTM.Word[];
   word: OTM.Word;
   onEdit: (word: OTM.Word) => void;
@@ -268,10 +269,12 @@ export default class WordEditor extends React.Component<Props, State> {
                   />
                 </>}
               </PropEditor>
-              <div className="remove-word" onClick={this.handleRemove}>
-                <FontAwesomeIcon icon="trash-alt" />
-                <span className="remove-word-text">単語を削除</span>
-              </div>
+              {this.props.mode === "edit" && (
+                <div className="remove-word" onClick={this.handleRemove}>
+                  <FontAwesomeIcon icon="trash-alt" />
+                  <span className="remove-word-text">単語を削除</span>
+                </div>
+              )}
             </div>
           </Page.Body>
         </Page.Item>
@@ -285,6 +288,7 @@ export default class WordEditor extends React.Component<Props, State> {
             </Page.Header>
             <Page.Body>
               <WordList
+                mode="select"
                 words={this.props.words}
                 onSelect={(word) => {
                   select(word.entry);

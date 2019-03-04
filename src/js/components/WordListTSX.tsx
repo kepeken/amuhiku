@@ -6,6 +6,7 @@ import SearchOptionForm from './SearchOptionForm';
 import WordListItem from './WordListItemTSX';
 
 interface Props {
+  mode: "edit" | "select";
   words: OTM.Word[];
   onSelect: (word: OTM.Word) => void;
 }
@@ -31,19 +32,23 @@ export default class WordList extends React.Component<Props, State> {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleOptionsChange = this.handleOptionsChange.bind(this);
   }
+
   handleTextChange(text: string) {
     const results = this.findWords(text, this.state.options);
     this.setState({ text, results, limit: 120 });
   }
+
   handleOptionsChange(options: SearchOptions) {
     const results = this.findWords(this.state.text, options);
     this.setState({ options, results, limit: 120 });
   }
+
   findWords(text: string, options: SearchOptions) {
     const test = compileWordTester(text, options);
     const found = this.props.words.filter(test);
     return found;
   }
+
   append() {
     const newLimit = Math.min(
       this.state.results.length,
@@ -51,6 +56,7 @@ export default class WordList extends React.Component<Props, State> {
     );
     this.setState({ limit: newLimit });
   }
+
   render() {
     const rest = this.state.results.length - this.state.limit;
     return (
@@ -70,6 +76,7 @@ export default class WordList extends React.Component<Props, State> {
           {this.state.results.slice(0, this.state.limit).map(word =>
             <WordListItem
               key={word.entry.id}
+              mode={this.props.mode}
               word={word}
               onClick={(word) => this.props.onSelect(word)}
             />

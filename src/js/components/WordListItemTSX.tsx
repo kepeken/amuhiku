@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import * as OTM from '../app/OTM/types';
 
 interface Props {
+  mode: "edit" | "select";
   word: OTM.Word;
   onClick: (word: OTM.Word) => void;
 }
@@ -17,7 +18,10 @@ export default class WordListItem extends React.Component<Props> {
             className="btn-select-item"
             onClick={() => this.props.onClick(word)}
           >
-            <FontAwesomeIcon icon="check" />
+            {this.props.mode === "edit"
+              ? <FontAwesomeIcon icon="edit" />
+              : <FontAwesomeIcon icon="check" />
+            }
           </button>
           <h3 className="otm-entry-form">
             {word.entry.form}

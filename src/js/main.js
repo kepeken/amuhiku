@@ -89,6 +89,7 @@ var dictionary = {
 var otm;
 
 import WordList from "./components/WordList";
+import App from './components/App';
 
 dictionary.load = function (str, entry, path, url) {
   var _otm;
@@ -118,7 +119,13 @@ dictionary.load = function (str, entry, path, url) {
       m.icon("fas fa-edit")
     );
   }
-  $("#content").empty().append(WordList({ dict: otm, buttonFactory }));
+  // $("#content").empty().append(WordList({ dict: otm, buttonFactory }));
+  ReactDOM.render(
+    React.createElement(App, {
+      dictionary: otm,
+    }),
+    document.getElementById("app")
+  );
   const newURL = new URL(location.href);
   if (url) {
     newURL.search = new URLSearchParams({ r: url });
