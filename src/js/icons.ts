@@ -2,6 +2,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faCheck,
   faChevronLeft,
+  faEdit,
   faLongArrowAltDown,
   faLongArrowAltUp,
   faPlus,
@@ -12,6 +13,7 @@ import {
 library.add(
   faCheck,
   faChevronLeft,
+  faEdit,
   faLongArrowAltDown,
   faLongArrowAltUp,
   faPlus,
