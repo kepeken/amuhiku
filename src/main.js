@@ -341,24 +341,6 @@ $("#save-clipboard").on("click", function () {
 });
 
 
-import SettingsEditor from "./components/SettingsEditor";
-
-{
-  const div = document.createElement("div");
-  div.className = "settings";
-  ReactDOM.render(
-    React.createElement(SettingsEditor),
-    div
-  );
-
-  $("#save-settings").on("click", function () {
-    pushPage({
-      header: "設定",
-      content: div,
-    });
-  });
-}
-
 import fetchFromSearchParams from "./app/fetchFromSearchParams";
 
 /* init */

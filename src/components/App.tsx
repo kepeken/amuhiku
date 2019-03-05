@@ -1,12 +1,13 @@
 import * as React from 'react';
 import * as OTM from '../app/OTM/types';
+import { CSSTransition } from 'react-transition-group';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from './Modal';
 import * as Page from './Page';
 import WordList from './WordList';
 import WordEditor from './WordEditor';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SettingsEditor from './SettingsEditor';
 import Dictionary from '../app/Dictionary';
-import { CSSTransition } from 'react-transition-group';
 import './App.scss';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
 }
 
 interface State {
-  show: null | "menu" | "editor";
+  show: null | "menu" | "editor" | "settings";
   dictionary: Dictionary;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
@@ -40,6 +41,9 @@ export default class App extends React.Component<Props, State> {
   }
 
   render() {
+    const CloseButton = () => (
+      <Page.Button onClick={() => this.setState({ show: null })}><FontAwesomeIcon icon="times" /></Page.Button>
+    );
     return (
       <>
         <CSSTransition
@@ -68,6 +72,13 @@ export default class App extends React.Component<Props, State> {
                 >
                   <span className="menu-icon"><FontAwesomeIcon icon="plus" /></span>
                   辞書を開く
+                </div>
+                <div
+                  className="menu-item"
+                  onClick={() => this.setState({ show: "settings" })}
+                >
+                  <span className="menu-icon"><FontAwesomeIcon icon="cog" /></span>
+                  設定
                 </div>
               </div>
             </div>
@@ -103,10 +114,7 @@ export default class App extends React.Component<Props, State> {
             <FontAwesomeIcon icon="plus" />
           </div>
         </div>
-        <Modal
-          show={this.state.show === "editor"}
-          fullscreen
-        >
+        <Modal fullscreen show={this.state.show === "editor"}>
           <WordEditor
             mode="edit"
             words={this.state.dictionary.words}
@@ -119,6 +127,19 @@ export default class App extends React.Component<Props, State> {
               this.setState({ show: null, dictionary: this.state.dictionary.removeWord(id) });
             }}
           />
+        </Modal>
+        <Modal fullscreen show={this.state.show === "settings"}>
+          <Page.List>
+            <Page.Item>
+              <Page.Header>
+                <CloseButton />
+                <Page.Title>設定</Page.Title>
+              </Page.Header>
+              <Page.Body>
+                <SettingsEditor />
+              </Page.Body>
+            </Page.Item>
+          </Page.List>
         </Modal>
       </>
     );

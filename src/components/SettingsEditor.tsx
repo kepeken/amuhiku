@@ -18,7 +18,7 @@ export default class SettingsEditor extends React.Component<{}, Settings> {
 
   render() {
     return (
-      <div>
+      <div className="settings">
         <h5>出力する JSON の整形：</h5>
         <select
           className="item clickable"
