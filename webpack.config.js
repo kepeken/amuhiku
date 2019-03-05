@@ -5,8 +5,8 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 module.exports = {
   entry: [
     "whatwg-fetch",
-    "./src/js/main.js",
-    "./src/css/main.scss",
+    "./src/main.js",
+    "./src/main.scss",
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"],
