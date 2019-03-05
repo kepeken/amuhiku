@@ -13,16 +13,16 @@ export default class SearchOptionForm extends React.Component<Props, State> {
     super(props);
     this.state = props.options;
   }
+
   handleChange<K extends keyof State>(newState: Pick<State, K>) {
     this.setState(newState);
     this.props.onChange(Object.assign({}, this.state, newState));
   }
+
   render() {
     const { mode, type } = this.state;
     return (
-      <div
-        className="search-option"
-      >
+      <div className="search-option">
         <div>
           <label>
             <input

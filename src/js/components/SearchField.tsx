@@ -16,20 +16,22 @@ export default class SearchField extends React.Component<Props, State> {
     this.state = {
       text: props.text,
     };
-    this.handleChange = this.handleChange.bind(this);
     this.emitChangeDebounced = debounce(this.emitChange, 250);
   }
-  handleChange(event: React.FormEvent<HTMLInputElement>) {
-    const target = event.target as HTMLInputElement;
+
+  handleChange(text: string) {
     this.setState({
-      text: target.value
+      text,
     });
-    this.emitChangeDebounced(target.value);
+    this.emitChangeDebounced(text);
   }
+
   emitChange(text: string) {
     this.props.onChange(text);
   }
+
   emitChangeDebounced: (text: string) => void;
+
   render() {
     return (
       <input
@@ -37,7 +39,7 @@ export default class SearchField extends React.Component<Props, State> {
         className="search-field"
         placeholder="Search"
         value={this.state.text}
-        onChange={this.handleChange}
+        onChange={e => this.handleChange(e.target.value)}
       />
     );
   }

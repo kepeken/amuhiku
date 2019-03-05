@@ -1,11 +1,12 @@
 import * as React from 'react';
 import globalSettings, { Settings } from '../app/globalSettings';
 
-class SettingsEditor extends React.Component<{}, Settings> {
+export default class SettingsEditor extends React.Component<{}, Settings> {
   constructor(props: {}) {
     super(props);
     this.state = globalSettings.getAll();
   }
+
   setItem<K extends keyof Settings>(key: K, value: Settings[K]) {
     // ここの computed property name が勝手に string になるのはバグ？
     // https://github.com/Microsoft/TypeScript/issues/13948
@@ -14,6 +15,7 @@ class SettingsEditor extends React.Component<{}, Settings> {
     } as Settings);
     globalSettings.set(key, value);
   }
+
   render() {
     return (
       <div>
@@ -33,5 +35,3 @@ class SettingsEditor extends React.Component<{}, Settings> {
     );
   }
 }
-
-export default SettingsEditor;
