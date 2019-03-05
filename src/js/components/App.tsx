@@ -13,12 +13,14 @@ interface Props {
   dictionary: string;
 }
 
-export default class App extends React.Component<Props, {
+interface State {
   show: null | "menu" | "editor";
   dictionary: Dictionary;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
-}> {
+}
+
+export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     const dictionary = new Dictionary(this.props.dictionary);
@@ -49,7 +51,26 @@ export default class App extends React.Component<Props, {
             <div className="menu-back"
               onClick={() => this.setState({ show: null })}
             />
-            <div className="menu-container"></div>
+            <div className="menu-container">
+              <div className="menu-header">
+              </div>
+              <div className="menu-list">
+                <div
+                  className="menu-item"
+                  onClick={() => { }}
+                >
+                  <span className="menu-icon"><FontAwesomeIcon icon="plus" /></span>
+                  新規辞書の作成
+                </div>
+                <div
+                  className="menu-item"
+                  onClick={() => { }}
+                >
+                  <span className="menu-icon"><FontAwesomeIcon icon="plus" /></span>
+                  辞書を開く
+                </div>
+              </div>
+            </div>
           </div>
         </CSSTransition>
         <div className="app-content">
