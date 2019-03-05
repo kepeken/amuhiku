@@ -4,7 +4,7 @@ import uniqueId = require('lodash/uniqueId');
 import cloneDeep = require('lodash/cloneDeep');
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Page from './Page';
-import WordList from './WordListTSX';
+import WordList from './WordList';
 import './WordEditor.scss';
 
 type Keyed<T> = [string, T];

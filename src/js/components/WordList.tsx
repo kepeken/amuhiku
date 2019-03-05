@@ -3,7 +3,7 @@ import * as OTM from '../app/OTM/types';
 import compileWordTester, { SearchOptions } from '../app/OTM/compileWordTester';
 import SearchField from './SearchField';
 import SearchOptionForm from './SearchOptionForm';
-import WordListItem from './WordListItemTSX';
+import WordListItem from './WordListItem';
 import './WordList.scss';
 
 interface Props {
