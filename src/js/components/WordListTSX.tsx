@@ -4,6 +4,7 @@ import compileWordTester, { SearchOptions } from '../app/OTM/compileWordTester';
 import SearchField from './SearchField';
 import SearchOptionForm from './SearchOptionForm';
 import WordListItem from './WordListItemTSX';
+import './WordList.scss';
 
 interface Props {
   mode: "edit" | "select";

@@ -1,0 +1,155 @@
+$color-word-list-item-border: #cecece;
+.word-list {
+  margin: auto;
+  max-width: 768px;
+  padding: 10px;
+}
+
+.search-field {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  display: inline-block;
+  outline: 0;
+  margin-bottom: 5px;
+  border: solid 1px $color-word-list-item-border;
+  border-radius: 5px;
+  padding: 10px;
+  width: 100%;
+  font-size: 1em;
+  &:focus {
+    border-color: #4286f4;
+  }
+}
+
+.search-option {
+  padding: 8px;
+  text-align: center;
+}
+
+.search-info {
+  margin-bottom: 7px;
+  text-align: center;
+}
+
+.word-list-item {
+  background-color: #fcfcfc;
+  border-radius: 5px;
+  margin-bottom: 7px;
+  font-size: .85em;
+  line-height: 1.6;
+  border: solid 1px $color-word-list-item-border;
+  overflow: hidden;
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.word-list-item-header {
+  background-color: #eee;
+  border-bottom: solid 1px $color-word-list-item-border;
+}
+
+.word-list-item-header::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+.btn-select-item {
+  float: right;
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  text-align: center;
+  color: #777;
+  background-color: transparent;
+  border: 0;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.word-list-item-body {
+  padding: 12px 14px;
+}
+
+.otm-entry-form {
+  margin: 0px;
+  line-height: 28px;
+  padding: 8px 14px;
+}
+
+.otm-tag,
+.otm-translation-title {
+  border: solid 1px #888;
+  border-radius: 2px;
+  font-size: .75rem;
+  padding: 1px 4px;
+  margin: 1px 4px;
+  line-height: 1;
+}
+
+.otm-tag {
+  font-weight: normal;
+}
+
+.otm-tag:first-of-type {
+  margin-left: 10px;
+}
+
+.otm-translation-form+.otm-translation-form::before {
+  content: ", ";
+}
+
+.otm-content-title {
+  display: inline-block;
+  font-size: .85em;
+  padding-left: 4px;
+  border-left: solid 2px #ccc;
+}
+
+.otm-content-text {
+  padding-left: 10px;
+  padding-right: 10px;
+  white-space: pre-wrap;
+}
+
+.otm-variation-title,
+.otm-relation-title {
+  font-size: .85em;
+}
+
+.otm-variation-title {
+  &::before {
+    content: "→＜";
+  }
+  &::after {
+    content: "＞";
+  }
+}
+
+.otm-relation-title {
+  &::before {
+    content: "cf:＜";
+  }
+  &::after {
+    content: "＞";
+  }
+}
+
+.show-more {
+  display: block;
+  width: 100%;
+  text-align: center;
+  background-color: #fcfcfc;
+  border-radius: 5px;
+  padding: 7px;
+  font-size: 1em;
+  line-height: 1.6;
+  border: solid 1px $color-word-list-item-border;
+  color: #0067d4;
+  cursor: pointer;
+  &:hover {
+    color: #0055af;
+    background-color: #ececec;
+  }
+}
