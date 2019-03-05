@@ -57,10 +57,15 @@ export const Title = (props: { children?: React.ReactNode }) => (
 );
 
 export const Button = (props: {
+  className?: string;
   onClick?: () => void;
   children?: React.ReactNode;
 }) => (
-    <div className="page-header-button" onClick={props.onClick}>{props.children}</div>
+    <div
+      className={"page-header-button" + (props.className ? " " + props.className : "")}
+      onClick={props.onClick}>
+      {props.children}
+    </div>
   );
 
 export const Body = (props: { children?: React.ReactNode }) => (

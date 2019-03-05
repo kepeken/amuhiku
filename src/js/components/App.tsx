@@ -6,6 +6,7 @@ import WordList from './WordListTSX';
 import WordEditor from './WordEditorTSX';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Dictionary from '../app/Dictionary';
+import { CSSTransition } from 'react-transition-group';
 import './App.scss';
 
 interface Props {
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export default class App extends React.Component<Props, {
-  show: boolean;
+  show: null | "menu" | "editor";
   dictionary: Dictionary;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
@@ -22,7 +23,7 @@ export default class App extends React.Component<Props, {
     super(props);
     const dictionary = new Dictionary(this.props.dictionary);
     this.state = {
-      show: false,
+      show: null,
       dictionary,
       currentWord: {
         entry: { id: 0, form: "" },
@@ -39,40 +40,62 @@ export default class App extends React.Component<Props, {
   render() {
     return (
       <>
-        <Page.List>
-          <Page.Item>
-            <Page.Header>
-              <Page.Title></Page.Title>
-            </Page.Header>
-            <Page.Body>
-              <WordList
-                mode="edit"
-                words={this.state.dictionary.words}
-                onSelect={currentWord => this.setState({ show: true, currentWord })}
-              />
-            </Page.Body>
-          </Page.Item>
-        </Page.List>
-        <div
-          className="float-button"
-          onClick={() => this.setState({ show: true, currentWord: this.state.dictionary.createWord() })}
+        <CSSTransition
+          in={this.state.show === "menu"}
+          classNames="menu"
+          timeout={300}
         >
-          <FontAwesomeIcon icon="plus" />
+          <div className="menu-wrapper">
+            <div className="menu-back"
+              onClick={() => this.setState({ show: null })}
+            />
+            <div className="menu-container"></div>
+          </div>
+        </CSSTransition>
+        <div className="app-content">
+          <Page.List>
+            <Page.Item>
+              <Page.Header>
+                <Page.Button
+                  className="menu-button"
+                  onClick={() => {
+                    this.setState({ show: this.state.show === "menu" ? null : "menu" })
+                  }}
+                >
+                  <FontAwesomeIcon icon="bars" />
+                </Page.Button>
+                <Page.Title></Page.Title>
+              </Page.Header>
+              <Page.Body>
+                <WordList
+                  mode="edit"
+                  words={this.state.dictionary.words}
+                  onSelect={currentWord => this.setState({ show: "editor", currentWord })}
+                />
+              </Page.Body>
+            </Page.Item>
+          </Page.List>
+          <div
+            className="float-button"
+            onClick={() => this.setState({ show: "editor", currentWord: this.state.dictionary.createWord() })}
+          >
+            <FontAwesomeIcon icon="plus" />
+          </div>
         </div>
         <Modal
-          show={this.state.show}
+          show={this.state.show === "editor"}
           fullscreen
         >
           <WordEditor
             mode="edit"
             words={this.state.dictionary.words}
             word={this.state.currentWord}
-            onCancel={() => this.setState({ show: false })}
+            onCancel={() => this.setState({ show: null })}
             onEdit={word => {
-              this.setState({ show: false, dictionary: this.state.dictionary.updateWord(word) });
+              this.setState({ show: null, dictionary: this.state.dictionary.updateWord(word) });
             }}
             onRemove={id => {
-              this.setState({ show: false, dictionary: this.state.dictionary.removeWord(id) });
+              this.setState({ show: null, dictionary: this.state.dictionary.removeWord(id) });
             }}
           />
         </Modal>
