@@ -12,86 +12,54 @@ interface Props {
   onSelect: (word: OTM.Word) => void;
 }
 
-interface State {
-  text: string;
-  options: SearchOptions;
-  results: OTM.Word[];
-  limit: number;
-}
+export default function WordList(props: Props) {
+  const SIZE = 120;
 
-export default class WordList extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    const defaultText = "";
-    const defaultOptions = { mode: "name", type: "exact" } as SearchOptions;
-    this.state = {
-      text: defaultText,
-      options: defaultOptions,
-      results: this.findWords(defaultText, defaultOptions),
-      limit: 120,
-    };
-    this.handleTextChange = this.handleTextChange.bind(this);
-    this.handleOptionsChange = this.handleOptionsChange.bind(this);
-  }
+  const [text, setText] = React.useState("");
+  const [options, setOptions] = React.useState<SearchOptions>({ mode: "name", type: "exact" });
+  const [results, setResults] = React.useState(props.words);
+  const [limit, setLimit] = React.useState(SIZE);
 
-  handleTextChange(text: string) {
-    const results = this.findWords(text, this.state.options);
-    this.setState({ text, results, limit: 120 });
-  }
-
-  handleOptionsChange(options: SearchOptions) {
-    const results = this.findWords(this.state.text, options);
-    this.setState({ options, results, limit: 120 });
-  }
-
-  findWords(text: string, options: SearchOptions) {
+  React.useEffect(() => {
     const test = compileWordTester(text, options);
-    const found = this.props.words.filter(test);
-    return found;
-  }
+    const found = props.words.filter(test);
+    setResults(found);
+  }, [text, options, props.words]);
 
-  append() {
-    const newLimit = Math.min(
-      this.state.results.length,
-      this.state.limit + 120
-    );
-    this.setState({ limit: newLimit });
-  }
+  const rest = results.length - limit;
+  const addition = Math.min(SIZE, rest);
 
-  render() {
-    const rest = this.state.results.length - this.state.limit;
-    return (
-      <div className="word-list">
-        <SearchField
-          text={this.state.text}
-          onChange={this.handleTextChange}
-        />
-        <SearchOptionForm
-          options={this.state.options}
-          onChange={this.handleOptionsChange}
-        />
-        <div className="search-result">
-          <div className="search-info">
-            {this.state.results.length} / {this.props.words.length}
-          </div>
-          {this.state.results.slice(0, this.state.limit).map(word =>
-            <WordListItem
-              key={word.entry.id}
-              mode={this.props.mode}
-              word={word}
-              onClick={(word) => this.props.onSelect(word)}
-            />
-          )}
-          {this.state.limit < this.state.results.length && (
-            <button
-              className="show-more"
-              onClick={this.append.bind(this)}
-            >
-              次の {Math.min(120, rest)} 件を表示
-            </button>
-          )}
+  return (
+    <div className="word-list">
+      <SearchField
+        text={text}
+        onChange={nextText => { setText(nextText); setLimit(SIZE); }}
+      />
+      <SearchOptionForm
+        options={options}
+        onChange={nextOptions => { setOptions(nextOptions); setLimit(SIZE); }}
+      />
+      <div className="search-result">
+        <div className="search-info">
+          {results.length} / {props.words.length}
         </div>
+        {results.slice(0, limit).map(word =>
+          <WordListItem
+            key={word.entry.id}
+            mode={props.mode}
+            word={word}
+            onClick={word => props.onSelect(word)}
+          />
+        )}
+        {limit < results.length && (
+          <button
+            className="show-more"
+            onClick={() => { setLimit(limit + addition); }}
+          >
+            次の {addition} 件を表示
+          </button>
+        )}
       </div>
-    );
-  }
+    </div>
+  );
 }
