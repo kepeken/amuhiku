@@ -2,6 +2,7 @@ import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Page from './Page';
 import * as List from './List';
+import Loader from './Loader';
 import * as API from '../api/base';
 import browser from '../api/browser';
 import dropboxClient from '../api/dropbox';
@@ -74,55 +75,58 @@ export default class FilePicker extends React.Component<Props, State> {
 
   render() {
     return (
-      <Page.List>
-        <Page.Item>
-          <Page.Header>
-            <Page.Button onClick={this.props.onCancel}>
-              <FontAwesomeIcon icon="times" />
-            </Page.Button>
-            <Page.Title>辞書を開く</Page.Title>
-          </Page.Header>
-          <Page.Body>
-            <List.List>
-              <List.Item onClick={() => this.handleList(this.state.browser)}>
-                <List.Icon><FontAwesomeIcon icon="folder" /></List.Icon>
-                <List.Text>ブラウザストレージ</List.Text>
-              </List.Item>
-              <List.Item onClick={async () => this.handleList(await this.handleLogIn("dropbox", dropboxClient))}>
-                <List.Icon><FontAwesomeIcon icon={["fab", "dropbox"]} /></List.Icon>
-                <List.Text>Dropbox</List.Text>
-              </List.Item>
-            </List.List>
-          </Page.Body>
-        </Page.Item>
-        {this.state.pages.map(({ title, items }, idx) =>
-          <Page.Item key={idx}>
+      <>
+        <Page.List>
+          <Page.Item>
             <Page.Header>
-              <Page.Button onClick={this.handlePop}>
-                <FontAwesomeIcon icon="chevron-left" />
+              <Page.Button onClick={this.props.onCancel}>
+                <FontAwesomeIcon icon="times" />
               </Page.Button>
-              <Page.Title>{title}</Page.Title>
+              <Page.Title>辞書を開く</Page.Title>
             </Page.Header>
             <Page.Body>
               <List.List>
-                {items.map((entry, idx) =>
-                  entry instanceof API.Folder
-                    ?
-                    <List.Item key={idx} onClick={() => this.handleList(entry)}>
-                      <List.Icon><FontAwesomeIcon icon="folder" /></List.Icon>
-                      <List.Text>{entry.name}</List.Text>
-                    </List.Item>
-                    :
-                    <List.Item key={idx} onClick={() => this.handleSelect(entry)}>
-                      <List.Icon><FontAwesomeIcon icon="file" /></List.Icon>
-                      <List.Text>{entry.name}</List.Text>
-                    </List.Item>
-                )}
+                <List.Item onClick={() => this.handleList(this.state.browser)}>
+                  <List.Icon><FontAwesomeIcon icon="folder" /></List.Icon>
+                  <List.Text>ブラウザストレージ</List.Text>
+                </List.Item>
+                <List.Item onClick={async () => this.handleList(await this.handleLogIn("dropbox", dropboxClient))}>
+                  <List.Icon><FontAwesomeIcon icon={["fab", "dropbox"]} /></List.Icon>
+                  <List.Text>Dropbox</List.Text>
+                </List.Item>
               </List.List>
             </Page.Body>
           </Page.Item>
-        )}
-      </Page.List>
-    )
+          {this.state.pages.map(({ title, items }, idx) =>
+            <Page.Item key={idx}>
+              <Page.Header>
+                <Page.Button onClick={this.handlePop}>
+                  <FontAwesomeIcon icon="chevron-left" />
+                </Page.Button>
+                <Page.Title>{title}</Page.Title>
+              </Page.Header>
+              <Page.Body>
+                <List.List>
+                  {items.map((entry, idx) =>
+                    entry instanceof API.Folder
+                      ?
+                      <List.Item key={idx} onClick={() => this.handleList(entry)}>
+                        <List.Icon><FontAwesomeIcon icon="folder" /></List.Icon>
+                        <List.Text>{entry.name}</List.Text>
+                      </List.Item>
+                      :
+                      <List.Item key={idx} onClick={() => this.handleSelect(entry)}>
+                        <List.Icon><FontAwesomeIcon icon="file" /></List.Icon>
+                        <List.Text>{entry.name}</List.Text>
+                      </List.Item>
+                  )}
+                </List.List>
+              </Page.Body>
+            </Page.Item>
+          )}
+        </Page.List>
+        <Loader show={this.state.loading} />
+      </>
+    );
   }
 }

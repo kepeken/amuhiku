@@ -11,6 +11,7 @@ import {
   faLongArrowAltDown,
   faLongArrowAltUp,
   faPlus,
+  faSpinner,
   faTimes,
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
@@ -31,6 +32,7 @@ library.add(
   faLongArrowAltDown,
   faLongArrowAltUp,
   faPlus,
+  faSpinner,
   faTimes,
   faTrashAlt,
 );
