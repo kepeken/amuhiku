@@ -1,4 +1,5 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
+
 import {
   faBars,
   faCheck,
@@ -14,11 +15,16 @@ import {
   faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
+import {
+  faDropbox,
+} from '@fortawesome/free-brands-svg-icons';
+
 library.add(
   faBars,
   faCheck,
   faChevronLeft,
   faCog,
+  faDropbox,
   faEdit,
   faFile,
   faFolder,
