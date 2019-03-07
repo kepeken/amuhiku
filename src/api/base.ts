@@ -1,5 +1,11 @@
-export abstract class Entry {
+export abstract class Client {
+  abstract readonly loggedIn: boolean;
+  abstract logIn(): Promise<void>;
+}
+
+abstract class Entry {
   abstract readonly name: string;
+  abstract readonly path: string;
 }
 
 export abstract class File extends Entry {
@@ -9,6 +15,5 @@ export abstract class File extends Entry {
 
 export abstract class Folder extends Entry {
   abstract list(): Promise<(File | Folder)[]>;
-  abstract child(name: string): File;
-  abstract create(name: string, text: string): Promise<File>;
+  abstract create(name: string, text: string, init: {}): Promise<File>;
 }

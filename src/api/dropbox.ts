@@ -1,27 +1,22 @@
-import { File, Folder } from './base';
+import * as API from './base';
 import { Dropbox } from 'dropbox';
 import readAsText from '../util/readAsText';
 
-class DropboxClient {
-  private client: Dropbox;
-  private _loggedIn: boolean;
-
-  constructor() {
-    this._loggedIn = false;
-    this.client = new Dropbox({ clientId: "rtid7yv8kjr94tc" });
-  }
+class DropboxClient extends API.Client {
+  private _loggedIn = false;
+  private client = new Dropbox({ clientId: "rtid7yv8kjr94tc" });
 
   get loggedIn() {
     return this._loggedIn;
   }
 
-  setAccessToken(accessToken: string) {
+  private setAccessToken(accessToken: string) {
     this._loggedIn = true;
     this.client = new Dropbox({ accessToken });
   }
 
   async logIn() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const redirectUri = `${location.origin}/dropbox.html`;
       const authUrl = this.client.getAuthenticationUrl(redirectUri);
       const authWindow = window.open(authUrl, undefined, "width=640,height=480");
@@ -47,12 +42,13 @@ class DropboxClient {
   }
 }
 
-class DropboxFile implements File {
+class DropboxFile extends API.File {
   private client: Dropbox;
-  private path: string;
+  public readonly path: string;
   public readonly name: string;
 
   constructor(client: Dropbox, parent: string, name: string) {
+    super();
     this.client = client;
     this.path = `${parent}/${name}`;
     this.name = name;
@@ -74,12 +70,13 @@ class DropboxFile implements File {
   }
 }
 
-class DropboxFolder implements Folder {
+class DropboxFolder extends API.Folder {
   private client: Dropbox;
-  private path: string;
+  public readonly path: string;
   public readonly name: string;
 
   constructor(client: Dropbox, parent: string, name: string) {
+    super();
     this.client = client;
     this.path = `${parent}/${name}`;
     this.name = name;
@@ -98,17 +95,12 @@ class DropboxFolder implements Folder {
     return entries;
   }
 
-  child(name: string) {
-    return new DropboxFile(this.client, this.path, name);
-  }
-
   async create(name: string, text: string) {
-    const file = new DropboxFile(this.client, this.path, name);
     await this.client.filesUpload({
       path: `${this.path}/${name}`,
       contents: new Blob([text], { type: "application/json" }),
       mode: { ".tag": "add" },
     });
-    return file;
+    return new DropboxFile(this.client, this.path, name);
   }
 }
