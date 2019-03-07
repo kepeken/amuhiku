@@ -10,57 +10,7 @@ import {
 
 import app from "./app";
 
-import resourceHandler from "./resource/all";
-const browser = resourceHandler.get("browser");
-const dropbox = resourceHandler.get("dropbox");
-const github = resourceHandler.get("github");
-
 import device from "./resource/device";
-
-import { pushPage } from "./components/pages";
-
-var m = function (tag, attrs, children) {
-  var e = typeof tag === "string" ? document.createElement(tag) : tag;
-  var pname = { "class": "className", "data": "dataset" };
-  if (attrs) for (var n in attrs) {
-    var p = pname[n] || n;
-    if (n === "style" || n === "data") {
-      for (var k in attrs[n]) e[p][k] = attrs[n][k];
-    } else {
-      e[p] = attrs[n];
-    }
-  }
-  function append(x) {
-    if (Array.isArray(x)) {
-      x.forEach(append);
-    } else if (typeof x === "string") {
-      e.appendChild(document.createTextNode(x));
-    } else if (x instanceof Node) {
-      e.appendChild(x);
-    }
-  }
-  append(children);
-  return e;
-}
-
-m.icon = (cls) => m("i", { class: cls });
-m.item = (arg) => m("div", { class: "item clickable", onclick: arg.onclick }, [
-  m.icon(arg.icon), arg.text
-]);
-
-var scroller = {
-  top: 0,
-  pause() {
-    this.top = document.scrollingElement.scrollTop;
-  },
-  resume() {
-    document.scrollingElement.scrollTop = this.top;
-  },
-  scrollTop(val) {
-    this.top = val || 0;
-    this.resume();
-  }
-};
 
 var dictionary = {
   defaultOTM: '{"words":[]}',
@@ -101,12 +51,12 @@ dictionary.load = function (str, entry, path, url) {
     alert(e);
     return;
   }
-  hideModal($("#opener"));
+  // hideModal($("#opener"));
   otm = _otm;
   dictionary.changed = false;
   dictionary.currentEntry = entry;
   dictionary.currentPath = path;
-  $("#info-path").text(path.split("/").pop());
+  // $("#info-path").text(path.split("/").pop());
   dictionary.refresh();
   ReactDOM.render(
     React.createElement(App, {
@@ -144,115 +94,57 @@ function promptForFileName() {
   }
 }
 
-function openerList({ resource, title }) {
-  resource.dir().then(res => {
-    pushPage({
-      header: title,
-      content: res.map(entry => {
-        if (entry.isFolder) {
-          return m.item({
-            icon: "fas fa-folder",
-            text: entry.name,
-            onclick() {
-              openerList({ resource: entry, title: entry.name });
-            },
-          });
-        } else {
-          return m.item({
-            icon: "far fa-file",
-            text: entry.name,
-            onclick() {
-              entry.read().then(text => {
-                dictionary.load(text, entry, entry.path);
-              });
-            },
-          });
-        }
-      })
-    });
-  });
-}
-
-
-function saverList({ resource, title }) {
-  resource.dir().then(res => {
-    pushPage({
-      header: title,
-      content: [
-        m.item({
-          icon: "fas fa-plus",
-          text: "新しいファイルとして保存",
-          onclick() {
-            const name = promptForFileName();
-            if (!name) return;
-            resource.create(name, dictionary.compose()).then(() => {
-              alert("保存しました。");
-              dictionary.changed = false;
-              hideModal();
-            });
-          },
-        }),
-        res.map(entry => {
-          if (entry.isFolder) {
-            return m.item({
-              icon: "fas fa-folder",
-              text: entry.name,
-              onclick() {
-                saverList({ resource: entry, title: entry.name });
-              },
-            });
-          } else {
-            return m.item({
-              icon: "far fa-file",
-              text: entry.name,
-              onclick() {
-                if (!confirm(`${entry.path}\nに上書きしますか？`)) return;
-                entry.update(dictionary.compose()).then(() => {
-                  alert("上書き保存しました。");
-                  dictionary.changed = false;
-                  hideModal();
-                });
-              },
-            });
-          }
-        }),
-      ]
-    });
-  });
-}
-
-function showModal($e) {
-  $e.show();
-  setTimeout(() => {
-    $e.addClass("show");
-  }, 0);
-  scroller.pause();
-  setTimeout(() => {
-    $("#content").hide();
-  }, 400);
-}
-
-function hideModal() {
-  $(".modal").removeClass("show");
-  $("#content").show();
-  scroller.resume();
-  setTimeout(() => {
-    $(".modal").hide();
-  }, 400);
-}
-
-$(".close").on("click", function () {
-  hideModal();
-});
+// function saverList({ resource, title }) {
+//   resource.dir().then(res => {
+//     pushPage({
+//       header: title,
+//       content: [
+//         m.item({
+//           icon: "fas fa-plus",
+//           text: "新しいファイルとして保存",
+//           onclick() {
+//             const name = promptForFileName();
+//             if (!name) return;
+//             resource.create(name, dictionary.compose()).then(() => {
+//               alert("保存しました。");
+//               dictionary.changed = false;
+//               hideModal();
+//             });
+//           },
+//         }),
+//         res.map(entry => {
+//           if (entry.isFolder) {
+//             return m.item({
+//               icon: "fas fa-folder",
+//               text: entry.name,
+//               onclick() {
+//                 saverList({ resource: entry, title: entry.name });
+//               },
+//             });
+//           } else {
+//             return m.item({
+//               icon: "far fa-file",
+//               text: entry.name,
+//               onclick() {
+//                 if (!confirm(`${entry.path}\nに上書きしますか？`)) return;
+//                 entry.update(dictionary.compose()).then(() => {
+//                   alert("上書き保存しました。");
+//                   dictionary.changed = false;
+//                   hideModal();
+//                 });
+//               },
+//             });
+//           }
+//         }),
+//       ]
+//     });
+//   });
+// }
 
 $("#open").on("click", function () {
   if (!dictionary.changed || confirm("注：ファイルが変更されています。新しいファイルを開くと変更は破棄されます。")) {
-    showModal($("#opener"));
+    // showModal($("#opener"));
   }
-});
-
-$("#save").on("click", function () {
-  showModal($("#saver"));
 });
 
 
@@ -266,28 +158,8 @@ $("#open-local").on("click", function () {
   });
 });
 
-$("#open-dropbox").on("click", function () {
-  if (dropbox.loggedIn) {
-    openerList({ resource: dropbox, title: `Dropbox` });
-  } else {
-    dropbox.logIn();
-  }
-});
-
-$("#open-storage").on("click", function () {
-  openerList({ resource: browser, title: `ブラウザストレージ` });
-});
-
 $("#open-help").on("click", function () {
   dictionary.load(JSON.stringify(require("./data/help")), null, "help");
-});
-
-$("#open-github").on("click", function () {
-  if (github.loggedIn) {
-    openerList({ resource: github, title: `GitHub Gist` });
-  } else {
-    github.logIn();
-  }
 });
 
 $("#open-online").on("click", function () {
@@ -312,26 +184,6 @@ $("#save-local-text").on("click", function () {
 
 $("#save-local-bin").on("click", function () {
   device.export(dictionary.compose(), { type: "application/json;" });
-});
-
-$("#save-dropbox").on("click", function () {
-  if (dropbox.loggedIn) {
-    saverList({ resource: dropbox, title: `Dropbox` });
-  } else {
-    dropbox.logIn();
-  }
-});
-
-$("#save-github").on("click", function () {
-  if (github.loggedIn) {
-    saverList({ resource: github, title: `GitHub Gist` });
-  } else {
-    github.logIn();
-  }
-});
-
-$("#save-storage").on("click", function () {
-  saverList({ resource: browser, title: `ブラウザストレージ` });
 });
 
 $("#save-clipboard").on("click", function () {

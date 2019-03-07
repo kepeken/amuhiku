@@ -1,9 +1,7 @@
 import readAsText from "../util/readAsText";
-import alertError from "../decorator/alertError";
 
 class DeviceResourceHandler {
 
-  @alertError
   import() {
     return new Promise((resolve, reject) => {
       const input = document.createElement("input");
@@ -19,7 +17,6 @@ class DeviceResourceHandler {
     });
   }
 
-  @alertError
   export(text, blobOptions) {
     return new Promise((resolve, reject) => {
       const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
