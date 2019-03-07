@@ -3,7 +3,7 @@ import { Transition, TransitionGroup } from 'react-transition-group';
 import './Page.scss';
 
 export class List extends React.Component<{
-  children?: React.ReactNode | React.ReactNode[];
+  children?: React.ReactNode;
 }, {
   transiting: boolean;
 }> {
@@ -17,13 +17,12 @@ export class List extends React.Component<{
   }
 
   render() {
-    const children = Array.isArray(this.props.children) ? this.props.children : [this.props.children];
     return (
       <TransitionGroup className={[
         "page-list",
         this.state.transiting ? "page-transiting" : ""
       ].join(" ")} >
-        {children.map((item, i) => item && (
+        {React.Children.map(this.props.children, (item, i) => item && (
           <Transition
             key={i}
             timeout={300}

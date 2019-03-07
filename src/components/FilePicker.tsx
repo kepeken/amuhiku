@@ -5,7 +5,7 @@ import * as List from './List';
 import * as API from '../api/base';
 
 interface Props {
-  initialPage: typeof Page.Item;
+  onCancel: () => void;
   onSelect: (content: string) => void;
 }
 
@@ -53,7 +53,26 @@ export default class FilePicker extends React.Component<Props, State> {
   render() {
     return (
       <Page.List>
-        {this.props.initialPage}
+        <Page.Item>
+          <Page.Header>
+            <Page.Button onClick={this.props.onCancel}>
+              <FontAwesomeIcon icon="times" />
+            </Page.Button>
+            <Page.Title>辞書を開く</Page.Title>
+          </Page.Header>
+          <Page.Body>
+            <List.List>
+              <List.Item>
+                <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                <List.Text>ほげ</List.Text>
+              </List.Item>
+              <List.Item>
+                <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                <List.Text>ふが</List.Text>
+              </List.Item>
+            </List.List>
+          </Page.Body>
+        </Page.Item>
         {this.state.pages.map(({ title, items }, idx) =>
           <Page.Item key={idx}>
             <Page.Header>

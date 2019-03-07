@@ -7,6 +7,7 @@ import * as Page from './Page';
 import * as List from './List';
 import WordList from './WordList';
 import WordEditor from './WordEditor';
+import FilePicker from './FilePicker';
 import SettingsEditor from './SettingsEditor';
 import Dictionary from '../app/Dictionary';
 import './App.scss';
@@ -121,26 +122,10 @@ export default class App extends React.Component<Props, State> {
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "files"}>
-          <Page.List>
-            <Page.Item>
-              <Page.Header>
-                <CloseButton />
-                <Page.Title>辞書を開く</Page.Title>
-              </Page.Header>
-              <Page.Body>
-                <List.List>
-                  <List.Item>
-                    <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
-                    <List.Text>ほげ</List.Text>
-                  </List.Item>
-                  <List.Item>
-                    <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
-                    <List.Text>ふが</List.Text>
-                  </List.Item>
-                </List.List>
-              </Page.Body>
-            </Page.Item>
-          </Page.List>
+          <FilePicker
+            onCancel={() => this.setState({ show: null })}
+            onSelect={() => { }}
+          />
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>
           <Page.List>
