@@ -1,0 +1,25 @@
+.list {
+  background-color: #fff;
+}
+
+.list-item {
+  padding: 11px 16px;
+  line-height: 24px;
+  cursor: pointer;
+}
+
+.list-item:hover {
+  background-color: rgba(0, 0, 0, .08);
+}
+
+.list-item-icon {
+  display: inline-block;
+  margin-right: 16px;
+  width: 24px;
+  text-align: center;
+  color: rgba(0, 0, 0, .54);
+}
+
+.list-item-text {
+  display: inline-block;
+}

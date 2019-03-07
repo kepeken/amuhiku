@@ -4,6 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Modal from './Modal';
 import * as Page from './Page';
+import * as List from './List';
 import WordList from './WordList';
 import WordEditor from './WordEditor';
 import SettingsEditor from './SettingsEditor';
@@ -15,7 +16,7 @@ interface Props {
 }
 
 interface State {
-  show: null | "menu" | "editor" | "settings";
+  show: null | "menu" | "editor" | "files" | "settings";
   dictionary: Dictionary;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
@@ -58,29 +59,20 @@ export default class App extends React.Component<Props, State> {
             <div className="menu-container">
               <div className="menu-header">
               </div>
-              <div className="menu-list">
-                <div
-                  className="menu-item"
-                  onClick={() => { }}
-                >
-                  <span className="menu-icon"><FontAwesomeIcon icon="plus" /></span>
-                  新規辞書の作成
-                </div>
-                <div
-                  className="menu-item"
-                  onClick={() => { }}
-                >
-                  <span className="menu-icon"><FontAwesomeIcon icon="plus" /></span>
-                  辞書を開く
-                </div>
-                <div
-                  className="menu-item"
-                  onClick={() => this.setState({ show: "settings" })}
-                >
-                  <span className="menu-icon"><FontAwesomeIcon icon="cog" /></span>
-                  設定
-                </div>
-              </div>
+              <List.List>
+                <List.Item onClick={() => { }}>
+                  <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                  <List.Text>新規辞書の作成</List.Text>
+                </List.Item>
+                <List.Item onClick={() => this.setState({ show: "files" })}>
+                  <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                  <List.Text>辞書を開く</List.Text>
+                </List.Item>
+                <List.Item onClick={() => this.setState({ show: "settings" })}>
+                  <List.Icon><FontAwesomeIcon icon="cog" /></List.Icon>
+                  <List.Text>設定</List.Text>
+                </List.Item>
+              </List.List>
             </div>
           </div>
         </CSSTransition>
@@ -127,6 +119,28 @@ export default class App extends React.Component<Props, State> {
               this.setState({ show: null, dictionary: this.state.dictionary.removeWord(id) });
             }}
           />
+        </Modal>
+        <Modal fullscreen show={this.state.show === "files"}>
+          <Page.List>
+            <Page.Item>
+              <Page.Header>
+                <CloseButton />
+                <Page.Title>辞書を開く</Page.Title>
+              </Page.Header>
+              <Page.Body>
+                <List.List>
+                  <List.Item>
+                    <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                    <List.Text>ほげ</List.Text>
+                  </List.Item>
+                  <List.Item>
+                    <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                    <List.Text>ふが</List.Text>
+                  </List.Item>
+                </List.List>
+              </Page.Body>
+            </Page.Item>
+          </Page.List>
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>
           <Page.List>
