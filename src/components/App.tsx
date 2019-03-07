@@ -124,7 +124,7 @@ export default class App extends React.Component<Props, State> {
         <Modal fullscreen show={this.state.show === "files"}>
           <FilePicker
             onCancel={() => this.setState({ show: null })}
-            onSelect={() => { }}
+            onSelect={text => this.setState({ show: null, dictionary: new Dictionary(text) })}
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>
