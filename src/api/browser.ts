@@ -49,6 +49,4 @@ class BrowserFolder extends API.Folder {
   }
 }
 
-const root = new BrowserFolder();
-
-export default root;
+export default new BrowserFolder();

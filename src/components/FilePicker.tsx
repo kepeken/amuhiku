@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Page from './Page';
 import * as List from './List';
 import * as API from '../api/base';
+import browser from '../api/browser';
+import dropboxClient from '../api/dropbox';
 
 interface Props {
   onCancel: () => void;
@@ -15,17 +17,37 @@ interface State {
     items: (API.File | API.Folder)[];
   }[];
   loading: boolean;
+  browser: API.Folder;
+  dropbox: API.Folder | null;
 }
 
 export default class FilePicker extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = { pages: [], loading: false };
+    this.state = {
+      pages: [],
+      loading: false,
+      browser,
+      dropbox: dropboxClient.root,
+    };
     this.handlePop = this.handlePop.bind(this);
   }
 
   handlePop() {
     this.setState({ pages: this.state.pages.slice(0, -1) })
+  }
+
+  async handleLogIn(name: "dropbox", client: API.Client) {
+    let root = this.state[name];
+    if (root === null) {
+      alert("ログインします。");
+      root = await client.logIn();
+      this.setState({
+        [name]: root,
+      });
+      alert("ログインしました。");
+    }
+    return root;
   }
 
   async handleList(folder: API.Folder) {
@@ -62,13 +84,13 @@ export default class FilePicker extends React.Component<Props, State> {
           </Page.Header>
           <Page.Body>
             <List.List>
-              <List.Item>
-                <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
-                <List.Text>ほげ</List.Text>
+              <List.Item onClick={() => this.handleList(this.state.browser)}>
+                <List.Icon><FontAwesomeIcon icon="folder" /></List.Icon>
+                <List.Text>ブラウザストレージ</List.Text>
               </List.Item>
-              <List.Item>
-                <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
-                <List.Text>ふが</List.Text>
+              <List.Item onClick={async () => this.handleList(await this.handleLogIn("dropbox", dropboxClient))}>
+                <List.Icon><FontAwesomeIcon icon={["fab", "dropbox"]} /></List.Icon>
+                <List.Text>Dropbox</List.Text>
               </List.Item>
             </List.List>
           </Page.Body>

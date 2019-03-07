@@ -5,9 +5,14 @@ import readAsText from '../util/readAsText';
 class DropboxClient extends API.Client {
   private _loggedIn = false;
   private client = new Dropbox({ clientId: "rtid7yv8kjr94tc" });
+  private _root: DropboxFolder | null = null;
 
   get loggedIn() {
     return this._loggedIn;
+  }
+
+  get root() {
+    return this._root;
   }
 
   private setAccessToken(accessToken: string) {
@@ -16,7 +21,7 @@ class DropboxClient extends API.Client {
   }
 
   async logIn() {
-    return new Promise<void>((resolve, reject) => {
+    return new Promise<DropboxFolder>((resolve, reject) => {
       const redirectUri = `${location.origin}/dropbox.html`;
       const authUrl = this.client.getAuthenticationUrl(redirectUri);
       const authWindow = window.open(authUrl, undefined, "width=640,height=480");
@@ -32,7 +37,8 @@ class DropboxClient extends API.Client {
         const accessToken = params.get("access_token");
         if (accessToken) {
           this.setAccessToken(accessToken);
-          resolve();
+          this._root = new DropboxFolder(this.client, null, "Dropbox");
+          resolve(this._root);
         }
         window.removeEventListener("message", callback, false);
         authWindow.close();
@@ -75,10 +81,10 @@ class DropboxFolder extends API.Folder {
   public readonly path: string;
   public readonly name: string;
 
-  constructor(client: Dropbox, parent: string, name: string) {
+  constructor(client: Dropbox, parent: string | null, name: string) {
     super();
     this.client = client;
-    this.path = `${parent}/${name}`;
+    this.path = parent === null ? "" : `${parent}/${name}`;
     this.name = name;
   }
 
@@ -104,3 +110,5 @@ class DropboxFolder extends API.Folder {
     return new DropboxFile(this.client, this.path, name);
   }
 }
+
+export default new DropboxClient();

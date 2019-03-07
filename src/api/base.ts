@@ -1,6 +1,6 @@
 export abstract class Client {
   abstract readonly loggedIn: boolean;
-  abstract logIn(): Promise<void>;
+  abstract logIn(): Promise<Folder>;
 }
 
 abstract class Entry {
