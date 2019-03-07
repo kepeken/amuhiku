@@ -6,6 +6,7 @@ import Loader from './Loader';
 import * as API from '../api/base';
 import browser from '../api/browser';
 import dropboxClient from '../api/dropbox';
+import githubClient from '../api/github';
 
 interface Props {
   onCancel: () => void;
@@ -20,6 +21,7 @@ interface State {
   loading: boolean;
   browser: API.Folder;
   dropbox: API.Folder | null;
+  github: API.Folder | null;
 }
 
 export default class FilePicker extends React.Component<Props, State> {
@@ -30,6 +32,7 @@ export default class FilePicker extends React.Component<Props, State> {
       loading: false,
       browser,
       dropbox: dropboxClient.root,
+      github: githubClient.root,
     };
     this.handlePop = this.handlePop.bind(this);
   }
@@ -38,14 +41,14 @@ export default class FilePicker extends React.Component<Props, State> {
     this.setState({ pages: this.state.pages.slice(0, -1) })
   }
 
-  async handleLogIn(name: "dropbox", client: API.Client) {
+  async handleLogIn(name: "dropbox" | "github", client: API.Client) {
     let root = this.state[name];
     if (root === null) {
       alert("ログインします。");
       root = await client.logIn();
       this.setState({
         [name]: root,
-      });
+      } as Pick<State, typeof name>);
       alert("ログインしました。");
     }
     return root;
@@ -93,6 +96,10 @@ export default class FilePicker extends React.Component<Props, State> {
                 <List.Item onClick={async () => this.handleList(await this.handleLogIn("dropbox", dropboxClient))}>
                   <List.Icon><FontAwesomeIcon icon={["fab", "dropbox"]} /></List.Icon>
                   <List.Text>Dropbox</List.Text>
+                </List.Item>
+                <List.Item onClick={async () => this.handleList(await this.handleLogIn("github", githubClient))}>
+                  <List.Icon><FontAwesomeIcon icon={["fab", "github"]} /></List.Icon>
+                  <List.Text>GitHub Gist</List.Text>
                 </List.Item>
               </List.List>
             </Page.Body>

@@ -18,6 +18,7 @@ import {
 
 import {
   faDropbox,
+  faGithub,
 } from '@fortawesome/free-brands-svg-icons';
 
 library.add(
@@ -29,6 +30,7 @@ library.add(
   faEdit,
   faFile,
   faFolder,
+  faGithub,
   faLongArrowAltDown,
   faLongArrowAltUp,
   faPlus,
