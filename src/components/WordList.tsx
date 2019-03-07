@@ -24,6 +24,7 @@ export default function WordList(props: Props) {
     const test = compileWordTester(text, options);
     const found = props.words.filter(test);
     setResults(found);
+    setLimit(SIZE);
   }, [text, options, props.words]);
 
   const rest = results.length - limit;
@@ -33,11 +34,11 @@ export default function WordList(props: Props) {
     <div className="word-list">
       <SearchField
         text={text}
-        onChange={nextText => { setText(nextText); setLimit(SIZE); }}
+        onChange={setText}
       />
       <SearchOptionForm
         options={options}
-        onChange={nextOptions => { setOptions(nextOptions); setLimit(SIZE); }}
+        onChange={setOptions}
       />
       <div className="search-result">
         <div className="search-info">
@@ -48,13 +49,13 @@ export default function WordList(props: Props) {
             key={word.entry.id}
             mode={props.mode}
             word={word}
-            onClick={word => props.onSelect(word)}
+            onClick={props.onSelect}
           />
         )}
-        {limit < results.length && (
+        {addition > 0 && (
           <button
             className="show-more"
-            onClick={() => { setLimit(limit + addition); }}
+            onClick={() => setLimit(limit + addition)}
           >
             次の {addition} 件を表示
           </button>
