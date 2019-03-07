@@ -1,12 +1,14 @@
-export interface File {
-  readonly name: string;
-  read(): Promise<string>;
-  update(text: string): Promise<void>;
+export abstract class Entry {
+  abstract readonly name: string;
 }
 
-export interface Folder {
-  readonly name: string;
-  list(): Promise<(File | Folder)[]>;
-  child(name: string): File;
-  create(name: string, text: string): Promise<File>;
+export abstract class File extends Entry {
+  abstract read(): Promise<string>;
+  abstract update(text: string): Promise<void>;
+}
+
+export abstract class Folder extends Entry {
+  abstract list(): Promise<(File | Folder)[]>;
+  abstract child(name: string): File;
+  abstract create(name: string, text: string): Promise<File>;
 }
