@@ -7,10 +7,12 @@ import * as API from '../api/base';
 import browser from '../api/browser';
 import dropboxClient from '../api/dropbox';
 import githubClient from '../api/github';
+import * as misc from '../api/misc';
 
 interface Props {
+  mode: "open" | "save";
   onCancel: () => void;
-  onSelect: (content: string, file: API.File) => void;
+  onSelect: (content: string, file: API.File | null) => void;
 }
 
 interface State {
@@ -101,6 +103,12 @@ export default class FilePicker extends React.Component<Props, State> {
                   <List.Icon><FontAwesomeIcon icon={["fab", "github"]} /></List.Icon>
                   <List.Text>GitHub Gist</List.Text>
                 </List.Item>
+                {this.props.mode === "open" && <>
+                  <List.Item onClick={async () => this.props.onSelect(await misc.importFromDevice(), null)}>
+                    <List.Icon><FontAwesomeIcon icon="desktop" /></List.Icon>
+                    <List.Text>ローカルファイル</List.Text>
+                  </List.Item>
+                </>}
               </List.List>
             </Page.Body>
           </Page.Item>

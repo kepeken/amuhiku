@@ -146,7 +146,7 @@ export default class App extends React.Component<Props, State> {
                 >
                   <FontAwesomeIcon icon="bars" />
                 </Page.Button>
-                <Page.Title></Page.Title>
+                <Page.Title>{this.state.file && this.state.file.name}</Page.Title>
               </Page.Header>
               <Page.Body>
                 <WordList
@@ -180,6 +180,7 @@ export default class App extends React.Component<Props, State> {
         </Modal>
         <Modal fullscreen show={this.state.show === "files"}>
           <FilePicker
+            mode="open"
             onCancel={() => this.setState({ show: null })}
             onSelect={(text, file) => this.setState({ show: null, file, dictionary: new Dictionary(text) })}
           />
