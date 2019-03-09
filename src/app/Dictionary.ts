@@ -23,7 +23,6 @@ export default class Dictionary {
       this.data = text;
     }
     this.changed = false;
-    localStorage.setItem("temp", this.stringify(null));
   }
 
   get words() {

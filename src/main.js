@@ -18,10 +18,6 @@ var dictionary = {
   changed: false,
   currentPath: null,
   currentEntry: null,
-  refresh: function () {
-    localStorage.setItem("temp", JSON.stringify(otm));
-    $(".search-field").trigger("input");
-  },
   overwrite: function () {
     const name = dictionary.currentEntry ? dictionary.currentEntry.name : null;
     if (!name) return alert("上書き先がありません");
@@ -39,6 +35,10 @@ var dictionary = {
 var otm;
 
 import App from './components/App';
+ReactDOM.render(
+  React.createElement(App),
+  document.getElementById("app")
+);
 
 dictionary.load = function (str, entry, path, url) {
   var _otm;
@@ -57,13 +57,6 @@ dictionary.load = function (str, entry, path, url) {
   dictionary.currentEntry = entry;
   dictionary.currentPath = path;
   // $("#info-path").text(path.split("/").pop());
-  dictionary.refresh();
-  ReactDOM.render(
-    React.createElement(App, {
-      dictionary: str,
-    }),
-    document.getElementById("app")
-  );
   const newURL = new URL(location.href);
   if (url) {
     newURL.search = new URLSearchParams({ r: url });
@@ -191,20 +184,3 @@ $("#save-clipboard").on("click", function () {
     .then(() => alert("コピーしました"))
     .catch(() => alert("コピーに失敗しました"));
 });
-
-
-import fetchFromSearchParams from "./app/fetchFromSearchParams";
-
-/* init */
-fetchFromSearchParams()
-  .then(({ text, url }) => {
-    dictionary.load(text, null, url, url);
-  })
-  .catch(() => {
-    const temp = localStorage.getItem("temp");
-    if (temp) {
-      dictionary.load(temp, null, "temp");
-    } else {
-      $("#open-help").trigger("click");
-    }
-  });

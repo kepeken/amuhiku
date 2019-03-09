@@ -10,23 +10,48 @@ import WordEditor from './WordEditor';
 import FilePicker from './FilePicker';
 import SettingsEditor from './SettingsEditor';
 import Dictionary from '../app/Dictionary';
+import * as misc from '../api/misc';
 import './App.scss';
 
-interface Props {
-  dictionary: string;
-}
+interface Props { }
 
 interface State {
   show: null | "menu" | "editor" | "files" | "settings";
   dictionary: Dictionary;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
+  loading: boolean;
 }
 
 export default class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const dictionary = new Dictionary(this.props.dictionary);
+    let loading = false;
+    // @ts-ignore
+    let dictionary = new Dictionary(require("../data/help"));
+    try {
+      const params = new URLSearchParams(location.search);
+      const receivedURL = params.get("r");
+      if (receivedURL) {
+        loading = true;
+        misc.importByURL(receivedURL).then(text => {
+          this.setState({
+            loading: false,
+            dictionary: new Dictionary(text),
+          });
+        }).catch(e => {
+          alert(e);
+          this.setState({ loading: false });
+        });
+      } else {
+        const temp = localStorage.getItem("temp");
+        if (temp) {
+          dictionary = new Dictionary(temp);
+        }
+      }
+    } catch (e) {
+      alert(e);
+    }
     this.state = {
       show: null,
       dictionary,
@@ -39,7 +64,14 @@ export default class App extends React.Component<Props, State> {
         relations: [],
       },
       select: null,
+      loading,
     };
+  }
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    if (this.state.dictionary !== prevState.dictionary) {
+      localStorage.setItem("temp", this.state.dictionary.stringify(null));
+    }
   }
 
   render() {
@@ -61,7 +93,7 @@ export default class App extends React.Component<Props, State> {
               <div className="menu-header">
               </div>
               <List.List>
-                <List.Item onClick={() => { }}>
+                <List.Item onClick={() => this.setState({ show: null, dictionary: new Dictionary() })}>
                   <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
                   <List.Text>新規辞書の作成</List.Text>
                 </List.Item>
