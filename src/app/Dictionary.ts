@@ -38,7 +38,7 @@ export default class Dictionary {
 
   nextId() {
     const ids = this.data.words.map(word => word.entry.id);
-    return ids.length === 0 ? 0 : Math.max(...ids) + 1;
+    return ids.length === 0 ? 1 : Math.max(...ids) + 1;
   }
 
   createWord() {
