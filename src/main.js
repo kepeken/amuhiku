@@ -8,8 +8,6 @@ import {
   jacksonPrettyPrint,
 } from "./util";
 
-import app from "./app";
-
 import device from "./resource/device";
 
 var dictionary = {
@@ -41,18 +39,6 @@ ReactDOM.render(
 );
 
 dictionary.load = function (str, entry, path, url) {
-  var _otm;
-  try {
-    _otm = JSON.parse(str);
-    if (!app.validateOTM(_otm)) {
-      throw "OTM-JSON のフォーマットが正しくありません。";
-    }
-  } catch (e) {
-    alert(e);
-    return;
-  }
-  // hideModal($("#opener"));
-  otm = _otm;
   dictionary.changed = false;
   dictionary.currentEntry = entry;
   dictionary.currentPath = path;

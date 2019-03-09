@@ -1,3 +1,5 @@
+// http://ja.conlinguistics.wikia.com/wiki/OTM-JSON
+
 export type Dictionary = {
   words: Word[];
   [key: string]: any;
