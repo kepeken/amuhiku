@@ -99,4 +99,25 @@ export default class Dictionary {
       return JSON.stringify(this.data, null, space);
     }
   }
+
+  static detectIndent(text: string) {
+    const re = /[\x09\x0a\x0d\x20]*"words"[\x09\x0a\x0d\x20]*:[\x09\x0a\x0d\x20]*\[[\x09\x0a\x0d\x20]*/;
+    const res = re.exec(text);
+    if (res) {
+      const match = res[0];
+      if (match.includes(`\n  "words" : [ `)) {
+        return "zpdic";
+      }
+      if (match.includes(`\n    "words": [`)) {
+        return "    ";
+      }
+      if (match.includes(`\n  "words": [`)) {
+        return "  ";
+      }
+      if (match.includes(`\n\t"words": [`)) {
+        return "\t";
+      }
+    }
+    return null;
+  }
 }
