@@ -13,12 +13,13 @@ import Loader from './Loader';
 import Dictionary from '../app/Dictionary';
 import * as API from '../api/base';
 import * as misc from '../api/misc';
+import execCopy from '../util/execCopy';
 import './App.scss';
 
 interface Props { }
 
 interface State {
-  show: null | "menu" | "editor" | "opener" | "saver" | "settings";
+  show: null | "menu" | "editor" | "opener" | "saver" | "export" | "settings";
   file: API.File | null;
   dictionary: Dictionary;
   currentWord: OTM.Word;
@@ -95,6 +96,7 @@ export default class App extends React.Component<Props, State> {
     const CloseButton = () => (
       <Page.Button onClick={() => this.setState({ show: null })}><FontAwesomeIcon icon="times" /></Page.Button>
     );
+    const { dictionary } = this.state;
     return (
       <>
         <CSSTransition
@@ -126,6 +128,10 @@ export default class App extends React.Component<Props, State> {
                   <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
                   <List.Text>名前をつけて保存</List.Text>
                 </List.Item>
+                <List.Item onClick={() => this.setState({ show: "export" })}>
+                  <List.Icon><FontAwesomeIcon icon="file-export" /></List.Icon>
+                  <List.Text>エクスポート</List.Text>
+                </List.Item>
                 <List.Item onClick={() => this.setState({ show: "settings" })}>
                   <List.Icon><FontAwesomeIcon icon="cog" /></List.Icon>
                   <List.Text>設定</List.Text>
@@ -151,7 +157,7 @@ export default class App extends React.Component<Props, State> {
               <Page.Body>
                 <WordList
                   mode="edit"
-                  words={this.state.dictionary.words}
+                  words={dictionary.words}
                   onSelect={currentWord => this.setState({ show: "editor", currentWord })}
                 />
               </Page.Body>
@@ -159,7 +165,7 @@ export default class App extends React.Component<Props, State> {
           </Page.List>
           <div
             className="float-button"
-            onClick={() => this.setState({ show: "editor", currentWord: this.state.dictionary.createWord() })}
+            onClick={() => this.setState({ show: "editor", currentWord: dictionary.createWord() })}
           >
             <FontAwesomeIcon icon="plus" />
           </div>
@@ -167,14 +173,14 @@ export default class App extends React.Component<Props, State> {
         <Modal fullscreen show={this.state.show === "editor"}>
           <WordEditor
             mode="edit"
-            words={this.state.dictionary.words}
+            words={dictionary.words}
             word={this.state.currentWord}
             onCancel={() => this.setState({ show: null })}
             onEdit={word => {
-              this.setState({ show: null, dictionary: this.state.dictionary.updateWord(word) });
+              this.setState({ show: null, dictionary: dictionary.updateWord(word) });
             }}
             onRemove={id => {
-              this.setState({ show: null, dictionary: this.state.dictionary.removeWord(id) });
+              this.setState({ show: null, dictionary: dictionary.removeWord(id) });
             }}
           />
         </Modal>
@@ -189,8 +195,42 @@ export default class App extends React.Component<Props, State> {
           <FilePicker
             mode="save"
             onCancel={() => this.setState({ show: null })}
-            onSave={async update => this.setState({ show: null, file: await update(this.state.dictionary.stringify()) })}
+            onSave={async update => this.setState({ show: null, file: await update(dictionary.stringify()) })}
           />
+        </Modal>
+        <Modal fullscreen show={this.state.show === "export"}>
+          <Page.List>
+            <Page.Item>
+              <Page.Header>
+                <CloseButton />
+                <Page.Title>エクスポート</Page.Title>
+              </Page.Header>
+              <Page.Body>
+                <List.List>
+                  <List.Item key="0" onClick={() => {
+                    misc.exportAsFile(dictionary.stringify(), { type: "text/plain" });
+                  }}>
+                    <List.Icon><FontAwesomeIcon icon="download" /></List.Icon>
+                    <List.Text>ファイル出力（テキスト）</List.Text>
+                  </List.Item>
+                  <List.Item key="1" onClick={() => {
+                    misc.exportAsFile(dictionary.stringify(), { type: "application/json;" });
+                  }}>
+                    <List.Icon><FontAwesomeIcon icon="download" /></List.Icon>
+                    <List.Text>ファイル出力（バイナリ）</List.Text>
+                  </List.Item>
+                  <List.Item key="2" onClick={() => {
+                    execCopy(dictionary.stringify())
+                      .then(() => alert("コピーしました。"))
+                      .catch(err => alert(err));
+                  }}>
+                    <List.Icon><FontAwesomeIcon icon="clipboard" /></List.Icon>
+                    <List.Text>クリップボードにコピー</List.Text>
+                  </List.Item>
+                </List.List>
+              </Page.Body>
+            </Page.Item>
+          </Page.List>
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>
           <Page.List>
