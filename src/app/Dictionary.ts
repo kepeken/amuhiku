@@ -63,9 +63,11 @@ export default class Dictionary {
   }
 
   updateWord(newWord: OTM.Word) {
+    const { words } = this.data;
+    const index = words.findIndex(word => word.entry.id === newWord.entry.id);
     return new Dictionary({
       ...this.data,
-      words: this.data.words.map(word => word.entry.id === newWord.entry.id ? newWord : word),
+      words: index >= 0 ? [...words.slice(0, index), newWord, ...words.slice(index + 1)] : [...words, newWord],
     });
   }
 
