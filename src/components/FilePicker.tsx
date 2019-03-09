@@ -95,26 +95,17 @@ export default class FilePicker extends React.Component<Props, State> {
     }
   }
 
-  async handleCreate() {
+  async handleCreate(folder: API.Folder, items: (API.File | API.Folder)[]) {
     if (!this.props.onSave) return;
     const name = prompt("ファイル名を入力", ".json");
     if (!name) return;
     if (/[\\\/:,;*?"<>|]/.test(name)) {
-      alert("使えない文字が含まれています");
+      alert("使えない文字が含まれています。");
       return;
     }
-    const { folder, items } = this.state.pages[this.state.pages.length - 1];
     const found = items.find(function (entry): entry is API.File { return entry instanceof API.File && entry.name === name; })
     if (found) {
-      if (confirm(`${found.path} は既に存在しています。上書きしますか？`)) {
-        this.setState({ loading: true });
-        this.props.onSave(async content => {
-          await found.update(content);
-          this.setState({ loading: false });
-          alert("上書きしました。");
-          return found;
-        });
-      }
+      this.handleSelect(found);
     } else {
       this.props.onSave(async content => {
         const file = await folder.create(name, content);
@@ -159,7 +150,7 @@ export default class FilePicker extends React.Component<Props, State> {
               </List.List>
             </Page.Body>
           </Page.Item>
-          {this.state.pages.map(({ title, items }, idx) =>
+          {this.state.pages.map(({ title, folder, items }, idx) =>
             <Page.Item key={idx}>
               <Page.Header>
                 <Page.Button onClick={this.handlePop}>
@@ -183,7 +174,7 @@ export default class FilePicker extends React.Component<Props, State> {
                       </List.Item>
                   )}
                   {this.props.mode === "save" && (
-                    <List.Item key="new" onClick={() => this.handleCreate()}>
+                    <List.Item key="new" onClick={() => this.handleCreate(folder, items)}>
                       <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
                       <List.Text>新しいファイルとして保存</List.Text>
                     </List.Item>
