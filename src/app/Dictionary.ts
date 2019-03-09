@@ -23,6 +23,13 @@ export default class Dictionary {
       this.data = text;
     }
     this.changed = false;
+    const idset = new Set();
+    for (const { entry: { id } } of this.data.words) {
+      if (idset.has(id)) {
+        throw new Error("ID が重複しています。");
+      }
+      idset.add(id);
+    }
   }
 
   get words() {
