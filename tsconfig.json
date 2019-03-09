@@ -7,11 +7,12 @@
       "dom",
       "es2017.object"
     ],
-    "module": "commonjs",
+    "module": "es2015",
+    "moduleResolution": "node",
     "outDir": "./dist/",
     "sourceMap": true,
     "strict": true,
-    "target": "es6"
+    "target": "es2015"
   },
   "include": [
     "./src/**/*"

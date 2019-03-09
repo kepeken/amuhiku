@@ -1,4 +1,4 @@
-import escapeRegExp = require('lodash/escapeRegExp');
+import { escapeRegExp } from 'lodash-es';
 import * as OTM from './types';
 
 export type SearchOptions = {

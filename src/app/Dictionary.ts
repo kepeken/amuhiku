@@ -2,7 +2,7 @@ import * as OTM from './OTM/types';
 import * as validate from './OTM/validate';
 import globalSettings, { Settings } from './globalSettings';
 import jacksonPrettyPrint from '../util/jacksonPrettyPrint';
-import cloneDeep = require('lodash/cloneDeep');
+import { cloneDeep } from 'lodash-es';
 
 export default class Dictionary {
   private data: OTM.Dictionary;

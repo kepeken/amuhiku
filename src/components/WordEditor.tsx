@@ -1,7 +1,6 @@
 import * as React from 'react';
 import * as OTM from '../app/OTM/types';
-import uniqueId = require('lodash/uniqueId');
-import cloneDeep = require('lodash/cloneDeep');
+import { cloneDeep, uniqueId } from 'lodash-es';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Page from './Page';
 import WordList from './WordList';

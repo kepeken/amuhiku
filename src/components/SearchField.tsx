@@ -1,5 +1,5 @@
 import * as React from 'react';
-import debounce = require('lodash/debounce');
+import { debounce } from 'lodash-es';
 
 interface Props {
   text: string;
