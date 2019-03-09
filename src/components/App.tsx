@@ -9,6 +9,7 @@ import WordList from './WordList';
 import WordEditor from './WordEditor';
 import FilePicker from './FilePicker';
 import SettingsEditor from './SettingsEditor';
+import Loader from './Loader';
 import Dictionary from '../app/Dictionary';
 import * as misc from '../api/misc';
 import './App.scss';
@@ -172,6 +173,7 @@ export default class App extends React.Component<Props, State> {
             </Page.Item>
           </Page.List>
         </Modal>
+        <Loader show={this.state.loading} />
       </>
     );
   }
