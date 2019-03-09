@@ -15,5 +15,5 @@ export abstract class File extends Entry {
 
 export abstract class Folder extends Entry {
   abstract list(): Promise<(File | Folder)[]>;
-  abstract create(name: string, text: string, init: {}): Promise<File>;
+  abstract create(name: string, text: string): Promise<File>;
 }

@@ -92,7 +92,7 @@ class GitHubFolder extends API.Folder {
     });
   }
 
-  async create(name: string, text: string, init: { public: boolean }) {
+  async create(name: string, text: string) {
     const files = {
       [name]: { content: text },
     };
@@ -100,7 +100,7 @@ class GitHubFolder extends API.Folder {
       method: "POST",
       body: JSON.stringify({
         files,
-        public: init.public,
+        public: confirm("public にしますか？"),
       }),
     });
     return new GitHubFile(this.client, res.id, name);

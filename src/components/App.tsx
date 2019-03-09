@@ -18,7 +18,7 @@ import './App.scss';
 interface Props { }
 
 interface State {
-  show: null | "menu" | "editor" | "files" | "settings";
+  show: null | "menu" | "editor" | "opener" | "saver" | "settings";
   file: API.File | null;
   dictionary: Dictionary;
   currentWord: OTM.Word;
@@ -114,7 +114,7 @@ export default class App extends React.Component<Props, State> {
                   <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
                   <List.Text>新規辞書の作成</List.Text>
                 </List.Item>
-                <List.Item onClick={() => this.setState({ show: "files" })}>
+                <List.Item onClick={() => this.setState({ show: "opener" })}>
                   <List.Icon><FontAwesomeIcon icon="folder-open" /></List.Icon>
                   <List.Text>辞書を開く</List.Text>
                 </List.Item>
@@ -122,7 +122,7 @@ export default class App extends React.Component<Props, State> {
                   <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
                   <List.Text>上書き保存</List.Text>
                 </List.Item>
-                <List.Item onClick={() => { }}>
+                <List.Item onClick={() => this.setState({ show: "saver" })}>
                   <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
                   <List.Text>名前をつけて保存</List.Text>
                 </List.Item>
@@ -178,11 +178,18 @@ export default class App extends React.Component<Props, State> {
             }}
           />
         </Modal>
-        <Modal fullscreen show={this.state.show === "files"}>
+        <Modal fullscreen show={this.state.show === "opener"}>
           <FilePicker
             mode="open"
             onCancel={() => this.setState({ show: null })}
-            onSelect={(text, file) => this.setState({ show: null, file, dictionary: new Dictionary(text) })}
+            onOpen={(text, file) => this.setState({ show: null, file, dictionary: new Dictionary(text) })}
+          />
+        </Modal>
+        <Modal fullscreen show={this.state.show === "saver"}>
+          <FilePicker
+            mode="save"
+            onCancel={() => this.setState({ show: null })}
+            onSave={async update => this.setState({ show: null, file: await update(this.state.dictionary.stringify()) })}
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>

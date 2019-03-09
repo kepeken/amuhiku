@@ -12,12 +12,14 @@ import * as misc from '../api/misc';
 interface Props {
   mode: "open" | "save";
   onCancel: () => void;
-  onSelect: (content: string, file: API.File | null) => void;
+  onOpen?: (content: string, file: API.File | null) => void;
+  onSave?: (update: (content: string) => Promise<API.File>) => void;
 }
 
 interface State {
   pages: {
     title: string;
+    folder: API.Folder;
     items: (API.File | API.Folder)[];
   }[];
   loading: boolean;
@@ -64,6 +66,7 @@ export default class FilePicker extends React.Component<Props, State> {
         ...this.state.pages,
         {
           title: folder.name,
+          folder,
           items: entries,
         },
       ],
@@ -72,10 +75,54 @@ export default class FilePicker extends React.Component<Props, State> {
   }
 
   async handleSelect(file: API.File) {
-    this.setState({ loading: true });
-    const content = await file.read();
-    this.setState({ loading: false });
-    this.props.onSelect(content, file);
+    if (this.props.mode === "open") {
+      if (!this.props.onOpen) return;
+      this.setState({ loading: true });
+      const content = await file.read();
+      this.setState({ loading: false });
+      this.props.onOpen && this.props.onOpen(content, file);
+    } else {
+      if (!this.props.onSave) return;
+      if (confirm(`${file.path} は既に存在しています。上書きしますか？`)) {
+        this.setState({ loading: true });
+        this.props.onSave(async content => {
+          await file.update(content);
+          this.setState({ loading: false });
+          alert("上書きしました。");
+          return file;
+        });
+      }
+    }
+  }
+
+  async handleCreate() {
+    if (!this.props.onSave) return;
+    const name = prompt("ファイル名を入力", ".json");
+    if (!name) return;
+    if (/[\\\/:,;*?"<>|]/.test(name)) {
+      alert("使えない文字が含まれています");
+      return;
+    }
+    const { folder, items } = this.state.pages[this.state.pages.length - 1];
+    const found = items.find(function (entry): entry is API.File { return entry instanceof API.File && entry.name === name; })
+    if (found) {
+      if (confirm(`${found.path} は既に存在しています。上書きしますか？`)) {
+        this.setState({ loading: true });
+        this.props.onSave(async content => {
+          await found.update(content);
+          this.setState({ loading: false });
+          alert("上書きしました。");
+          return found;
+        });
+      }
+    } else {
+      this.props.onSave(async content => {
+        const file = await folder.create(name, content);
+        this.setState({ loading: false });
+        alert(`${file.path} を作成しました。`);
+        return file;
+      });
+    }
   }
 
   render() {
@@ -87,7 +134,7 @@ export default class FilePicker extends React.Component<Props, State> {
               <Page.Button onClick={this.props.onCancel}>
                 <FontAwesomeIcon icon="times" />
               </Page.Button>
-              <Page.Title>辞書を開く</Page.Title>
+              <Page.Title>{this.props.mode === "open" ? "辞書を開く" : "名前をつけて保存"}</Page.Title>
             </Page.Header>
             <Page.Body>
               <List.List>
@@ -104,7 +151,7 @@ export default class FilePicker extends React.Component<Props, State> {
                   <List.Text>GitHub Gist</List.Text>
                 </List.Item>
                 {this.props.mode === "open" && <>
-                  <List.Item onClick={async () => this.props.onSelect(await misc.importFromDevice(), null)}>
+                  <List.Item onClick={async () => this.props.onOpen && this.props.onOpen(await misc.importFromDevice(), null)}>
                     <List.Icon><FontAwesomeIcon icon="desktop" /></List.Icon>
                     <List.Text>ローカルファイル</List.Text>
                   </List.Item>
@@ -134,6 +181,12 @@ export default class FilePicker extends React.Component<Props, State> {
                         <List.Icon><FontAwesomeIcon icon="file" /></List.Icon>
                         <List.Text>{entry.name}</List.Text>
                       </List.Item>
+                  )}
+                  {this.props.mode === "save" && (
+                    <List.Item key="new" onClick={() => this.handleCreate()}>
+                      <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                      <List.Text>新しいファイルとして保存</List.Text>
+                    </List.Item>
                   )}
                 </List.List>
               </Page.Body>
