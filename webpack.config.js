@@ -3,10 +3,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: [
-    "whatwg-fetch",
-    "./src/main.js",
-  ],
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"],
   },
@@ -15,13 +11,6 @@ module.exports = {
       {
         test: /\.tsx?$/,
         loader: "awesome-typescript-loader"
-      },
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
       },
       {
         test: /\.html$/,
