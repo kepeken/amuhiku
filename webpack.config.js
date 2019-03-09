@@ -6,7 +6,6 @@ module.exports = {
   entry: [
     "whatwg-fetch",
     "./src/main.js",
-    "./src/main.scss",
   ],
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".json"],

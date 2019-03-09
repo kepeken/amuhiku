@@ -1,5 +1,6 @@
 import * as React from 'react';
 import globalSettings, { Settings } from '../app/globalSettings';
+import './SettingsEditor.scss';
 
 export default class SettingsEditor extends React.Component<{}, Settings> {
   constructor(props: {}) {
@@ -19,9 +20,9 @@ export default class SettingsEditor extends React.Component<{}, Settings> {
   render() {
     return (
       <div className="settings">
-        <h5>出力する JSON の整形：</h5>
+        <h5 className="settings-key">出力する JSON の整形</h5>
         <select
-          className="item clickable"
+          className="settings-value"
           value={this.state["prettify-json"] || ""}
           onChange={event => this.setItem("prettify-json", event.target.value || null)}
         >

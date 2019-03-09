@@ -5,28 +5,11 @@
   <title>amuhiku</title>
   <meta name="viewport" content="width=device-width">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="stylesheet" href="main.css">
 </head>
 
 <body>
-  <div id="header">
-    <div class="header-list">
-      <div id="open" class="header-list-item">Open</div>
-      <div id="save" class="header-list-item">Save</div>
-      <div id="search" class="header-list-item">Search</div>
-      <div id="add" class="header-list-item">Add</div>
-    </div>
-    <div id="info-path"></div>
-  </div>
-  <div id="content"></div>
-  <div id="opener" class="modal">
+  <div style="display:none">
     <div class="page">
-      <div class="header">
-        <div class="close clickable">
-          <i class="fas fa-times"></i>
-        </div>
-        <span>Open</span>
-      </div>
       <div class="list">
         <div class="item clickable" id="open-new">
           <i class="fas fa-plus"></i>新しいデータ</div>
@@ -42,16 +25,6 @@
           <i class="fas fa-globe"></i>URL を指定して読み込む</div>
         <div class="item clickable" id="open-help">
           <i class="fas fa-question-circle"></i>ヘルプ</div>
-      </div>
-    </div>
-  </div>
-  <div id="saver" class="modal">
-    <div class="page">
-      <div class="header">
-        <div class="close clickable">
-          <i class="fas fa-times"></i>
-        </div>
-        <span>Save</span>
       </div>
       <div class="list">
         <div class="item clickable" id="save-overwrite">
