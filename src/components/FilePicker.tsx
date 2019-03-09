@@ -10,7 +10,7 @@ import githubClient from '../api/github';
 
 interface Props {
   onCancel: () => void;
-  onSelect: (content: string) => void;
+  onSelect: (content: string, file: API.File) => void;
 }
 
 interface State {
@@ -73,7 +73,7 @@ export default class FilePicker extends React.Component<Props, State> {
     this.setState({ loading: true });
     const content = await file.read();
     this.setState({ loading: false });
-    this.props.onSelect(content);
+    this.props.onSelect(content, file);
   }
 
   render() {

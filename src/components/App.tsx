@@ -11,6 +11,7 @@ import FilePicker from './FilePicker';
 import SettingsEditor from './SettingsEditor';
 import Loader from './Loader';
 import Dictionary from '../app/Dictionary';
+import * as API from '../api/base';
 import * as misc from '../api/misc';
 import './App.scss';
 
@@ -18,6 +19,7 @@ interface Props { }
 
 interface State {
   show: null | "menu" | "editor" | "files" | "settings";
+  file: API.File | null;
   dictionary: Dictionary;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
@@ -55,6 +57,7 @@ export default class App extends React.Component<Props, State> {
     }
     this.state = {
       show: null,
+      file: null,
       dictionary,
       currentWord: {
         entry: { id: 0, form: "" },
@@ -72,6 +75,19 @@ export default class App extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (this.state.dictionary !== prevState.dictionary) {
       localStorage.setItem("temp", this.state.dictionary.stringify(null));
+    }
+  }
+
+  handleSave() {
+    const { file, dictionary } = this.state;
+    if (file) {
+      if (confirm(`${file.path} に現在のデータを上書きします。`)) {
+        file.update(dictionary.stringify())
+          .then(() => alert("保存しました。"))
+          .catch(err => alert(err));
+      }
+    } else {
+      alert("保存先がありません。");
     }
   }
 
@@ -94,13 +110,21 @@ export default class App extends React.Component<Props, State> {
               <div className="menu-header">
               </div>
               <List.List>
-                <List.Item onClick={() => this.setState({ show: null, dictionary: new Dictionary() })}>
+                <List.Item onClick={() => this.setState({ show: null, file: null, dictionary: new Dictionary() })}>
                   <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
                   <List.Text>新規辞書の作成</List.Text>
                 </List.Item>
                 <List.Item onClick={() => this.setState({ show: "files" })}>
-                  <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
+                  <List.Icon><FontAwesomeIcon icon="folder-open" /></List.Icon>
                   <List.Text>辞書を開く</List.Text>
+                </List.Item>
+                <List.Item onClick={() => this.handleSave()}>
+                  <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
+                  <List.Text>上書き保存</List.Text>
+                </List.Item>
+                <List.Item onClick={() => { }}>
+                  <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
+                  <List.Text>名前をつけて保存</List.Text>
                 </List.Item>
                 <List.Item onClick={() => this.setState({ show: "settings" })}>
                   <List.Icon><FontAwesomeIcon icon="cog" /></List.Icon>
@@ -157,7 +181,7 @@ export default class App extends React.Component<Props, State> {
         <Modal fullscreen show={this.state.show === "files"}>
           <FilePicker
             onCancel={() => this.setState({ show: null })}
-            onSelect={text => this.setState({ show: null, dictionary: new Dictionary(text) })}
+            onSelect={(text, file) => this.setState({ show: null, file, dictionary: new Dictionary(text) })}
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>
