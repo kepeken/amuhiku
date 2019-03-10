@@ -14,7 +14,7 @@ import helpData from '../data/help.json';
 interface Props {
   mode: "open" | "save";
   onCancel: () => void;
-  onOpen?: (content: string | OTM.Dictionary, file: API.File | null) => void;
+  onOpen?: (content: string | OTM.Dictionary, file: API.File | URL | null) => void;
   onSave?: (update: (content: string) => Promise<API.File>) => void;
 }
 
@@ -127,7 +127,7 @@ export default class FilePicker extends React.Component<Props, State> {
         // const newURL = new URL(location.href);
         // newURL.search = new URLSearchParams({ r: url }).toString();
         // history.replaceState(null, "", newURL.toString());
-        this.props.onOpen(content, null);
+        this.props.onOpen(content, new URL(url));
       }
     } catch (e) {
       alert(e);

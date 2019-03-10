@@ -20,7 +20,7 @@ interface Props { }
 
 interface State {
   show: null | "menu" | "editor" | "opener" | "saver" | "export" | "settings";
-  file: API.File | null;
+  file: API.File | URL | null;
   dictionary: Dictionary;
   changed: boolean;
   currentWord: OTM.Word;
@@ -82,6 +82,13 @@ export default class App extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props, prevState: State) {
     if (this.state.dictionary !== prevState.dictionary) {
       localStorage.setItem("temp", this.state.dictionary.stringify(null));
+      const newURL = new URL(location.href);
+      if (this.state.file instanceof URL) {
+        newURL.search = new URLSearchParams({ r: this.state.file.href }).toString();
+      } else {
+        newURL.search = "";
+      }
+      history.replaceState(null, "", newURL.toString());
     }
   }
 
@@ -105,7 +112,7 @@ export default class App extends React.Component<Props, State> {
 
   async handleUpdateDictionary() {
     const { file, dictionary } = this.state;
-    if (file) {
+    if (file instanceof API.File) {
       if (confirm(`${file.path} に現在のデータを上書きします。`)) {
         try {
           await file.update(dictionary.stringify());
@@ -143,7 +150,11 @@ export default class App extends React.Component<Props, State> {
     const CloseButton = () => (
       <Page.Button onClick={() => this.setState({ show: null })}><FontAwesomeIcon icon="times" /></Page.Button>
     );
-    const { dictionary } = this.state;
+    const { file, dictionary } = this.state;
+    const pageTitle
+      = file instanceof API.File ? file.name
+        : file instanceof URL ? file.pathname.split("/").pop()
+          : null;
     return (
       <>
         <CSSTransition
@@ -199,7 +210,7 @@ export default class App extends React.Component<Props, State> {
                 >
                   <FontAwesomeIcon icon="bars" />
                 </Page.Button>
-                <Page.Title>{this.state.file && this.state.file.name}</Page.Title>
+                <Page.Title>{pageTitle}</Page.Title>
               </Page.Header>
               <Page.Body>
                 <WordList
