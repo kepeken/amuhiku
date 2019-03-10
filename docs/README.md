@@ -29,11 +29,15 @@
 
 ### GitHub レポジトリや Gist にある辞書
 
+![JSON ファイルのページ](assets/57c0d289-d8e4-48f6-b4ae-6ad143b06496.png)
+
 - https://github.com/ から、データとして使いたい JSON ファイルのあるページを開きます。
 - **Raw** **Blame** **History** などと並んでいるところの **Raw** を押します。ファイルサイズが大きい場合は中央に **View Raw** などど表示されているのでそれを押します。
 - https://raw.githubusercontent.com/ で始まる URL にリダイレクトされるので、URL をコピーします。
 
 ### Dropbox にある辞書
+
+![Dropbox の JSON ファイル](assets/bd04dcbc-e15b-4acf-9147-da2c6bb625d1.png)
 
 - データとして使いたい JSON ファイルの共有リンクを作ります。
 - 共有リンクは `https://www.dropbox.com/s/【ID的なやつ】/【ファイル名】?dl=0` という形式になっていると思いますが、これを `https://dl.dropboxusercontent.com/s/【ID的なやつ】/【ファイル名】` に変更します。これをコピーしておきます。
