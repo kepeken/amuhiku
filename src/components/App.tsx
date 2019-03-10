@@ -22,6 +22,7 @@ interface State {
   show: null | "menu" | "editor" | "opener" | "saver" | "export" | "settings";
   file: API.File | null;
   dictionary: Dictionary;
+  changed: boolean;
   currentWord: OTM.Word;
   select: ((entry: OTM.Entry) => void) | null;
   loading: boolean;
@@ -60,6 +61,7 @@ export default class App extends React.Component<Props, State> {
       show: null,
       file: null,
       dictionary,
+      changed: false,
       currentWord: {
         entry: { id: 0, form: "" },
         translations: [],
@@ -79,13 +81,38 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
-  handleSave() {
+  confirm() {
+    if (this.state.changed) {
+      return confirm("注：ファイルが変更されています。新しいファイルを開くと変更は破棄されます。");
+    } else {
+      return true;
+    }
+  }
+
+  handleCreateDictionary() {
+    if (!this.confirm()) return;
+    this.setState({
+      show: null,
+      file: null,
+      dictionary: new Dictionary(),
+      changed: false,
+    });
+  }
+
+  async handleUpdateDictionary() {
     const { file, dictionary } = this.state;
     if (file) {
       if (confirm(`${file.path} に現在のデータを上書きします。`)) {
-        file.update(dictionary.stringify())
-          .then(() => alert("保存しました。"))
-          .catch(err => alert(err));
+        try {
+          await file.update(dictionary.stringify());
+          alert("保存しました。");
+        } catch (e) {
+          alert(e);
+        }
+        this.setState({
+          show: null,
+          changed: false,
+        });
       }
     } else {
       alert("保存先がありません。");
@@ -112,15 +139,15 @@ export default class App extends React.Component<Props, State> {
               <div className="menu-header">
               </div>
               <List.List>
-                <List.Item onClick={() => this.setState({ show: null, file: null, dictionary: new Dictionary() })}>
+                <List.Item onClick={() => this.handleCreateDictionary()}>
                   <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
                   <List.Text>新規辞書の作成</List.Text>
                 </List.Item>
-                <List.Item onClick={() => this.setState({ show: "opener" })}>
+                <List.Item onClick={() => this.confirm() && this.setState({ show: "opener" })}>
                   <List.Icon><FontAwesomeIcon icon="folder-open" /></List.Icon>
                   <List.Text>辞書を開く</List.Text>
                 </List.Item>
-                <List.Item onClick={() => this.handleSave()}>
+                <List.Item onClick={() => this.handleUpdateDictionary()}>
                   <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
                   <List.Text>上書き保存</List.Text>
                 </List.Item>
@@ -177,10 +204,10 @@ export default class App extends React.Component<Props, State> {
             word={this.state.currentWord}
             onCancel={() => this.setState({ show: null })}
             onEdit={word => {
-              this.setState({ show: null, dictionary: dictionary.updateWord(word) });
+              this.setState({ show: null, dictionary: dictionary.updateWord(word), changed: true });
             }}
             onRemove={id => {
-              this.setState({ show: null, dictionary: dictionary.removeWord(id) });
+              this.setState({ show: null, dictionary: dictionary.removeWord(id), changed: true });
             }}
           />
         </Modal>
@@ -188,14 +215,14 @@ export default class App extends React.Component<Props, State> {
           <FilePicker
             mode="open"
             onCancel={() => this.setState({ show: null })}
-            onOpen={(text, file) => this.setState({ show: null, file, dictionary: new Dictionary(text) })}
+            onOpen={(text, file) => this.setState({ show: null, file, dictionary: new Dictionary(text), changed: false })}
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "saver"}>
           <FilePicker
             mode="save"
             onCancel={() => this.setState({ show: null })}
-            onSave={async update => this.setState({ show: null, file: await update(dictionary.stringify()) })}
+            onSave={async update => this.setState({ show: null, file: await update(dictionary.stringify()), changed: false })}
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "export"}>
