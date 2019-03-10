@@ -3,134 +3,14 @@
     {
       "entry": {
         "id": 0,
-        "form": "# amuhiku"
+        "form": "amuhiku"
       },
       "translations": [],
       "tags": [],
       "contents": [
         {
           "title": "amuhiku とは？",
-          "text": "辞書を作成・編集・閲覧できる Web アプリです。ブラウザ上で動くので、スマホでも扱えます（むしろ PC よりもスマホでの操作性を重視しています）。"
-        },
-        {
-          "title": "報告など",
-          "text": "報告などは Twitter @kepeken に送るか、#amuhiku をつけてください。"
-        },
-        {
-          "title": "更新履歴",
-          "text": "Twitter #amuhiku でつぶやいていきます。"
-        }
-      ],
-      "variations": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "id": 1,
-        "form": "# Open"
-      },
-      "translations": [],
-      "tags": [],
-      "contents": [
-        {
-          "title": "概要",
-          "text": "OTM-JSON 形式の辞書ファイルを開くことが出来ます。詳細は http://ja.conlinguistics.wikia.com/wiki/OTM-JSON を確認してください。"
-        },
-        {
-          "title": "新しいデータ",
-          "text": "新しいデータを作成します。"
-        },
-        {
-          "title": "ローカルファイル",
-          "text": "使っているデバイスからデータを取り込みます。"
-        },
-        {
-          "title": "Dropbox",
-          "text": "ログインして Dropbox からデータを取り込みます。セキュリティの都合上、アプリ専用フォルダ（/アプリ/amuhiku/）にのみアクセスできます。"
-        },
-        {
-          "title": "ブラウザストレージ",
-          "text": "ブラウザのストレージ（localStorage）からデータを取り込みます。プライベートブラウジングを使用していると正しく取り込めません。"
-        },
-        {
-          "title": "ヘルプ",
-          "text": "ヘルプを開きます。誤って編集しても、読み込み直せば初期状態に戻ります。"
-        }
-      ],
-      "variations": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "id": 2,
-        "form": "# Save"
-      },
-      "translations": [],
-      "tags": [],
-      "contents": [
-        {
-          "title": "概要",
-          "text": "OTM-JSON 形式のファイルを保存することが出来ます。詳細は http://ja.conlinguistics.wikia.com/wiki/OTM-JSON を確認してください。"
-        },
-        {
-          "title": "補足",
-          "text": "ファイル出力形式は、iOS で出力したときの動作が２種類あるっぽいので両方設けました。他のブラウザはわからないです…"
-        }
-      ],
-      "variations": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "id": 3,
-        "form": "# Search"
-      },
-      "translations": [],
-      "tags": [],
-      "contents": [
-        {
-          "title": "概要",
-          "text": "単語を検索できます。オプションについては迷走中なので後々アップデートしていきます。"
-        },
-        {
-          "title": "説明",
-          "text": "・スペースを挟むと AND 検索"
-        }
-      ],
-      "variations": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "id": 4,
-        "form": "# Add"
-      },
-      "translations": [],
-      "tags": [],
-      "contents": [
-        {
-          "title": "概要",
-          "text": "単語を追加できます。各単語には【見出し語 Entry】【ID】【訳語 Translations】【タグ Tags】【内容 Contents】【変化形 Variations】【関連語 Relations】の項目を付けられます。"
-        },
-        {
-          "title": "補足",
-          "text": "訳語は仕様では配列なので、「, 」「、」〈改行〉で勝手に区切られます。"
-        }
-      ],
-      "variations": [],
-      "relations": []
-    },
-    {
-      "entry": {
-        "id": 5,
-        "form": "# Edit"
-      },
-      "translations": [],
-      "tags": [],
-      "contents": [
-        {
-          "title": "概要",
-          "text": "表示されている単語の右上のアイコンを押すと、その単語を編集できます。削除もそこからできます。そのほかは『追加』と同じです。"
+          "text": "辞書を作成・編集・閲覧するための Web アプリです。詳しくは左のメニューからヘルプページを開いてください。"
         }
       ],
       "variations": [],
@@ -139,7 +19,7 @@
     {
       "entry": {
         "id": 6,
-        "form": "# 表示例"
+        "form": "表示例"
       },
       "translations": [
         {
@@ -196,6 +76,192 @@
           }
         }
       ]
+    },
+    {
+      "entry": {
+        "id": 7,
+        "form": "編む"
+      },
+      "translations": [
+        {
+          "title": "verb",
+          "forms": [
+            "to knit",
+            "to plait",
+            "to braid​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to compile (anthology, dictionary, etc.)",
+            "to edit"
+          ]
+        }
+      ],
+      "tags": [],
+      "contents": [
+        {
+          "title": "例文",
+          "text": "辞書を編む。"
+        }
+      ],
+      "variations": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "id": 8,
+        "form": "引く"
+      },
+      "translations": [
+        {
+          "title": "verb",
+          "forms": [
+            "to pull",
+            "to tug",
+            "to lead (e.g. a horse)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to draw (attention, sympathy, etc.)",
+            "to attract (e.g. interest)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to draw back (e.g. one's hand)",
+            "to draw in (one's chin, stomach, etc.)",
+            "to pull in​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to draw (a card, mahjong tile, etc.)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to draw (a line, plan, etc.)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to catch (a cold)"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to play (a stringed or keyboard instrument)"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to look up (e.g. a dictionary)",
+            "to consult​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to haul",
+            "to pull (vehicles)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to subtract",
+            "to deduct​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to recede",
+            "to ebb",
+            "to fade​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to be descend from",
+            "to inherit (a characteristic)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to quote",
+            "to cite",
+            "to raise (as evidence)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to lay on (electricity, gas, etc.)",
+            "to install (e.g. a telephone)",
+            "to supply (e.g. water)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to hold (e.g. a note)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to apply (e.g. lipstick)",
+            "to oil (e.g. a pan)",
+            "to wax (e.g. a floor)​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to move back",
+            "to draw back",
+            "to recede​"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to lessen",
+            "to subside",
+            "to ebb"
+          ]
+        },
+        {
+          "title": "verb",
+          "forms": [
+            "to resign",
+            "to retire",
+            "to quit​"
+          ]
+        }
+      ],
+      "tags": [],
+      "contents": [
+        {
+          "title": "例文",
+          "text": "辞書を引く。"
+        }
+      ],
+      "variations": [],
+      "relations": []
     }
   ]
 }
