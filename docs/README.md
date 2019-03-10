@@ -3,6 +3,28 @@
 [https://amuhiku.netlify.com/](https://amuhiku.netlify.com/)
 
 
+## 概要
+
+辞書を作成・編集・閲覧するための Web アプリです。ブラウザ上で動くので、スマホでも扱えます。むしろ PC よりもスマホでの操作性を重視しています。
+
+
+## 報告など
+
+不具合の報告や新機能の提案などを受け付けています。Twitter で @kepeken に@ツイートを送るか、ハッシュタグ #amuhiku をつけてつぶやいてください。
+
+
+## 更新履歴
+
+amuhiku は Web アプリという形態上、バージョン番号をつけていません（ローリングリリース）。具体的な機能追加や変更に関しては Twitter #amuhiku でつぶやいていきます。
+
+
+## 辞書データについて
+
+OTM-JSON というデータ形式を採用しています。
+
+http://ja.conlinguistics.wikia.com/wiki/OTM-JSON
+
+
 ## 対応ブラウザ
 
 ### スマホ
