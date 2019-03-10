@@ -194,6 +194,10 @@ export default class App extends React.Component<Props, State> {
                   <List.Icon><FontAwesomeIcon icon="cog" /></List.Icon>
                   <List.Text>設定</List.Text>
                 </List.Item>
+                <List.LinkItem href="https://kepeken.github.io/amuhiku/">
+                  <List.Icon><FontAwesomeIcon icon="question-circle" /></List.Icon>
+                  <List.Text>ヘルプページ</List.Text>
+                </List.LinkItem>
               </List.List>
             </div>
           </div>

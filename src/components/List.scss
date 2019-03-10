@@ -3,9 +3,15 @@
 }
 
 .list-item {
+  display: block;
   padding: 11px 16px;
   line-height: 24px;
   cursor: pointer;
+}
+
+a.list-item {
+  color: unset;
+  text-decoration: unset;
 }
 
 .list-item:hover {

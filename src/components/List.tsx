@@ -18,6 +18,15 @@ export const Item = (props: ItemProps) => (
   <div className="list-item" onClick={props.onClick}>{props.children}</div>
 );
 
+interface LinkItemProps {
+  href: string;
+  children?: React.ReactNode;
+}
+
+export const LinkItem = (props: LinkItemProps) => (
+  <a className="list-item" href={props.href} target="_blank" rel="noopener noreferrer">{props.children}</a>
+);
+
 interface IconProps {
   children?: React.ReactNode;
 }
