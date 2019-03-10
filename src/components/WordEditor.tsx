@@ -13,11 +13,11 @@ const withoutKey = <T extends {}>(entry: Keyed<T>) => entry[1];
 
 // フォーカスが嫌なので各ボタンは div にした
 const PropEditor = <T extends {}>(props: {
-  title: string,
-  items: Keyed<T>[],
+  title: string;
+  items: Keyed<T>[];
   defaultItem: T;
   onChange: (items: Keyed<T>[]) => void;
-  children: (item: T, update: (item: T) => void) => React.ReactNode,
+  children: (item: T, update: (item: T) => void) => React.ReactNode;
 }) => {
   const updateFactory = (key: string) => (item: T) => {
     props.onChange(props.items.map(entry => entry[0] === key ? [entry[0], item] as Keyed<T> : entry));
@@ -26,8 +26,8 @@ const PropEditor = <T extends {}>(props: {
     <div className="prop-editor">
       <div className="prop-title">{props.title}</div>
       <div className="prop-body">
-        {props.items.map(([key, item], i) => [
-          i !== 0 && (
+        {props.items.map(([key, item], i) => <>
+          {i !== 0 && (
             <div
               key={`swapper-${i}`}
               className="item-swapper"
@@ -36,7 +36,7 @@ const PropEditor = <T extends {}>(props: {
               <FontAwesomeIcon icon="long-arrow-alt-up" />
               <FontAwesomeIcon icon="long-arrow-alt-down" />
             </div>
-          ),
+          )}
           <div key={key} className="prop-item">
             {props.children(item, updateFactory(key))}
             <div
@@ -46,7 +46,7 @@ const PropEditor = <T extends {}>(props: {
               <FontAwesomeIcon icon="trash-alt" />
             </div>
           </div>
-        ])}
+        </>)}
         <div
           className="item-adder"
           onClick={() => props.onChange([...props.items, [uniqueId(), cloneDeep(props.defaultItem)]])}

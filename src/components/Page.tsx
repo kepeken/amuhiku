@@ -2,71 +2,83 @@ import * as React from 'react';
 import { Transition, TransitionGroup } from 'react-transition-group';
 import './Page.scss';
 
-export class List extends React.Component<{
-  children?: React.ReactNode;
-}, {
-  transiting: boolean;
-}> {
-  public state = {
-    transiting: false,
-  };
-
-  reflow(node: HTMLElement) {
-    // https://github.com/reactjs/react-transition-group/blob/master/src/CSSTransition.js#L120
-    node.scrollTop;
-  }
-
-  render() {
-    return (
-      <TransitionGroup className={[
-        "page-list",
-        this.state.transiting ? "page-transiting" : ""
-      ].join(" ")} >
-        {React.Children.map(this.props.children, (item, i) => item && (
-          <Transition
-            key={i}
-            timeout={300}
-            onEnter={() => this.setState({ transiting: true })}
-            onEntering={(node) => { this.reflow(node); this.setState({ transiting: false }); }}
-            onExiting={() => this.setState({ transiting: true })}
-            onExited={() => this.setState({ transiting: false })}
-          >
-            {item}
-          </Transition>
-        ))}
-      </TransitionGroup>
-    );
-  }
+function reflow(node: HTMLElement) {
+  // https://github.com/reactjs/react-transition-group/blob/master/src/CSSTransition.js#L120
+  node.scrollTop;
 }
 
-export const Item = (props: {
+interface ListProps {
   children?: React.ReactNode;
-}) => (
-    <div className="page-item">
-      {props.children}
-    </div>
-  );
+}
 
-export const Header = (props: { children?: React.ReactNode }) => (
+export function List(props: ListProps) {
+  const [transiting, setTransiting] = React.useState(false);
+
+  return (
+    <TransitionGroup className={[
+      "page-list",
+      transiting ? "page-transiting" : ""
+    ].join(" ")} >
+      {React.Children.map(props.children, (item, i) => item && (
+        <Transition
+          key={i}
+          timeout={300}
+          onEnter={() => setTransiting(true)}
+          onEntering={node => { reflow(node); setTransiting(false); }}
+          onExiting={() => setTransiting(true)}
+          onExited={() => setTransiting(false)}
+        >
+          {item}
+        </Transition>
+      ))}
+    </TransitionGroup>
+  );
+}
+
+interface ItemProps {
+  children?: React.ReactNode;
+}
+
+export const Item = (props: ItemProps) => (
+  <div className="page-item">
+    {props.children}
+  </div>
+);
+
+interface HeaderProps {
+  children?: React.ReactNode;
+}
+
+export const Header = (props: HeaderProps) => (
   <div className="page-header">{props.children}</div>
 );
 
-export const Title = (props: { children?: React.ReactNode }) => (
+interface TitleProps {
+  children?: React.ReactNode;
+}
+
+export const Title = (props: TitleProps) => (
   <div className="page-header-title">{props.children}</div>
 );
 
-export const Button = (props: {
+interface ButtonProps {
   className?: string;
   onClick?: () => void;
   children?: React.ReactNode;
-}) => (
-    <div
-      className={"page-header-button" + (props.className ? " " + props.className : "")}
-      onClick={props.onClick}>
-      {props.children}
-    </div>
-  );
+}
 
-export const Body = (props: { children?: React.ReactNode }) => (
+export const Button = (props: ButtonProps) => (
+  <div
+    className={"page-header-button" + (props.className ? " " + props.className : "")}
+    onClick={props.onClick}>
+    {props.children}
+  </div>
+);
+
+interface BodyProps {
+  children?: React.ReactNode;
+}
+
+export const Body = (props: BodyProps) => (
   <div className="page-body">{props.children}</div>
 );

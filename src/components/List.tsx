@@ -1,21 +1,35 @@
 import * as React from 'react';
 import './List.scss';
 
-export const List = (props: { children?: React.ReactNode }) => (
+interface ListProps {
+  children?: React.ReactNode;
+}
+
+export const List = (props: ListProps) => (
   <div className="list">{props.children}</div>
 );
 
-export const Item = (props: {
+interface ItemProps {
   onClick?: () => void;
   children?: React.ReactNode;
-}) => (
-    <div className="list-item" onClick={props.onClick}>{props.children}</div>
-  );
+}
 
-export const Icon = (props: { children?: React.ReactNode }) => (
+export const Item = (props: ItemProps) => (
+  <div className="list-item" onClick={props.onClick}>{props.children}</div>
+);
+
+interface IconProps {
+  children?: React.ReactNode;
+}
+
+export const Icon = (props: IconProps) => (
   <div className="list-item-icon">{props.children}</div>
 );
 
-export const Text = (props: { children?: React.ReactNode }) => (
+interface TextProps {
+  children?: React.ReactNode;
+}
+
+export const Text = (props: TextProps) => (
   <div className="list-item-text">{props.children}</div>
 );

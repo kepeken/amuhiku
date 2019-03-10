@@ -5,26 +5,25 @@ import './Modal.scss';
 interface Props {
   show: boolean;
   fullscreen?: boolean;
+  children?: React.ReactNode;
 }
 
-export default class Modal extends React.Component<Props> {
-  render() {
-    return (
-      <CSSTransition
-        in={this.props.show}
-        classNames="modal"
-        timeout={400}
-        unmountOnExit
-      >
-        <div className="modal-wrapper">
-          <div className={[
-            "modal-content",
-            this.props.fullscreen ? "fullscreen" : ""
-          ].join(" ")}>
-            {this.props.children}
-          </div>
+export default function Modal(props: Props) {
+  return (
+    <CSSTransition
+      in={props.show}
+      classNames="modal"
+      timeout={400}
+      unmountOnExit
+    >
+      <div className="modal-wrapper">
+        <div className={[
+          "modal-content",
+          props.fullscreen ? "fullscreen" : ""
+        ].join(" ")}>
+          {props.children}
         </div>
-      </CSSTransition>
-    );
-  }
+      </div>
+    </CSSTransition>
+  );
 }
