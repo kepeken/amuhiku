@@ -42,7 +42,7 @@ export default class FilePicker extends React.Component<Props, State> {
   }
 
   handlePop() {
-    this.setState({ pages: this.state.pages.slice(0, -1) })
+    this.setState({ pages: this.state.pages.slice(0, -1) });
   }
 
   async handleLogIn(name: "dropbox" | "github", client: API.Client) {
@@ -116,6 +116,22 @@ export default class FilePicker extends React.Component<Props, State> {
     }
   }
 
+  async handleImportByURL() {
+    if (!this.props.onOpen) return;
+    try {
+      const url = prompt(`JSON ファイルの URL を指定してください。\n・http: か https: で始まっていること\n・CORS に対応していること`);
+      if (url) {
+        const content = await misc.importByURL(url);
+        // const newURL = new URL(location.href);
+        // newURL.search = new URLSearchParams({ r: url }).toString();
+        // history.replaceState(null, "", newURL.toString());
+        this.props.onOpen(content, null);
+      }
+    } catch (e) {
+      alert(e);
+    }
+  }
+
   render() {
     return (
       <>
@@ -145,6 +161,10 @@ export default class FilePicker extends React.Component<Props, State> {
                   <List.Item onClick={async () => this.props.onOpen && this.props.onOpen(await misc.importFromDevice(), null)}>
                     <List.Icon><FontAwesomeIcon icon="desktop" /></List.Icon>
                     <List.Text>ローカルファイル</List.Text>
+                  </List.Item>
+                  <List.Item onClick={() => this.handleImportByURL()}>
+                    <List.Icon><FontAwesomeIcon icon="globe" /></List.Icon>
+                    <List.Text>URL を指定して読み込む</List.Text>
                   </List.Item>
                 </>}
               </List.List>
