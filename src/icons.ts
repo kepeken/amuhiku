@@ -21,6 +21,7 @@ import {
   faSpinner,
   faTimes,
   faTrashAlt,
+  faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -51,4 +52,5 @@ library.add(
   faSpinner,
   faTimes,
   faTrashAlt,
+  faQuestionCircle,
 );

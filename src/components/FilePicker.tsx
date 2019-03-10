@@ -3,16 +3,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Page from './Page';
 import * as List from './List';
 import Loader from './Loader';
+import * as OTM from '../app/OTM/types';
 import * as API from '../api/base';
 import browser from '../api/browser';
 import dropboxClient from '../api/dropbox';
 import githubClient from '../api/github';
 import * as misc from '../api/misc';
+import helpData from '../data/help.json';
 
 interface Props {
   mode: "open" | "save";
   onCancel: () => void;
-  onOpen?: (content: string, file: API.File | null) => void;
+  onOpen?: (content: string | OTM.Dictionary, file: API.File | null) => void;
   onSave?: (update: (content: string) => Promise<API.File>) => void;
 }
 
@@ -165,6 +167,10 @@ export default class FilePicker extends React.Component<Props, State> {
                   <List.Item onClick={() => this.handleImportByURL()}>
                     <List.Icon><FontAwesomeIcon icon="globe" /></List.Icon>
                     <List.Text>URL を指定して読み込む</List.Text>
+                  </List.Item>
+                  <List.Item onClick={() => this.props.onOpen && this.props.onOpen(helpData, null)}>
+                    <List.Icon><FontAwesomeIcon icon="question-circle" /></List.Icon>
+                    <List.Text>サンプルデータ</List.Text>
                   </List.Item>
                 </>}
               </List.List>
