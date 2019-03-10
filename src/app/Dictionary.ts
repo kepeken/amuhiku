@@ -6,7 +6,6 @@ import { cloneDeep } from 'lodash-es';
 
 export default class Dictionary {
   private data: OTM.Dictionary;
-  private changed: boolean;
 
   constructor(text?: string | OTM.Dictionary) {
     if (text === undefined) {
@@ -22,7 +21,6 @@ export default class Dictionary {
     } else {
       this.data = text;
     }
-    this.changed = false;
     const idset = new Set();
     for (const { entry: { id } } of this.data.words) {
       if (idset.has(id)) {
