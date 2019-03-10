@@ -34,6 +34,7 @@ export default class App extends React.Component<Props, State> {
     let loading = false;
     // @ts-ignore
     let dictionary = new Dictionary(require("../data/help"));
+    let changed = false;
     try {
       const params = new URLSearchParams(location.search);
       const receivedURL = params.get("r");
@@ -52,6 +53,7 @@ export default class App extends React.Component<Props, State> {
         const temp = localStorage.getItem("temp");
         if (temp) {
           dictionary = new Dictionary(temp);
+          changed = true;
         }
       }
     } catch (e) {
@@ -61,7 +63,7 @@ export default class App extends React.Component<Props, State> {
       show: null,
       file: null,
       dictionary,
-      changed: false,
+      changed,
       currentWord: {
         entry: { id: 0, form: "" },
         translations: [],
