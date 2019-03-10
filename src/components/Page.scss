@@ -1,0 +1,78 @@
+$header-height: 56px;
+.page-list {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.page-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding-top: $header-height;
+  transition: transform 300ms;
+}
+
+.page-item {
+  transform: translateX(-25%);
+}
+
+.page-item:last-of-type {
+  transform: translateX(0%);
+}
+
+.page-transiting {
+  .page-item:nth-last-of-type(2) {
+    transform: translate(0%);
+  }
+  .page-item:last-of-type {
+    transform: translateX(100%);
+  }
+}
+
+.page-header {
+  z-index: 100;
+  position: absolute;
+  display: flex;
+  top: 0;
+  width: 100%;
+  height: $header-height;
+  background-color: #f5f5f5;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.page-header-button {
+  flex-shrink: 0;
+  width: $header-height;
+  height: $header-height;
+  line-height: $header-height;
+  text-align: center;
+  cursor: pointer;
+}
+
+.page-header-title {
+  flex-grow: 1;
+  max-width: 100%;
+  height: $header-height;
+  line-height: $header-height;
+  padding: 0 16px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.page-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  background-color: #f2f2f2;
+}

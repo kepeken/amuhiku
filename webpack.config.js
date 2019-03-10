@@ -1,20 +1,22 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: [
-    "whatwg-fetch",
-    "./src/js/main.js",
-    "./src/css/main.scss",
-  ],
+  resolve: {
+    extensions: [".ts", ".tsx", ".js", ".json"],
+  },
+  devtool: "source-map",
   module: {
     rules: [
       {
+        test: /\.tsx?$/,
+        loader: "awesome-typescript-loader"
+      },
+      {
+        enforce: "pre",
         test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader"
-        }
+        loader: "source-map-loader"
       },
       {
         test: /\.html$/,
@@ -50,5 +52,6 @@ module.exports = {
       filename: "[name].css",
       chunkFilename: "[id].css"
     }),
+    // new BundleAnalyzerPlugin(),
   ],
-}
+};
