@@ -20,7 +20,7 @@ interface Props { }
 
 interface State {
   show: null | "menu" | "editor" | "opener" | "saver" | "export" | "settings";
-  file: API.File | URL | null;
+  file: API.File | File | URL | null;
   dictionary: Dictionary;
   changed: boolean;
   currentWord: OTM.Word;
@@ -155,8 +155,9 @@ export default class App extends React.Component<Props, State> {
     const { file, dictionary } = this.state;
     const pageTitle
       = file instanceof API.File ? file.name
-        : file instanceof URL ? file.pathname.split("/").pop()
-          : null;
+        : file instanceof File ? file.name
+          : file instanceof URL ? file.pathname.split("/").pop()
+            : null;
     return (
       <>
         <CSSTransition

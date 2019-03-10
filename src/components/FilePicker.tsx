@@ -14,7 +14,7 @@ import helpData from '../data/help.json';
 interface Props {
   mode: "open" | "save";
   onCancel: () => void;
-  onOpen?: (content: string | OTM.Dictionary, file: API.File | URL | null) => void;
+  onOpen?: (content: string | OTM.Dictionary, file: API.File | File | URL | null) => void;
   onSave?: (update: (content: string) => Promise<API.File>) => void;
 }
 
@@ -118,6 +118,12 @@ export default class FilePicker extends React.Component<Props, State> {
     }
   }
 
+  async handleImportFromDevice() {
+    if (!this.props.onOpen) return;
+    const { file, text } = await misc.importFromDevice();
+    this.props.onOpen(text, file);
+  }
+
   async handleImportByURL() {
     if (!this.props.onOpen) return;
     try {
@@ -160,7 +166,7 @@ export default class FilePicker extends React.Component<Props, State> {
                   <List.Text>GitHub Gist</List.Text>
                 </List.Item>
                 {this.props.mode === "open" && <>
-                  <List.Item onClick={async () => this.props.onOpen && this.props.onOpen(await misc.importFromDevice(), null)}>
+                  <List.Item onClick={() => this.handleImportFromDevice()}>
                     <List.Icon><FontAwesomeIcon icon="desktop" /></List.Icon>
                     <List.Text>ローカルファイル</List.Text>
                   </List.Item>
