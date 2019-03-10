@@ -73,6 +73,10 @@ export default class App extends React.Component<Props, State> {
       select: null,
       loading,
     };
+    this.handleCreateDictionary = this.handleCreateDictionary.bind(this);
+    this.handleUpdateDictionary = this.handleUpdateDictionary.bind(this);
+    this.handleUpdateWord = this.handleUpdateWord.bind(this);
+    this.handleRemoveWord = this.handleRemoveWord.bind(this);
   }
 
   componentDidUpdate(prevProps: Props, prevState: State) {
@@ -119,6 +123,22 @@ export default class App extends React.Component<Props, State> {
     }
   }
 
+  handleUpdateWord(word: OTM.Word) {
+    this.setState(({ dictionary }) => ({
+      show: null,
+      dictionary: dictionary.updateWord(word),
+      changed: true,
+    }));
+  }
+
+  handleRemoveWord(id: number) {
+    this.setState(({ dictionary }) => ({
+      show: null,
+      dictionary: dictionary.removeWord(id),
+      changed: true,
+    }));
+  }
+
   render() {
     const CloseButton = () => (
       <Page.Button onClick={() => this.setState({ show: null })}><FontAwesomeIcon icon="times" /></Page.Button>
@@ -139,7 +159,7 @@ export default class App extends React.Component<Props, State> {
               <div className="menu-header">
               </div>
               <List.List>
-                <List.Item onClick={() => this.handleCreateDictionary()}>
+                <List.Item onClick={this.handleCreateDictionary}>
                   <List.Icon><FontAwesomeIcon icon="plus" /></List.Icon>
                   <List.Text>新規辞書の作成</List.Text>
                 </List.Item>
@@ -147,7 +167,7 @@ export default class App extends React.Component<Props, State> {
                   <List.Icon><FontAwesomeIcon icon="folder-open" /></List.Icon>
                   <List.Text>辞書を開く</List.Text>
                 </List.Item>
-                <List.Item onClick={() => this.handleUpdateDictionary()}>
+                <List.Item onClick={this.handleUpdateDictionary}>
                   <List.Icon><FontAwesomeIcon icon="save" /></List.Icon>
                   <List.Text>上書き保存</List.Text>
                 </List.Item>
@@ -203,12 +223,8 @@ export default class App extends React.Component<Props, State> {
             words={dictionary.words}
             word={this.state.currentWord}
             onCancel={() => this.setState({ show: null })}
-            onEdit={word => {
-              this.setState({ show: null, dictionary: dictionary.updateWord(word), changed: true });
-            }}
-            onRemove={id => {
-              this.setState({ show: null, dictionary: dictionary.removeWord(id), changed: true });
-            }}
+            onEdit={this.handleUpdateWord}
+            onRemove={this.handleRemoveWord}
           />
         </Modal>
         <Modal fullscreen show={this.state.show === "opener"}>
