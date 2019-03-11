@@ -6,20 +6,24 @@ import { cloneDeep } from 'lodash-es';
 
 export default class Dictionary {
   private data: OTM.Dictionary;
+  public readonly detectedIndent: null | string;
 
   constructor(text?: string | OTM.Dictionary) {
     if (text === undefined) {
       this.data = {
         words: [],
       };
+      this.detectedIndent = null;
     } else if (typeof text === "string") {
       const data = JSON.parse(text);
       if (!validate.dictionary(data)) {
         throw new Error("OTM-JSON のフォーマットが正しくありません。");
       }
       this.data = data;
+      this.detectedIndent = Dictionary.detectIndent(text);
     } else {
       this.data = text;
+      this.detectedIndent = null;
     }
     const idset = new Set();
     for (const { entry: { id } } of this.data.words) {
@@ -117,5 +121,10 @@ export default class Dictionary {
       }
     }
     return null;
+  }
+
+  preview() {
+    return jacksonPrettyPrint({ ...this.data, words: null })
+      .replace(`"words" : null`, `"words" : Array(${this.data.words.length})`);
   }
 }

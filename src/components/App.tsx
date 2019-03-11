@@ -15,11 +15,12 @@ import * as API from '../api/base';
 import * as misc from '../api/misc';
 import execCopy from '../util/execCopy';
 import './App.scss';
+import { FileInfo } from './FileInfo';
 
 interface Props { }
 
 interface State {
-  show: null | "menu" | "editor" | "opener" | "saver" | "export" | "settings";
+  show: null | "menu" | "editor" | "opener" | "saver" | "export" | "settings" | "info";
   file: API.File | File | URL | null;
   dictionary: Dictionary;
   changed: boolean;
@@ -218,6 +219,9 @@ export default class App extends React.Component<Props, State> {
                   <FontAwesomeIcon icon="bars" />
                 </Page.Button>
                 <Page.Title>{pageTitle}</Page.Title>
+                <Page.Button onClick={() => this.setState({ show: "info" })}>
+                  <FontAwesomeIcon icon="ellipsis-h" />
+                </Page.Button>
               </Page.Header>
               <Page.Body>
                 <WordList
@@ -305,6 +309,13 @@ export default class App extends React.Component<Props, State> {
               </Page.Body>
             </Page.Item>
           </Page.List>
+        </Modal>
+        <Modal fullscreen show={this.state.show === "info"}>
+          <FileInfo
+            file={file}
+            dictionary={dictionary}
+            onClose={() => this.setState({ show: null })}
+          />
         </Modal>
         <Loader show={this.state.loading} />
       </>
