@@ -299,17 +299,9 @@ export default class App extends React.Component<Props, State> {
           </Page.List>
         </Modal>
         <Modal fullscreen show={this.state.show === "settings"}>
-          <Page.List>
-            <Page.Item>
-              <Page.Header>
-                <CloseButton />
-                <Page.Title>設定</Page.Title>
-              </Page.Header>
-              <Page.Body>
-                <SettingsEditor />
-              </Page.Body>
-            </Page.Item>
-          </Page.List>
+          <SettingsEditor
+            onClose={() => this.setState({ show: null })}
+          />
         </Modal>
         <Modal fullscreen show={this.state.show === "info"}>
           <FileInfo
