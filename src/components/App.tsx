@@ -97,7 +97,7 @@ export default class App extends React.Component<Props, State> {
 
   confirm() {
     if (this.state.changed) {
-      return confirm("注：ファイルが変更されています。新しいファイルを開くと変更は破棄されます。");
+      return confirm("注：このファイルは保存されていません。新しいファイルを開くと変更は破棄されます。");
     } else {
       return true;
     }
