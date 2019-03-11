@@ -44,6 +44,7 @@ export default class App extends React.Component<Props, State> {
         misc.importByURL(receivedURL).then(text => {
           this.setState({
             loading: false,
+            file: new URL(receivedURL),
             dictionary: new Dictionary(text),
           });
         }).catch(e => {
