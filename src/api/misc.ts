@@ -36,7 +36,7 @@ export const exportAsFile = async (text: string, blobOptions: BlobPropertyBag) =
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    // a.download = "test.json";
+    a.download = "data.json";
     a.target = "_blank";
     a.click();
     // URL.revokeObjectURL(url);
