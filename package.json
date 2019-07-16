@@ -18,6 +18,7 @@
     "dropbox": "^4.0.5",
     "lodash-es": "^4.17.11",
     "netlify-auth-providers": "^1.0.0-alpha5",
+    "pdic-conv": "github:kepeken/pdic-conv#v0.6.0",
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-transition-group": "^2.6.0",
