@@ -1,22 +1,10 @@
+import inputFile from '../util/inputFile';
 import readAsText from '../util/readAsText';
 
 export const importFromDevice = async () => {
-  return new Promise<{ file: File, text: string }>((resolve, reject) => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = ".json";
-    input.style.display = "none";
-    input.onchange = async () => {
-      document.body.removeChild(input);
-      if (input.files) {
-        const file = input.files[0];
-        const text = await readAsText(file);
-        resolve({ file, text });
-      }
-    };
-    document.body.appendChild(input);
-    input.click();
-  });
+  const file = await inputFile({ accept: ".json" });
+  const text = await readAsText(file);
+  return { file, text };
 };
 
 export const importByURL = async (url: string) => {
