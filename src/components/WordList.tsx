@@ -7,7 +7,7 @@ import WordListItem from './WordListItem';
 import './WordList.scss';
 
 interface Props {
-  mode: "edit" | "select";
+  mode: "read" | "edit" | "select";
   words: OTM.Word[];
   onSelect: (word: OTM.Word) => void;
 }

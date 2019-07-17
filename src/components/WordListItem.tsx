@@ -3,25 +3,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as OTM from '../app/OTM/types';
 
 interface Props {
-  mode: "edit" | "select";
+  mode: "read" | "edit" | "select";
   word: OTM.Word;
   onClick: (word: OTM.Word) => void;
 }
 
-export default function WordListItem(props: Props) {
-  const { word } = props;
+const WordListItem = ({ mode, word, onClick }: Props) => {
   return (
     <div className="word-list-item">
       <div className="word-list-item-header">
-        <button
-          className="btn-select-item"
-          onClick={() => props.onClick(word)}
-        >
-          {props.mode === "edit"
-            ? <FontAwesomeIcon icon="edit" />
-            : <FontAwesomeIcon icon="check" />
-          }
-        </button>
+        {mode === "edit" && (
+          <button className="btn-select-item" onClick={() => onClick(word)}>
+            <FontAwesomeIcon icon="edit" />
+          </button>
+        )}
+        {mode === "select" && (
+          <button className="btn-select-item" onClick={() => onClick(word)}>
+            <FontAwesomeIcon icon="check" />
+          </button>
+        )}
         <h3 className="otm-entry-form">
           {word.entry.form}
           {word.tags.map((tag, idx) =>
@@ -60,3 +60,5 @@ export default function WordListItem(props: Props) {
     </div>
   );
 }
+
+export default WordListItem;
