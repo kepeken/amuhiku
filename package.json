@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "webpack-dev-server --mode development --open --hot",
+    "dev": "webpack-dev-server --mode development --host 0.0.0.0 --hot",
     "build": "webpack --mode production"
   },
   "dependencies": {
