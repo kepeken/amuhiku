@@ -11,7 +11,7 @@ const App = () => (
       <Header />
       <Route exact path="/" component={Home} />
       <Route path="/d/:id" component={WordList} />
-      < Route path="/u/:id" />
+      <Route path="/u/:id" />
     </div>
   </HashRouter>
 );
